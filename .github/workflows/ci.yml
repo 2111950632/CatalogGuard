@@ -9,8 +9,8 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '24'
       - name: Install official MoonBit toolchain
@@ -20,7 +20,8 @@ jobs:
           echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
       - name: Record toolchain and check core
         run: |
-          moon version --all
+          moon version --all | tee toolchain-version.txt
+          node --version >> toolchain-version.txt
           moon check --target all --deny-warn
           moon fmt --check
           moon info
@@ -35,10 +36,29 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y gettext
-          python -m pip install polib==1.2.0
+          python -m venv .ci-venv
+          .ci-venv/bin/python -m pip install polib==1.2.0
+          msgfmt --version >> toolchain-version.txt
           node scripts/fetch-fixtures.mjs
-          python tests/oracle.py tests/external/moonbit-docs-0.po tests/external/moonbit-docs-1.po --gnu
+          .ci-venv/bin/python tests/oracle.py tests/external/moonbit-docs-0.po tests/external/moonbit-docs-1.po --gnu
+      - name: Test independently extracted Mooncakes package
+        run: |
+          moon package
+          python scripts/check-consumer.py
       - name: Record source counts and package JS core
         run: |
           node scripts/count-source.mjs > source-count.json
           node scripts/package.mjs
+          node cli.mjs examples/zh_CN.po --template examples/messages.pot --strict --json > demo-report.json
+      - name: Save verification artifacts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: szs-verification
+          path: |
+            source-count.json
+            toolchain-version.txt
+            demo-report.json
+            dist/
+            _build/publish/*.zip
+          if-no-files-found: warn

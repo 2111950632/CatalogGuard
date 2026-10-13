@@ -3,6 +3,7 @@
 pub fn python_percent_contract(text : String) -> Result[FormatContract, String] {
   let chars = text.to_array()
   let arguments : Array[FormatArgument] = []
+  let kinds : Map[String, String] = Map([])
   let mut i = 0
   let mut next = 1
   let mut mapping = false
@@ -56,7 +57,13 @@ pub fn python_percent_contract(text : String) -> Result[FormatContract, String] 
         return Err("Mapping percent fields cannot use dynamic width")
       }
       match
-        add_format_argument(arguments, next.to_string(), "integer", offset) {
+        add_format_argument(
+          arguments,
+          kinds,
+          next.to_string(),
+          "integer",
+          offset,
+        ) {
         Err(error) => return Err(error)
         Ok(_) => ()
       }
@@ -74,7 +81,13 @@ pub fn python_percent_contract(text : String) -> Result[FormatContract, String] 
           return Err("Mapping percent fields cannot use dynamic precision")
         }
         match
-          add_format_argument(arguments, next.to_string(), "integer", offset) {
+          add_format_argument(
+            arguments,
+            kinds,
+            next.to_string(),
+            "integer",
+            offset,
+          ) {
           Err(error) => return Err(error)
           Ok(_) => ()
         }
@@ -114,7 +127,7 @@ pub fn python_percent_contract(text : String) -> Result[FormatContract, String] 
         name
       }
     }
-    match add_format_argument(arguments, argument, kind, offset) {
+    match add_format_argument(arguments, kinds, argument, kind, offset) {
       Err(error) => return Err(error)
       Ok(_) => ()
     }

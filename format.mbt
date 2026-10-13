@@ -21,6 +21,7 @@ pub(all) struct FormatDifference {
 ///|
 priv struct PrintfState {
   arguments : Array[FormatArgument]
+  kinds : Map[String, String]
   mut next : Int32
   mut positional : Bool
   mut sequential : Bool
@@ -29,29 +30,29 @@ priv struct PrintfState {
 ///|
 fn add_format_argument(
   arguments : Array[FormatArgument],
+  kinds : Map[String, String],
   name : String,
   kind : String,
   offset : Int32,
 ) -> Result[Unit, String] {
-  for previous in arguments {
-    if previous.name == name {
-      if previous.kind != kind {
-        return Err(
-          "Argument " +
-          name +
-          " is used with incompatible types " +
-          previous.kind +
-          " and " +
-          kind,
-        )
-      }
-      return Ok(())
+  if kinds.get(name) is Some(previous) {
+    if previous != kind {
+      return Err(
+        "Argument " +
+        name +
+        " is used with incompatible types " +
+        previous +
+        " and " +
+        kind,
+      )
     }
+    return Ok(())
   }
   if arguments.length() >= 4096 {
     return Err("Format contract exceeds 4096 distinct arguments")
   }
   arguments.push({ name, kind, offset, })
+  kinds.set(name, kind)
   Ok(())
 }
 
@@ -77,7 +78,13 @@ fn PrintfState::add(
   if self.positional && self.sequential {
     return Err("Cannot mix numbered and sequential printf arguments")
   }
-  add_format_argument(self.arguments, number.to_string(), kind, offset)
+  add_format_argument(
+    self.arguments,
+    self.kinds,
+    number.to_string(),
+    kind,
+    offset,
+  )
 }
 
 ///|
@@ -157,6 +164,7 @@ pub fn printf_contract(text : String) -> Result[FormatContract, String] {
   let chars = text.to_array()
   let state : PrintfState = {
     arguments: [],
+    kinds: Map([]),
     next: 1,
     positional: false,
     sequential: false,
@@ -259,7 +267,7 @@ pub fn printf_contract(text : String) -> Result[FormatContract, String] {
     for position = 1
         position <= state.arguments.length()
         position = position + 1 {
-      if !state.arguments.any(a => a.name == position.to_string()) {
+      if state.kinds.get(position.to_string()) is None {
         return Err("Numbered printf arguments must not leave a gap")
       }
     }
@@ -274,6 +282,16 @@ pub fn compare_contracts(
   target : FormatContract,
 ) -> Array[FormatDifference] {
   let differences : Array[FormatDifference] = []
+  let target_arguments : Map[String, FormatArgument] = Map([])
+  let source_names : Map[String, Bool] = Map([])
+  for argument in target.arguments {
+    if target_arguments.get(argument.name) is None {
+      target_arguments.set(argument.name, argument)
+    }
+  }
+  for argument in source.arguments {
+    source_names.set(argument.name, true)
+  }
   if source.style != target.style {
     differences.push({
       code: "F006",
@@ -283,13 +301,7 @@ pub fn compare_contracts(
     return differences
   }
   for argument in source.arguments {
-    let mut found : FormatArgument? = None
-    for candidate in target.arguments {
-      if candidate.name == argument.name {
-        found = Some(candidate)
-        break
-      }
-    }
+    let found = target_arguments.get(argument.name)
     match found {
       None =>
         differences.push({
@@ -313,7 +325,7 @@ pub fn compare_contracts(
     }
   }
   for argument in target.arguments {
-    if !source.arguments.any(a => a.name == argument.name) {
+    if source_names.get(argument.name) is None {
       differences.push({
         code: "F004",
         message: "Unexpected format argument " + argument.name,

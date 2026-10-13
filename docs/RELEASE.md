@@ -1,6 +1,6 @@
 # 发布与参赛提交
 
-参赛账号：`2111950632`。仓库：<https://github.com/2111950632/szs>。MoonBit 模块名：`2111950632/szs`，版本 `0.1.0`。
+参赛账号：`2111950632`。仓库：<https://github.com/2111950632/szs>。MoonBit 模块名：`2111950632/szs`，版本 `0.1.1`。
 
 ## 本地验收
 
@@ -20,14 +20,16 @@ git push origin main
 
 ```sh
 moon package
-moon publish --dry-run
 moon login
+moon publish --dry-run
 moon publish
 ```
 
 `moon login` 与 `moon publish` 使用参赛者自己的账号，需要在 [Mooncakes](https://mooncakes.io/) 完成认证。模块前缀 `2111950632` 必须与实际可用命名空间相符。若 Mooncakes 的账号前缀不同，发布前同步修改 moon.mod、cmd/main/moon.pkg、包接口引用与文档，再重跑验收；不要仅更改说明文字。
 
 发布后在另一目录用新 consumer 引用模块，验证 parser、check 和 report 接口。保存注册表链接和实际版本。`moon package` 或 dry-run 成功不能冒充注册表发布成功。
+
+发布前可运行 `python scripts/check-consumer.py` 验证打包文件的独立使用。此检查使用本地 workspace，不证明模块已经存在于注册表。发布后仍需用新目录从 Mooncakes 下载并验证。
 
 ## 比赛材料
 

@@ -6,3 +6,4 @@ evidence/local/
 *.log
 .szs-test-*/
 tests/external/
+.ci-venv/

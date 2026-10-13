@@ -1,6 +1,7 @@
 ///|
 priv struct BraceState {
   arguments : Array[FormatArgument]
+  kinds : Map[String, String]
   mut automatic : Bool
   mut numbered : Bool
   mut next : Int32
@@ -26,9 +27,11 @@ fn brace_name(state : BraceState, raw : String) -> Result[String, String] {
   if root == "" {
     return Err("Brace field requires a root argument")
   }
+  let mut canonical = root
   if root.to_array().all(c => c.is_ascii_digit()) {
-    if decimal_text(root, 10000) is None {
-      return Err("Brace argument index exceeds 10000")
+    canonical = match decimal_text(root, 10000) {
+      None => return Err("Brace argument index exceeds 10000")
+      Some(index) => index.to_string()
     }
     state.numbered = true
     if state.automatic {
@@ -51,6 +54,7 @@ fn brace_name(state : BraceState, raw : String) -> Result[String, String] {
       if i == start || !is_identifier_start(chars[start]) {
         return Err("Invalid attribute in brace field")
       }
+      canonical += "." + char_slice(chars, start, i)
     } else if chars[i] == '[' {
       i += 1
       let start = i
@@ -63,12 +67,23 @@ fn brace_name(state : BraceState, raw : String) -> Result[String, String] {
       if i == start || i == chars.length() {
         return Err("Brace index requires content and a closing bracket")
       }
+      let index_text = char_slice(chars, start, i)
+      let index = if index_text.to_array().all(c => c.is_ascii_digit()) {
+        match decimal_text(index_text, 2147483647) {
+          Some(index) => index.to_string()
+          None =>
+            return Err("Brace element index exceeds the signed 32-bit range")
+        }
+      } else {
+        index_text
+      }
+      canonical += "[" + index + "]"
       i += 1
     } else {
       return Err("Unexpected character in brace field")
     }
   }
-  Ok(raw)
+  Ok(canonical)
 }
 
 ///|
@@ -206,6 +221,7 @@ fn brace_field(
   match
     add_format_argument(
       state.arguments,
+      state.kinds,
       name,
       conversion + ":" + presentation,
       start,
@@ -221,6 +237,7 @@ pub fn brace_contract(text : String) -> Result[FormatContract, String] {
   let chars = text.to_array()
   let state : BraceState = {
     arguments: [],
+    kinds: Map([]),
     automatic: false,
     numbered: false,
     next: 0,

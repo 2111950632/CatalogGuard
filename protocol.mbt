@@ -114,11 +114,17 @@ fn run_request(request : Json) -> Json {
   if !(request is Object(_)) {
     return protocol_error("Request must be a JSON object")
   }
-  let command = json_field(request, "command")
-    .bind(json_string)
-    .unwrap_or("check")
+  let command = match json_field(request, "command") {
+    None => "check"
+    Some(String(command)) => command
+    _ => return protocol_error("command must be a string")
+  }
   let mut policy = default_policy()
-  if json_field(request, "config").bind(json_string) is Some(text) {
+  if json_field(request, "config") is Some(value) {
+    let text = match value {
+      String(text) => text
+      _ => return protocol_error("config must be a JSON text string")
+    }
     policy = match parse_policy(text) {
       Ok(policy) => policy
       Err(error) => return protocol_error(error)

@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-import { writeFile, access } from 'node:fs/promises';
+import { writeFile, stat } from 'node:fs/promises';
 import { createReadStream } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
-const help = `SZS CatalogGuard 0.1.0 — MoonBit PO/POT checker
+const help = `SZS CatalogGuard 0.1.1 — MoonBit PO/POT checker
 
 Usage: node cli.mjs [check|inspect|normalize|stats] FILE... [options]
        node cli.mjs plural 'nplurals=2; plural=(n!=1);' [options]
@@ -32,7 +32,8 @@ const args = process.argv.slice(2);
 const request = { command: 'check', files: [], options: {} };
 const inputPaths = [];
 const optionEnd = args.indexOf('--');
-let json = args.slice(0, optionEnd < 0 ? args.length : optionEnd).includes('--json');
+const optionArgs = args.slice(0, optionEnd < 0 ? args.length : optionEnd);
+let json = optionArgs.includes('--json');
 let pot = false;
 let templatePath;
 let configPath;
@@ -59,12 +60,12 @@ async function readUtf8(path) {
 }
 
 try {
-  if (args.includes('--help') || args.includes('-h') || args.length === 0) {
+  if (optionArgs.includes('--help') || optionArgs.includes('-h') || args.length === 0) {
     process.stdout.write(help);
     process.exit(0);
   }
-  if (args.includes('--version')) {
-    process.stdout.write('szs 0.1.0\n');
+  if (optionArgs.includes('--version')) {
+    process.stdout.write('szs 0.1.1\n');
     process.exit(0);
   }
   if (commands.has(args[0])) request.command = args.shift();
@@ -103,16 +104,25 @@ try {
   if (configPath) request.config = await readUtf8(configPath);
 
   const root = dirname(fileURLToPath(import.meta.url));
-  let corePath = join(root, 'dist', 'szs-core.js');
-  try { await access(corePath); } catch {
-    corePath = join(root, '_build', 'js', 'release', 'build', 'cmd', 'main', 'main.js');
-    try { await access(corePath); } catch {
-      corePath = join(root, '_build', 'js', 'debug', 'build', 'cmd', 'main', 'main.js');
-      try { await access(corePath); } catch {
-        throw new Error('MoonBit core is not built. Run: moon build --target js --release');
-      }
-    }
+  const candidates = [
+    join(root, '_build', 'js', 'release', 'build', 'cmd', 'main', 'main.js'),
+    join(root, '_build', 'js', 'debug', 'build', 'cmd', 'main', 'main.js'),
+    join(root, 'dist', 'szs-core.js'),
+  ];
+  const builds = [];
+  for (const candidate of candidates.slice(0, 2)) {
+    try {
+      const info = await stat(candidate);
+      if (info.isFile()) builds.push({ path: candidate, modified: info.mtimeMs });
+    } catch (error) { if (error.code !== 'ENOENT') throw error; }
   }
+  builds.sort((a, b) => b.modified - a.modified);
+  let corePath = builds[0]?.path;
+  if (!corePath) {
+    try { if ((await stat(candidates[2])).isFile()) corePath = candidates[2]; }
+    catch (error) { if (error.code !== 'ENOENT') throw error; }
+  }
+  if (!corePath) throw new Error('MoonBit core is not built. Run: moon build --target js --release');
   globalThis.__szsRequest = JSON.stringify(request);
   await import(pathToFileURL(corePath).href);
   if (typeof globalThis.__szsResponse !== 'string') throw new Error('MoonBit core returned no response');

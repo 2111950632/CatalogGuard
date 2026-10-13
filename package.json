@@ -1,6 +1,6 @@
 {
   "name": "szs-catalogguard",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "MoonBit PO/POT translation catalog checking",
   "type": "module",
   "private": true,
@@ -9,7 +9,9 @@
   "scripts": {
     "build": "moon build --target js --release",
     "test": "node tests/integration.mjs",
-    "demo": "node cli.mjs check examples/zh_CN.po --template examples/messages.pot --strict",
+    "verify": "node scripts/verify.mjs",
+    "verify:independent": "node scripts/verify.mjs --independent",
+    "demo": "node scripts/demo.mjs",
     "package": "node scripts/package.mjs"
   }
 }

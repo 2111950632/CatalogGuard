@@ -23,6 +23,8 @@ node cli.mjs plural 'nplurals=2; plural=(n!=1);'
 node cli.mjs rules
 ```
 
+依次展示正常、错误、JSON 和复数规则四项演示：`npm run demo`。录屏步骤见 [演示提纲](docs/DEMO.md)。
+
 PowerShell、macOS 和 Linux 均可使用上面的命令。目录路径包含空格时加引号。PowerShell 查看上一条程序的退出码用 `$LASTEXITCODE`。
 
 下载带 `dist/szs-core.js` 的运行包后，只需 Node.js 即可执行 `node cli.mjs ...`，无需再次编译。GitHub 源码不提交构建产物；从源码运行时先构建。要制作运行包：
@@ -31,6 +33,8 @@ PowerShell、macOS 和 Linux 均可使用上面的命令。目录路径包含空
 moon build --target js --release
 node scripts/package.mjs
 ```
+
+同目录存在本地构建时，CLI 使用 release/debug 中最近构建的版本；无本地构建时加载运行包的 `dist` 核心，避免重新构建后仍运行旧发布文件。
 
 ## 检查范围
 
@@ -91,6 +95,10 @@ node scripts/count-source.mjs
 
 开发时工具链为 `moon 0.1.20261012`、`moonc v0.10.15+943464bfa`，Node.js 24.19.0。CI 记录实际工具链版本，使用官方当前工具链；工具链更新可能需要显式升级 API，失败不会被跳过。
 
+安装 Python 3.9 或更新版本后，`npm run verify` 按顺序完成核心检查、两种后端测试、CLI 测试、打包和独立 consumer 验证。它从 `moon package` 的真实压缩包提取源码，在单独项目中调用 API；需要 Python 标准库，不需要 polib。`SZS_MOON`、`SZS_PYTHON` 可指定本机工具路径。
+
+装好 polib 和 GNU gettext 后，可执行 `npm run verify:independent` 加上独立对照。依赖缺失或网络下载失败会停止验证，不会跳过后宣称成功。CI 同时保存工具版本、示例报告、源码统计与包供下载。
+
 独立比对使用 polib 1.2.0 和固定提交的 MoonBit 官方中日文 PO 文件；只比较明确支持的解析字段。外部语料不计入项目代码、不打包分发：
 
 ```sh
@@ -109,3 +117,5 @@ python tests/oracle.py tests/external/moonbit-docs-0.po tests/external/moonbit-d
 MoonBit 实现为本项目新编写，未复制 GNU gettext、polib 或 Translate Toolkit 的实现代码。使用 AI 辅助开发，由仓库作者负责审核、验证和提交。参考与外部测试来源见 [来源说明](THIRD_PARTY.md)。代码按 Apache-2.0 授权。
 
 比赛资格、申报截止与发布要求，以 [比赛官网](https://moonbitlang.github.io/Hackathon2026/) 和主办方最新章程为准。仓库中有 [申报书](docs/PROPOSAL.md)；填写报名表和 Mooncakes 账号认证需由参赛者完成。
+
+0.1.1 的修复见 [更新记录](CHANGELOG.md)，下一步参赛提交见 [完成步骤](docs/FINISH.md)。

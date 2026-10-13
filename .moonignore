@@ -1,0 +1,4 @@
+/dist/
+/tests/external/
+/evidence/local/
+*.log

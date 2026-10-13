@@ -1,7 +1,7 @@
 import test, { after } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, writeFileSync, readFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, writeFileSync, readFileSync, rmSync, mkdirSync, copyFileSync, utimesSync } from 'node:fs';
 import { resolve, join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -155,7 +155,7 @@ test('rules help and version work without catalog inputs', () => {
   assert.ok(rules.some(r => r.code === 'P011'));
   assert.ok(rules.some(r => r.code === 'F008'));
   assert.equal(run(['--help']).status, 0);
-  assert.equal(run(['--version']).stdout.trim(), 'szs 0.1.0');
+  assert.equal(run(['--version']).stdout.trim(), 'szs 0.1.1');
 });
 
 test('duplicate stdin and excessive input are bounded IO failures', () => {
@@ -164,4 +164,38 @@ test('duplicate stdin and excessive input are bounded IO failures', () => {
   const result = run(['inspect', path, '--json']);
   assert.equal(result.status, 2);
   assert.match(data(result).error, /32 MiB/);
+});
+
+test('end of options permits files named help and version', () => {
+  for (const name of ['--help', '--version']) {
+    input(name, 'msgid "x"\nmsgstr "X"\n');
+    const result = run(['inspect', '--json', '--', name], { cwd: temp });
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+    assert.equal(data(result).files[0].entries[0].id, 'x');
+  }
+});
+
+test('most recent local build wins and packaged core is a fallback', () => {
+  const isolated = join(temp, 'loader');
+  mkdirSync(isolated);
+  copyFileSync(join(root, 'cli.mjs'), join(isolated, 'cli.mjs'));
+  writeFileSync(join(isolated, 'package.json'), '{"type":"module"}');
+  function core(relative, marker, time) {
+    const path = join(isolated, relative);
+    mkdirSync(dirname(path), { recursive: true });
+    const response = { exit_code: 0, text: marker + '\n', data: { origin: marker } };
+    writeFileSync(path, 'globalThis.__szsResponse = ' + JSON.stringify(JSON.stringify(response)) + ';');
+    utimesSync(path, time, time);
+  }
+  function invoke() {
+    const result = spawnSync(process.execPath, [join(isolated, 'cli.mjs'), 'rules', '--json'], { cwd: isolated, encoding: 'utf8', timeout: 15000 });
+    assert.equal(result.status, 0, result.stderr);
+    return data(result).origin;
+  }
+  core('dist/szs-core.js', 'packaged', 2000);
+  assert.equal(invoke(), 'packaged');
+  core('_build/js/release/build/cmd/main/main.js', 'release', 1000);
+  assert.equal(invoke(), 'release');
+  core('_build/js/debug/build/cmd/main/main.js', 'debug', 1500);
+  assert.equal(invoke(), 'debug');
 });

@@ -112,19 +112,47 @@ fn header_span(catalog : Catalog) -> Span {
 }
 
 ///|
-fn charset_of(content_type : String) -> String? {
-  for fragment in content_type.split(";") {
-    let value = trim_text(fragment.to_owned())
+fn content_type_charset(content_type : String) -> Result[String, String] {
+  let fragments = content_type.split(";").map(s => s.to_owned()).to_array()
+  if trim_text(fragments[0]).to_lower() != "text/plain" {
+    return Err("Content-Type must be exactly text/plain")
+  }
+  let mut charset : String? = None
+  for i, fragment in fragments {
+    if i == 0 {
+      continue
+    }
+    let value = trim_text(fragment)
+    if value == "" {
+      continue
+    }
     let parts = value.split("=").map(p => trim_text(p.to_owned())).to_array()
-    if parts.length() == 2 && parts[0].to_lower() == "charset" {
-      let raw = parts[1].to_array()
-      if raw.length() >= 2 && raw[0] == '"' && raw[raw.length() - 1] == '"' {
-        return Some(char_slice(raw, 1, raw.length() - 1))
+    if parts.length() != 2 || parts[0] == "" || parts[1] == "" {
+      return Err("Malformed or unsupported Content-Type parameter: " + value)
+    }
+    if parts[0].to_lower() == "charset" {
+      if charset is Some(_) {
+        return Err("Duplicate charset parameter")
       }
-      return Some(parts[1])
+      let raw = parts[1].to_array()
+      let decoded = if raw[0] == '"' || raw[raw.length() - 1] == '"' {
+        if raw.length() < 2 || raw[0] != '"' || raw[raw.length() - 1] != '"' {
+          return Err("Malformed quoted charset")
+        }
+        char_slice(raw, 1, raw.length() - 1)
+      } else {
+        parts[1]
+      }
+      if decoded.to_lower() != "utf-8" && decoded.to_lower() != "utf8" {
+        return Err("Unsupported catalog encoding: " + decoded)
+      }
+      charset = Some(decoded)
     }
   }
-  None
+  match charset {
+    Some(value) => Ok(value)
+    None => Err("Content-Type has no charset")
+  }
 }
 
 ///|
@@ -234,44 +262,21 @@ pub fn validate_header(
   }
   match header.get("Content-Type") {
     None => ()
-    Some(value) => {
-      if !value.to_lower().has_prefix("text/plain") {
-        result.push(
-          issue(
-            "H004",
-            Error,
-            "Content-Type must describe a text/plain catalog",
-            catalog.file,
-            span,
-          ),
-        )
-      }
-      match charset_of(value) {
-        None =>
+    Some(value) =>
+      match content_type_charset(value) {
+        Err(message) =>
           result.push(
             issue(
               "H004",
               Error,
-              "Content-Type has no charset",
+              message,
               catalog.file,
               span,
+              hint="Use Content-Type: text/plain; charset=UTF-8.",
             ),
           )
-        Some(charset) =>
-          if charset.to_lower() != "utf-8" && charset.to_lower() != "utf8" {
-            result.push(
-              issue(
-                "H004",
-                Error,
-                "Unsupported catalog encoding: " + charset,
-                catalog.file,
-                span,
-                hint="Convert the original file to UTF-8 before checking it.",
-              ),
-            )
-          }
+        Ok(_) => ()
       }
-    }
   }
   if header.get("MIME-Version") is Some(value) {
     if value != "1.0" {
