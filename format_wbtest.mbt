@@ -28,7 +28,12 @@ test "printf dropped extra and changed type arguments have distinct findings" {
   assert_true(findings.any(d => d.code == "F004"))
   let c = printf_contract("%s").unwrap()
   assert_true(compare_contracts(a, c).any(d => d.code == "F003"))
-  assert_true(!compare_contracts(printf_contract("%ld").unwrap(), printf_contract("%d").unwrap()).is_empty())
+  assert_true(
+    !compare_contracts(
+      printf_contract("%ld").unwrap(),
+      printf_contract("%d").unwrap(),
+    ).is_empty(),
+  )
 }
 
 ///|

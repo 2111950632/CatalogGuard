@@ -5,7 +5,8 @@ fn test_header() -> String {
 
 ///|
 test "complete catalog passes and format error changes exit status" {
-  let good = test_header() + "#, c-format\nmsgid \"%d file\"\nmsgid_plural \"%d files\"\nmsgstr[0] \"%d fichier\"\nmsgstr[1] \"%d fichiers\"\n"
+  let good = test_header() +
+    "#, c-format\nmsgid \"%d file\"\nmsgid_plural \"%d files\"\nmsgstr[0] \"%d fichier\"\nmsgstr[1] \"%d fichiers\"\n"
   let report = check_text(good)
   assert_eq(report.exit_code, 0)
   assert_eq(report.stats.translated, 1)
@@ -19,14 +20,21 @@ test "complete catalog passes and format error changes exit status" {
 test "fuzzy empty policies promote warnings without changing parsing" {
   let input = test_header() + "#, fuzzy\nmsgid \"x\"\nmsgstr \"\"\n"
   assert_eq(check_text(input).exit_code, 0)
-  assert_eq(check_text(input, options={ ..default_options(), strict: true }).exit_code, 1)
-  assert_eq(check_text(input, options={ ..default_options(), empty_severity: Error }).exit_code, 1)
+  assert_eq(
+    check_text(input, options={ ..default_options(), strict: true, }).exit_code,
+    1,
+  )
+  assert_eq(
+    check_text(input, options={ ..default_options(), empty_severity: Error, }).exit_code,
+    1,
+  )
   assert_eq(check_text(input, template=true).stats.warnings, 0)
 }
 
 ///|
 test "duplicate context keys differ from distinct contexts" {
-  let input = test_header() + "msgctxt \"a\"\nmsgid \"x\"\nmsgstr \"X\"\n\nmsgctxt \"b\"\nmsgid \"x\"\nmsgstr \"Y\"\n"
+  let input = test_header() +
+    "msgctxt \"a\"\nmsgid \"x\"\nmsgstr \"X\"\n\nmsgctxt \"b\"\nmsgid \"x\"\nmsgstr \"Y\"\n"
   assert_true(!check_text(input).diagnostics.any(d => d.code == "C001"))
   let duplicate = input + "\nmsgctxt \"a\"\nmsgid \"x\"\nmsgstr \"Z\"\n"
   assert_true(check_text(duplicate).diagnostics.any(d => d.code == "C001"))
@@ -34,16 +42,22 @@ test "duplicate context keys differ from distinct contexts" {
 
 ///|
 test "missing plural slot newline NUL metadata and options are diagnosed" {
-  let input = test_header() + "msgid \"file\\n\"\nmsgid_plural \"files\\n\"\nmsgstr[0] \"fichier\\000\"\n"
+  let input = test_header() +
+    "msgid \"file\\n\"\nmsgid_plural \"files\\n\"\nmsgstr[0] \"fichier\\000\"\n"
   let diagnostics = check_text(input).diagnostics
   for code in ["L003", "C010", "C012"] {
     assert_true(diagnostics.any(d => d.code == code))
   }
-  let header = parse_catalog("msgid \"\"\nmsgstr \"Language: fr\\nLanguage: de\\nContent-Type: text/plain; charset=ISO-8859-1\\n\"\n")
+  let header = parse_catalog(
+    "msgid \"\"\nmsgstr \"Language: fr\\nLanguage: de\\nContent-Type: text/plain; charset=ISO-8859-1\\n\"\n",
+  )
   let findings = validate_header(header, read_header(header))
   assert_true(findings.any(d => d.code == "H003"))
   assert_true(findings.any(d => d.code == "H004"))
-  assert_eq(check_text(input, options={ ..default_options(), plural_max: -1 }).exit_code, 2)
+  assert_eq(
+    check_text(input, options={ ..default_options(), plural_max: -1, }).exit_code,
+    2,
+  )
 }
 
 ///|

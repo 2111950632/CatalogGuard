@@ -4,14 +4,14 @@ priv enum Field {
   ContextField
   IdField
   PluralField
-  TranslationField(Int)
+  TranslationField(Int32)
 } derive(Eq, Debug)
 
 ///|
 priv struct TranslationBuilder {
-  index : Int
+  index : Int32
   bytes : Array[Byte]
-  span : Span
+  mut span : Span
 }
 
 ///|
@@ -51,7 +51,7 @@ fn new_builder() -> EntryBuilder {
 }
 
 ///|
-fn hex_digit(c : Char) -> Int? {
+fn hex_digit(c : Char) -> Int32? {
   if c >= '0' && c <= '9' {
     Some(c.to_int() - '0'.to_int())
   } else if c >= 'a' && c <= 'f' {
@@ -64,7 +64,10 @@ fn hex_digit(c : Char) -> Int? {
 }
 
 ///|
-fn quoted_bytes(chars : Array[Char], from : Int) -> Result[Array[Byte], String] {
+fn quoted_bytes(
+  chars : Array[Char],
+  from : Int32,
+) -> Result[Array[Byte], String] {
   let mut index = skip_spaces(chars, from)
   if index >= chars.length() || chars[index] != '"' {
     return Err("Expected a quoted string")
@@ -103,11 +106,13 @@ fn quoted_bytes(chars : Array[Char], from : Int) -> Result[Array[Byte], String] 
       'a' => 7
       '"' => 34
       '\\' => 92
-      '0'..='7' => {
+      '0'..<='7' => {
         let mut number = escaped.to_int() - '0'.to_int()
         let mut count = 1
-        while count < 3 && index < chars.length() &&
-          chars[index] >= '0' && chars[index] <= '7' {
+        while count < 3 &&
+              index < chars.length() &&
+              chars[index] >= '0' &&
+              chars[index] <= '7' {
           number = number * 8 + chars[index].to_int() - '0'.to_int()
           index += 1
           count += 1
@@ -158,16 +163,18 @@ fn decode_field(
   span : Span,
   diagnostics : Array[Diagnostic],
 ) -> String {
-  try @utf8.decode(Bytes::from_array(bytes)[:]) catch {
+  @utf8.decode(Bytes::from_array(bytes)[:]) catch {
     _ => {
-      diagnostics.push(issue(
-        "P008",
-        Error,
-        "Quoted byte escapes do not form valid UTF-8",
-        file,
-        span,
-        hint="This release accepts UTF-8 catalogs only.",
-      ))
+      diagnostics.push(
+        issue(
+          "P008",
+          Error,
+          "Quoted byte escapes do not form valid UTF-8",
+          file,
+          span,
+          hint="This release accepts UTF-8 catalogs only.",
+        ),
+      )
       ""
     }
   }
@@ -180,29 +187,46 @@ fn finish_builder(
   diagnostics : Array[Diagnostic],
 ) -> Entry? {
   let start = builder.start.unwrap_or(point(1, 1))
-  let span = { start, end: builder.end }
+  let span = { start, end: builder.end, }
   let id_span = builder.id_span.unwrap_or(span)
   let id = match builder.id {
     None => {
-      if builder.context is Some(_) || !builder.translations.is_empty() {
-        diagnostics.push(issue(
-          "P003", Error, "Entry has fields but no msgid", file, span,
-        ))
+      if builder.context is Some(_) ||
+        builder.plural is Some(_) ||
+        !builder.translations.is_empty() {
+        diagnostics.push(
+          issue("P003", Error, "Entry has fields but no msgid", file, span),
+        )
+      }
+      if !builder.comments.is_empty() &&
+        builder.context is None &&
+        builder.plural is None &&
+        builder.translations.is_empty() {
+        diagnostics.push(
+          issue(
+            "P012",
+            Warning,
+            "Trailing comments are not attached to a catalog entry",
+            file,
+            span,
+            hint="Normalization refuses to discard these comments.",
+          ),
+        )
       }
       return None
     }
     Some(bytes) => decode_field(bytes, file, id_span, diagnostics)
   }
-  let context = builder.context.map(bytes =>
-    decode_field(bytes, file, span, diagnostics))
-  let plural = builder.plural.map(bytes =>
-    decode_field(bytes, file, builder.plural_span.unwrap_or(span), diagnostics))
+  let context = builder.context.map(bytes => {
+    decode_field(bytes, file, span, diagnostics)
+  })
+  let plural = builder.plural.map(bytes => {
+    decode_field(bytes, file, builder.plural_span.unwrap_or(span), diagnostics)
+  })
   let translations = builder.translations.map(t => {
-    {
-      index: t.index,
-      value: decode_field(t.bytes, file, t.span, diagnostics),
-      span: t.span,
-    }
+    index: t.index,
+    value: decode_field(t.bytes, file, t.span, diagnostics),
+    span: t.span,
   })
   Some({
     context,
@@ -230,7 +254,7 @@ fn add_comment(builder : EntryBuilder, text : String, span : Span) -> Unit {
     '|' => ("previous", trim_text(char_slice(chars, 2, chars.length())))
     _ => ("translator", trim_text(char_slice(chars, 1, chars.length())))
   }
-  builder.comments.push({ kind, text: content, span })
+  builder.comments.push({ kind, text: content, span, })
   if kind == "flags" {
     for flag in content.split(",") {
       let value = flag.trim().to_owned()
@@ -257,19 +281,36 @@ fn add_comment(builder : EntryBuilder, text : String, span : Span) -> Unit {
 }
 
 ///|
-fn append_field(builder : EntryBuilder, bytes : Array[Byte]) -> Bool {
+fn append_field(
+  builder : EntryBuilder,
+  bytes : Array[Byte],
+  span : Span,
+) -> Bool {
   match builder.field {
     NoField => return false
-    ContextField => builder.context.iter().each(target =>
-      bytes.each(byte => target.push(byte)))
-    IdField => builder.id.iter().each(target =>
-      bytes.each(byte => target.push(byte)))
-    PluralField => builder.plural.iter().each(target =>
-      bytes.each(byte => target.push(byte)))
+    ContextField =>
+      builder.context
+      .iter()
+      .each(target => bytes.each(byte => target.push(byte)))
+    IdField => {
+      builder.id.iter().each(target => bytes.each(byte => target.push(byte)))
+      if builder.id_span is Some(previous) {
+        builder.id_span = Some({ start: previous.start, end: span.end, })
+      }
+    }
+    PluralField => {
+      builder.plural
+      .iter()
+      .each(target => bytes.each(byte => target.push(byte)))
+      if builder.plural_span is Some(previous) {
+        builder.plural_span = Some({ start: previous.start, end: span.end, })
+      }
+    }
     TranslationField(index) =>
       for t in builder.translations {
         if t.index == index {
           bytes.each(byte => t.bytes.push(byte))
+          t.span = { start: t.span.start, end: span.end, }
         }
       }
   }
@@ -280,8 +321,8 @@ fn append_field(builder : EntryBuilder, bytes : Array[Byte]) -> Bool {
 /// Parse a catalog without throwing. Malformed entries produce diagnostics.
 pub fn parse_catalog(
   text : String,
-  file? : String = "<memory>",
-  options? : Options = default_options(),
+  file~ : String = "<memory>",
+  options~ : Options = default_options(),
 ) -> Catalog {
   let lines = split_lines(text)
   let entries : Array[Entry] = []
@@ -294,14 +335,25 @@ pub fn parse_catalog(
       chars = chars[1:].to_owned()
     }
     if chars.length() > options.max_line_chars {
-      diagnostics.push(issue(
-        "P009", Error, "Line exceeds the configured character limit",
-        file, line_span(line_number, 1, 1),
-      ))
+      diagnostics.push(
+        issue(
+          "P009",
+          Error,
+          "Line exceeds the configured character limit",
+          file,
+          line_span(line_number, 1, 1),
+        ),
+      )
       break
     }
     let mut offset = skip_spaces(chars, 0)
     if offset == chars.length() {
+      if builder.id is None &&
+        builder.context is None &&
+        builder.plural is None &&
+        builder.translations.is_empty() {
+        continue
+      }
       if finish_builder(builder, file, diagnostics) is Some(entry) {
         entries.push(entry)
       }
@@ -310,7 +362,8 @@ pub fn parse_catalog(
     }
     let mut obsolete = false
     if chars.length() >= offset + 2 &&
-      chars[offset] == '#' && chars[offset + 1] == '~' {
+      chars[offset] == '#' &&
+      chars[offset + 1] == '~' {
       obsolete = true
       offset = skip_spaces(chars, offset + 2)
     }
@@ -336,21 +389,31 @@ pub fn parse_catalog(
     let data = content.to_array()
     if data[0] == '"' {
       if builder.obsolete != obsolete {
-        diagnostics.push(issue(
-          "P006", Error, "Continuation changes active/obsolete status",
-          file, span,
-        ))
+        diagnostics.push(
+          issue(
+            "P006",
+            Error,
+            "Continuation changes active/obsolete status",
+            file,
+            span,
+          ),
+        )
         continue
       }
       match quoted_bytes(data, 0) {
         Err(message) =>
           diagnostics.push(issue("P002", Error, message, file, span))
         Ok(bytes) =>
-          if !append_field(builder, bytes) {
-            diagnostics.push(issue(
-              "P004", Error, "String continuation has no preceding field",
-              file, span,
-            ))
+          if !append_field(builder, bytes, span) {
+            diagnostics.push(
+              issue(
+                "P004",
+                Error,
+                "String continuation has no preceding field",
+                file,
+                span,
+              ),
+            )
           }
       }
       builder.end = span.end
@@ -358,7 +421,7 @@ pub fn parse_catalog(
     }
     let mut word_end = 0
     while word_end < data.length() &&
-      (data[word_end].is_ascii_alphabetic() || data[word_end] == '_') {
+          (data[word_end].is_ascii_alphabetic() || data[word_end] == '_') {
       word_end += 1
     }
     let word = char_slice(data, 0, word_end)
@@ -371,74 +434,105 @@ pub fn parse_catalog(
       builder = new_builder()
     }
     if entries.length() >= options.max_entries {
-      diagnostics.push(issue(
-        "P009", Error, "Catalog exceeds the configured entry limit",
-        file, span,
-      ))
+      diagnostics.push(
+        issue(
+          "P009",
+          Error,
+          "Catalog exceeds the configured entry limit",
+          file,
+          span,
+        ),
+      )
       break
     }
     if builder.start is None {
       builder.start = Some(span.start)
     }
     if builder.id is Some(_) && builder.obsolete != obsolete {
-      diagnostics.push(issue(
-        "P006", Error, "Entry mixes active and obsolete fields", file, span,
-      ))
+      diagnostics.push(
+        issue(
+          "P006",
+          Error,
+          "Entry mixes active and obsolete fields",
+          file,
+          span,
+        ),
+      )
     }
     builder.obsolete = obsolete
     builder.end = span.end
     let mut value_start = word_end
+    let indexed = word == "msgstr" &&
+      value_start < data.length() &&
+      data[value_start] == '['
     let field = match word {
       "msgctxt" => ContextField
       "msgid" => IdField
       "msgid_plural" => PluralField
-      "msgstr" => {
+      "msgstr" =>
         if value_start < data.length() && data[value_start] == '[' {
           value_start += 1
           let index_start = value_start
-          while value_start < data.length() && data[value_start].is_ascii_digit() {
+          while value_start < data.length() &&
+                data[value_start].is_ascii_digit() {
             value_start += 1
           }
           if value_start >= data.length() || data[value_start] != ']' {
-            diagnostics.push(issue(
-              "P005", Error, "msgstr index requires digits and a closing bracket",
-              file, span,
-            ))
+            diagnostics.push(
+              issue(
+                "P005",
+                Error,
+                "msgstr index requires digits and a closing bracket",
+                file,
+                span,
+              ),
+            )
             builder.field = NoField
             continue
           }
           let parsed = decimal_text(
-            char_slice(data, index_start, value_start), 10000,
+            char_slice(data, index_start, value_start),
+            10000,
           )
           value_start += 1
           match parsed {
             Some(index) => TranslationField(index)
             None => {
-              diagnostics.push(issue(
-                "P005", Error, "msgstr index is invalid or exceeds 10000",
-                file, span,
-              ))
+              diagnostics.push(
+                issue(
+                  "P005",
+                  Error,
+                  "msgstr index is invalid or exceeds 10000",
+                  file,
+                  span,
+                ),
+              )
               continue
             }
           }
         } else {
           TranslationField(0)
         }
-      }
       _ => {
-        diagnostics.push(issue(
-          "P001", Error, "Unknown PO directive: " + word, file, span,
-        ))
+        diagnostics.push(
+          issue("P001", Error, "Unknown PO directive: " + word, file, span),
+        )
         builder.field = NoField
         continue
       }
     }
     if value_start < data.length() &&
-      data[value_start] != ' ' && data[value_start] != '\t' {
-      diagnostics.push(issue(
-        "P001", Error, "A directive must be followed by whitespace",
-        file, span,
-      ))
+      data[value_start] != ' ' &&
+      data[value_start] != '\t' {
+      diagnostics.push(
+        issue(
+          "P001",
+          Error,
+          "A directive must be followed by whitespace",
+          file,
+          span,
+        ),
+      )
       continue
     }
     let bytes = match quoted_bytes(data, value_start) {
@@ -460,27 +554,50 @@ pub fn parse_catalog(
         builder.id_span = Some(span)
       }
       PluralField => {
+        if builder.id is None || !builder.translations.is_empty() {
+          diagnostics.push(
+            issue(
+              "P007",
+              Error,
+              "msgid_plural must follow msgid and precede msgstr",
+              file,
+              span,
+            ),
+          )
+        }
         duplicate = builder.plural is Some(_)
         builder.plural = Some(bytes)
         builder.plural_span = Some(span)
       }
       TranslationField(index) => {
+        if (builder.plural is None && indexed) ||
+          (builder.plural is Some(_) && !indexed) {
+          diagnostics.push(
+            issue(
+              "P011",
+              Error,
+              "Use msgstr for singular entries and msgstr[index] for plural entries",
+              file,
+              span,
+            ),
+          )
+        }
         duplicate = builder.translations.any(t => t.index == index)
         if !duplicate {
-          builder.translations.push({ index, bytes, span })
+          builder.translations.push({ index, bytes, span, })
         }
         if builder.id is None {
-          diagnostics.push(issue(
-            "P007", Error, "msgstr must follow msgid", file, span,
-          ))
+          diagnostics.push(
+            issue("P007", Error, "msgstr must follow msgid", file, span),
+          )
         }
       }
       NoField => ()
     }
     if duplicate {
-      diagnostics.push(issue(
-        "P010", Error, "Duplicate field inside an entry", file, span,
-      ))
+      diagnostics.push(
+        issue("P010", Error, "Duplicate field inside an entry", file, span),
+      )
       builder.field = NoField
     } else {
       builder.field = field
@@ -491,5 +608,5 @@ pub fn parse_catalog(
       entries.push(entry)
     }
   }
-  { file, entries, diagnostics }
+  { file, entries, diagnostics, }
 }

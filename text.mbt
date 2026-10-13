@@ -4,24 +4,27 @@ fn trim_text(text : String) -> String {
 }
 
 ///|
-fn char_slice(chars : Array[Char], start : Int, end : Int) -> String {
+fn char_slice(chars : Array[Char], start : Int32, end : Int32) -> String {
   String::from_array(chars[start:end])
 }
 
 ///|
 fn split_lines(text : String) -> Array[String] {
-  text.split("\n").map(line => {
+  text
+  .split("\n")
+  .map(line => {
     let value = line.to_owned()
     if value.has_suffix("\r") {
       value[:value.length() - 1].to_owned()
     } else {
       value
     }
-  }).to_array()
+  })
+  .to_array()
 }
 
 ///|
-fn ascii_digit(c : Char) -> Int? {
+fn ascii_digit(c : Char) -> Int32? {
   if c >= '0' && c <= '9' {
     Some(c.to_int() - '0'.to_int())
   } else {
@@ -30,7 +33,7 @@ fn ascii_digit(c : Char) -> Int? {
 }
 
 ///|
-fn decimal_text(text : String, limit : Int) -> Int? {
+fn decimal_text(text : String, limit : Int32) -> Int32? {
   let chars = text.to_array()
   if chars.is_empty() {
     return None
@@ -40,7 +43,7 @@ fn decimal_text(text : String, limit : Int) -> Int? {
     match ascii_digit(c) {
       None => return None
       Some(digit) => {
-        if value > (limit - digit) / 10 {
+        if digit > limit || value > (limit - digit) / 10 {
           return None
         }
         value = value * 10 + digit
@@ -74,7 +77,7 @@ fn join_strings(values : Array[String], separator : String) -> String {
 }
 
 ///|
-fn skip_spaces(chars : Array[Char], from : Int) -> Int {
+fn skip_spaces(chars : Array[Char], from : Int32) -> Int32 {
   let mut index = from
   while index < chars.length() && (chars[index] == ' ' || chars[index] == '\t') {
     index += 1
@@ -101,7 +104,7 @@ fn entry_key(entry : Entry) -> String {
 }
 
 ///|
-fn translated_span(entry : Entry, index : Int) -> Span {
+fn translated_span(entry : Entry, index : Int32) -> Span {
   for translation in entry.translations {
     if translation.index == index {
       return translation.span

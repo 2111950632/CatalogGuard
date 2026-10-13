@@ -3,7 +3,7 @@ priv struct BraceState {
   arguments : Array[FormatArgument]
   mut automatic : Bool
   mut numbered : Bool
-  mut next : Int
+  mut next : Int32
 }
 
 ///|
@@ -36,7 +36,8 @@ fn brace_name(state : BraceState, raw : String) -> Result[String, String] {
     }
   } else {
     let root_chars = root.to_array()
-    if !is_identifier_start(root_chars[0]) || !root_chars.all(is_identifier_part) {
+    if !is_identifier_start(root_chars[0]) ||
+      !root_chars.all(is_identifier_part) {
       return Err("Unsupported brace argument identifier: " + root)
     }
   }
@@ -122,13 +123,19 @@ fn brace_presentation(spec : String) -> Result[String, String] {
     'n' => "locale-numeric"
     'c' => "character"
     's' => "string"
-    _ => return Err("Unsupported brace presentation type: " + chars[i].to_string())
+    _ =>
+      return Err("Unsupported brace presentation type: " + chars[i].to_string())
   }
   Ok(kind)
 }
 
 ///|
-fn brace_field(chars : Array[Char], start : Int, state : BraceState, depth : Int) -> Result[Int, String] {
+fn brace_field(
+  chars : Array[Char],
+  start : Int32,
+  state : BraceState,
+  depth : Int32,
+) -> Result[Int32, String] {
   if depth > 8 {
     return Err("Brace fields exceed the nesting limit of 8")
   }
@@ -196,7 +203,13 @@ fn brace_field(chars : Array[Char], start : Int, state : BraceState, depth : Int
   if i >= chars.length() || chars[i] != '}' {
     return Err("Brace field has no closing brace")
   }
-  match add_format_argument(state.arguments, name, conversion + ":" + presentation, start) {
+  match
+    add_format_argument(
+      state.arguments,
+      name,
+      conversion + ":" + presentation,
+      start,
+    ) {
     Err(error) => Err(error)
     Ok(_) => Ok(i + 1)
   }
@@ -207,7 +220,10 @@ fn brace_field(chars : Array[Char], start : Int, state : BraceState, depth : Int
 pub fn brace_contract(text : String) -> Result[FormatContract, String] {
   let chars = text.to_array()
   let state : BraceState = {
-    arguments: [], automatic: false, numbered: false, next: 0,
+    arguments: [],
+    automatic: false,
+    numbered: false,
+    next: 0,
   }
   let mut i = 0
   while i < chars.length() {
@@ -217,7 +233,9 @@ pub fn brace_contract(text : String) -> Result[FormatContract, String] {
         continue
       }
       if chars[i] == '}' {
-        return Err("Unmatched closing brace at character " + (i + 1).to_string())
+        return Err(
+          "Unmatched closing brace at character " + (i + 1).to_string(),
+        )
       }
       match brace_field(chars, i, state, 0) {
         Ok(end) => i = end
@@ -227,5 +245,5 @@ pub fn brace_contract(text : String) -> Result[FormatContract, String] {
       i += 1
     }
   }
-  Ok({ arguments: state.arguments, style: "python-brace-format" })
+  Ok({ arguments: state.arguments, style: "python-brace-format", })
 }

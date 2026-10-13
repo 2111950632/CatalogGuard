@@ -2,7 +2,7 @@
 pub(all) struct FormatArgument {
   name : String
   kind : String
-  offset : Int
+  offset : Int32
 } derive(Eq, Debug)
 
 ///|
@@ -21,7 +21,7 @@ pub(all) struct FormatDifference {
 ///|
 priv struct PrintfState {
   arguments : Array[FormatArgument]
-  mut next : Int
+  mut next : Int32
   mut positional : Bool
   mut sequential : Bool
 }
@@ -31,22 +31,37 @@ fn add_format_argument(
   arguments : Array[FormatArgument],
   name : String,
   kind : String,
-  offset : Int,
+  offset : Int32,
 ) -> Result[Unit, String] {
   for previous in arguments {
     if previous.name == name {
       if previous.kind != kind {
-        return Err("Argument " + name + " is used with incompatible types " + previous.kind + " and " + kind)
+        return Err(
+          "Argument " +
+          name +
+          " is used with incompatible types " +
+          previous.kind +
+          " and " +
+          kind,
+        )
       }
       return Ok(())
     }
   }
-  arguments.push({ name, kind, offset })
+  if arguments.length() >= 4096 {
+    return Err("Format contract exceeds 4096 distinct arguments")
+  }
+  arguments.push({ name, kind, offset, })
   Ok(())
 }
 
 ///|
-fn PrintfState::add(self : PrintfState, index : Int?, kind : String, offset : Int) -> Result[Unit, String] {
+fn PrintfState::add(
+  self : PrintfState,
+  index : Int32?,
+  kind : String,
+  offset : Int32,
+) -> Result[Unit, String] {
   let number = match index {
     Some(number) => {
       self.positional = true
@@ -66,7 +81,7 @@ fn PrintfState::add(self : PrintfState, index : Int?, kind : String, offset : In
 }
 
 ///|
-fn printf_number(chars : Array[Char], start : Int) -> (Int?, Int, Bool) {
+fn printf_number(chars : Array[Char], start : Int32) -> (Int32?, Int32, Bool) {
   let mut end = start
   while end < chars.length() && chars[end].is_ascii_digit() {
     end += 1
@@ -102,36 +117,36 @@ fn printf_kind(conversion : Char, length : String) -> Result[String?, String] {
       }
       Ok(Some(if length == "L" { "long-double" } else { "double" }))
     }
-    'c' => match length {
-      "" => Ok(Some("signed:"))
-      "l" => Ok(Some("wide-char"))
-      _ => Err("Invalid length modifier for character")
-    }
-    's' => match length {
-      "" => Ok(Some("string"))
-      "l" => Ok(Some("wide-string"))
-      _ => Err("Invalid length modifier for string")
-    }
-    'p' => {
+    'c' =>
+      match length {
+        "" => Ok(Some("signed:"))
+        "l" => Ok(Some("wide-char"))
+        _ => Err("Invalid length modifier for character")
+      }
+    's' =>
+      match length {
+        "" => Ok(Some("string"))
+        "l" => Ok(Some("wide-string"))
+        _ => Err("Invalid length modifier for string")
+      }
+    'p' =>
       if length != "" {
         Err("Pointer conversion does not accept a length modifier")
       } else {
         Ok(Some("pointer"))
       }
-    }
     'n' => {
       if !["", "hh", "h", "l", "ll", "j", "z", "t"].contains(length) {
         return Err("Invalid length modifier for count pointer")
       }
       Ok(Some("count-pointer:" + length))
     }
-    'm' => {
+    'm' =>
       if length != "" {
         Err("GNU %m does not accept a length modifier")
       } else {
         Ok(None)
       }
-    }
     _ => Err("Unsupported printf conversion: " + conversion.to_string())
   }
 }
@@ -141,7 +156,10 @@ fn printf_kind(conversion : Char, length : String) -> Result[String?, String] {
 pub fn printf_contract(text : String) -> Result[FormatContract, String] {
   let chars = text.to_array()
   let state : PrintfState = {
-    arguments: [], next: 1, positional: false, sequential: false,
+    arguments: [],
+    next: 1,
+    positional: false,
+    sequential: false,
   }
   let mut i = 0
   while i < chars.length() {
@@ -163,7 +181,8 @@ pub fn printf_contract(text : String) -> Result[FormatContract, String] {
       return Err("Printf argument position must be in 1..10000")
     }
     i = after_position
-    while i < chars.length() && ['-', '+', ' ', '#', '0', '\'', 'I'].contains(chars[i]) {
+    while i < chars.length() &&
+          ['-', '+', ' ', '#', '0', '\'', 'I'].contains(chars[i]) {
       i += 1
     }
     if i < chars.length() && chars[i] == '*' {
@@ -209,46 +228,58 @@ pub fn printf_contract(text : String) -> Result[FormatContract, String] {
         i += 2
       }
     }
-    if length == "" && i < chars.length() && ['h', 'l', 'L', 'j', 'z', 't'].contains(chars[i]) {
+    if length == "" &&
+      i < chars.length() &&
+      ['h', 'l', 'L', 'j', 'z', 't'].contains(chars[i]) {
       length = chars[i].to_string()
       i += 1
     }
     if i >= chars.length() {
-      return Err("Incomplete printf conversion at character " + (offset + 1).to_string())
+      return Err(
+        "Incomplete printf conversion at character " + (offset + 1).to_string(),
+      )
     }
     let conversion = chars[i]
     i += 1
     match printf_kind(conversion, length) {
-      Err(error) => return Err(error + " at character " + (offset + 1).to_string())
-      Ok(None) => {
+      Err(error) =>
+        return Err(error + " at character " + (offset + 1).to_string())
+      Ok(None) =>
         if explicit {
           return Err("A conversion without an argument cannot have a position")
         }
-      }
-      Ok(Some(kind)) => {
+      Ok(Some(kind)) =>
         match state.add(position, kind, offset) {
           Err(error) => return Err(error)
           Ok(_) => ()
         }
-      }
     }
   }
   if state.positional {
-    for position = 1; position <= state.arguments.length(); position = position + 1 {
+    for position = 1
+        position <= state.arguments.length()
+        position = position + 1 {
       if !state.arguments.any(a => a.name == position.to_string()) {
         return Err("Numbered printf arguments must not leave a gap")
       }
     }
   }
-  Ok({ arguments: state.arguments, style: "c-format" })
+  Ok({ arguments: state.arguments, style: "c-format", })
 }
 
 ///|
 /// Compare argument identities and types, allowing reordered numbered arguments.
-pub fn compare_contracts(source : FormatContract, target : FormatContract) -> Array[FormatDifference] {
+pub fn compare_contracts(
+  source : FormatContract,
+  target : FormatContract,
+) -> Array[FormatDifference] {
   let differences : Array[FormatDifference] = []
   if source.style != target.style {
-    differences.push({ code: "F006", message: "Format styles differ", argument: "" })
+    differences.push({
+      code: "F006",
+      message: "Format styles differ",
+      argument: "",
+    })
     return differences
   }
   for argument in source.arguments {
@@ -260,20 +291,25 @@ pub fn compare_contracts(source : FormatContract, target : FormatContract) -> Ar
       }
     }
     match found {
-      None => differences.push({
-        code: "F003",
-        message: "Missing format argument " + argument.name,
-        argument: argument.name,
-      })
-      Some(actual) => {
+      None =>
+        differences.push({
+          code: "F003",
+          message: "Missing format argument " + argument.name,
+          argument: argument.name,
+        })
+      Some(actual) =>
         if actual.kind != argument.kind {
           differences.push({
             code: "F005",
-            message: "Argument " + argument.name + " changes type from " + argument.kind + " to " + actual.kind,
+            message: "Argument " +
+            argument.name +
+            " changes type from " +
+            argument.kind +
+            " to " +
+            actual.kind,
             argument: argument.name,
           })
         }
-      }
     }
   }
   for argument in target.arguments {

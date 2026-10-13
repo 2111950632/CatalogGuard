@@ -1,7 +1,6 @@
 ///|
 test "multiline UTF8 catalog with context and ordered plurals" {
-  let source =
-    "#: src/main.mbt:12\n#, c-format\nmsgctxt \"button\"\nmsgid \"Open \"\n\"%d file\"\nmsgid_plural \"Open %d files\"\nmsgstr[0] \"打开 %d 个文件\"\nmsgstr[1] \"打开 %d 个文件\"\n"
+  let source = "#: src/main.mbt:12\n#, c-format\nmsgctxt \"button\"\nmsgid \"Open \"\n\"%d file\"\nmsgid_plural \"Open %d files\"\nmsgstr[0] \"打开 %d 个文件\"\nmsgstr[1] \"打开 %d 个文件\"\n"
   let catalog = parse_catalog(source, file="demo.po")
   assert_eq(catalog.diagnostics.length(), 0)
   assert_eq(catalog.entries.length(), 1)

@@ -1,7 +1,7 @@
 ///|
 /// Parsed gettext plural expression. Arithmetic is checked signed 32-bit.
 pub(all) enum PluralExpr {
-  Constant(Int)
+  Constant(Int32)
   Count
   Unary(String, PluralExpr)
   Binary(String, PluralExpr, PluralExpr)
@@ -10,38 +10,38 @@ pub(all) enum PluralExpr {
 
 ///|
 pub(all) struct PluralRule {
-  nplurals : Int
+  nplurals : Int32
   expression : String
   tree : PluralExpr
 } derive(Eq, Debug)
 
 ///|
 pub(all) struct PluralCoverage {
-  maximum : Int
-  reached : Array[Int]
-  examples : Array[Int]
+  maximum : Int32
+  reached : Array[Int32]
+  examples : Array[Int32]
   failures : Array[String]
 } derive(Eq, Debug)
 
 ///|
 priv struct PluralToken {
   kind : String
-  value : Int
-  offset : Int
+  value : Int32
+  offset : Int32
 }
 
 ///|
 priv struct PluralParser {
   tokens : Array[PluralToken]
-  mut index : Int
+  mut index : Int32
   mut fault : String?
-  maximum_depth : Int
+  maximum_depth : Int32
 }
 
 ///|
 priv struct EvalState {
-  mut remaining : Int
-  maximum_depth : Int
+  mut remaining : Int32
+  maximum_depth : Int32
 }
 
 ///|
@@ -67,32 +67,39 @@ fn plural_tokens(text : String) -> Result[Array[PluralToken], String] {
       }
       let literal = char_slice(chars, start, i)
       match decimal_text(literal, 2147483647) {
-        Some(value) => tokens.push({ kind: "number", value, offset: start })
+        Some(value) => tokens.push({ kind: "number", value, offset: start, })
         None => return Err("Plural integer is outside the signed 32-bit range")
       }
       continue
     }
     if chars[i] == 'n' {
-      tokens.push({ kind: "n", value: 0, offset: i })
+      tokens.push({ kind: "n", value: 0, offset: i, })
       i += 1
       continue
     }
     if i + 1 < chars.length() {
       let pair = char_slice(chars, i, i + 2)
       if ["||", "&&", "==", "!=", "<=", ">="].contains(pair) {
-        tokens.push({ kind: pair, value: 0, offset: i })
+        tokens.push({ kind: pair, value: 0, offset: i, })
         i += 2
         continue
       }
     }
     let op = chars[i].to_string()
-    if !["+", "-", "*", "/", "%", "!", "<", ">", "(", ")", "?", ":"].contains(op) {
-      return Err("Unsupported plural token at character " + (i + 1).to_string() + ": " + op)
+    if !["+", "-", "*", "/", "%", "!", "<", ">", "(", ")", "?", ":"].contains(
+        op,
+      ) {
+      return Err(
+        "Unsupported plural token at character " +
+        (i + 1).to_string() +
+        ": " +
+        op,
+      )
     }
-    tokens.push({ kind: op, value: 0, offset: i })
+    tokens.push({ kind: op, value: 0, offset: i, })
     i += 1
   }
-  tokens.push({ kind: "end", value: 0, offset: chars.length() })
+  tokens.push({ kind: "end", value: 0, offset: chars.length(), })
   Ok(tokens)
 }
 
@@ -104,12 +111,14 @@ fn PluralParser::current(self : PluralParser) -> PluralToken {
 ///|
 fn PluralParser::fail(self : PluralParser, message : String) -> Unit {
   if self.fault is None {
-    self.fault = Some(message + " at character " + (self.current().offset + 1).to_string())
+    self.fault = Some(
+      message + " at character " + (self.current().offset + 1).to_string(),
+    )
   }
 }
 
 ///|
-fn plural_precedence(op : String) -> Int {
+fn plural_precedence(op : String) -> Int32 {
   match op {
     "||" => 1
     "&&" => 2
@@ -122,7 +131,7 @@ fn plural_precedence(op : String) -> Int {
 }
 
 ///|
-fn plural_primary(parser : PluralParser, depth : Int) -> PluralExpr {
+fn plural_primary(parser : PluralParser, depth : Int32) -> PluralExpr {
   if depth > parser.maximum_depth {
     parser.fail("Plural expression exceeds the configured nesting limit")
     return Constant(0)
@@ -159,7 +168,11 @@ fn plural_primary(parser : PluralParser, depth : Int) -> PluralExpr {
 }
 
 ///|
-fn plural_binary(parser : PluralParser, minimum : Int, depth : Int) -> PluralExpr {
+fn plural_binary(
+  parser : PluralParser,
+  minimum : Int32,
+  depth : Int32,
+) -> PluralExpr {
   let mut left = plural_primary(parser, depth)
   while parser.fault is None {
     let op = parser.current().kind
@@ -175,7 +188,7 @@ fn plural_binary(parser : PluralParser, minimum : Int, depth : Int) -> PluralExp
 }
 
 ///|
-fn plural_conditional(parser : PluralParser, depth : Int) -> PluralExpr {
+fn plural_conditional(parser : PluralParser, depth : Int32) -> PluralExpr {
   let condition = plural_binary(parser, 1, depth)
   if parser.fault is Some(_) || parser.current().kind != "?" {
     return condition
@@ -199,7 +212,7 @@ fn plural_conditional(parser : PluralParser, depth : Int) -> PluralExpr {
 /// Parse only the expression, without running it.
 pub fn parse_plural_expression(
   text : String,
-  maximum_depth? : Int = 64,
+  maximum_depth~ : Int32 = 64,
 ) -> Result[PluralExpr, String] {
   if maximum_depth < 1 || maximum_depth > 128 {
     return Err("Nesting limit must be in 1..128")
@@ -208,17 +221,19 @@ pub fn parse_plural_expression(
     Ok(tokens) => tokens
     Err(error) => return Err(error)
   }
-  let parser : PluralParser = { tokens, index: 0, fault: None, maximum_depth }
+  let parser : PluralParser = { tokens, index: 0, fault: None, maximum_depth, }
   let tree = plural_conditional(parser, 0)
   match parser.fault {
     Some(error) => Err(error)
-    None => {
+    None =>
       if parser.current().kind != "end" {
-        Err("Unexpected plural token at character " + (parser.current().offset + 1).to_string())
+        Err(
+          "Unexpected plural token at character " +
+          (parser.current().offset + 1).to_string(),
+        )
       } else {
         Ok(tree)
       }
-    }
   }
 }
 
@@ -226,9 +241,9 @@ pub fn parse_plural_expression(
 /// Parse `nplurals=...; plural=...;`. Unknown or duplicate assignments fail.
 pub fn parse_plural_rule(
   text : String,
-  maximum_depth? : Int = 64,
+  maximum_depth~ : Int32 = 64,
 ) -> Result[PluralRule, String] {
-  let mut count : Int? = None
+  let mut count : Int32? = None
   let mut expression : String? = None
   for fragment in text.split(";") {
     let assignment = trim_text(fragment.to_owned())
@@ -276,13 +291,13 @@ pub fn parse_plural_rule(
     None => return Err("Missing plural assignment")
   }
   match parse_plural_expression(expression, maximum_depth~) {
-    Ok(tree) => Ok({ nplurals, expression, tree })
+    Ok(tree) => Ok({ nplurals, expression, tree, })
     Err(error) => Err(error)
   }
 }
 
 ///|
-fn checked_plural_integer(value : Int64) -> Result[Int, String] {
+fn checked_plural_integer(value : Int64) -> Result[Int32, String] {
   if value < -2147483648L || value > 2147483647L {
     Err("Signed 32-bit overflow in plural arithmetic")
   } else {
@@ -291,17 +306,21 @@ fn checked_plural_integer(value : Int64) -> Result[Int, String] {
 }
 
 ///|
-fn plural_truth(value : Bool) -> Int {
-  if value { 1 } else { 0 }
+fn plural_truth(value : Bool) -> Int32 {
+  if value {
+    1
+  } else {
+    0
+  }
 }
 
 ///|
 fn eval_plural_node(
   tree : PluralExpr,
-  n : Int,
+  n : Int32,
   state : EvalState,
-  depth : Int,
-) -> Result[Int, String] {
+  depth : Int32,
+) -> Result[Int32, String] {
   if state.remaining <= 0 {
     return Err("Plural evaluation exhausted the operation budget")
   }
@@ -351,20 +370,18 @@ fn eval_plural_node(
         "+" => checked_plural_integer(a.to_int64() + b.to_int64())
         "-" => checked_plural_integer(a.to_int64() - b.to_int64())
         "*" => checked_plural_integer(a.to_int64() * b.to_int64())
-        "/" => {
+        "/" =>
           if b == 0 {
             Err("Division by zero in plural expression")
           } else {
             checked_plural_integer(a.to_int64() / b.to_int64())
           }
-        }
-        "%" => {
+        "%" =>
           if b == 0 {
             Err("Remainder by zero in plural expression")
           } else {
             checked_plural_integer(a.to_int64() % b.to_int64())
           }
-        }
         _ => Err("Unsupported binary operator")
       }
     }
@@ -382,10 +399,10 @@ fn eval_plural_node(
 /// Evaluate without using a host language's eval or executing arbitrary code.
 pub fn evaluate_plural(
   expression : PluralExpr,
-  n : Int,
-  budget? : Int = 10000,
-  maximum_depth? : Int = 64,
-) -> Result[Int, String] {
+  n : Int32,
+  budget~ : Int32 = 10000,
+  maximum_depth~ : Int32 = 64,
+) -> Result[Int32, String] {
   if n < 0 {
     return Err("Plural count n must be nonnegative")
   }
@@ -395,16 +412,16 @@ pub fn evaluate_plural(
   if maximum_depth < 1 || maximum_depth > 128 {
     return Err("Nesting limit must be in 1..128")
   }
-  eval_plural_node(expression, n, { remaining: budget, maximum_depth }, 0)
+  eval_plural_node(expression, n, { remaining: budget, maximum_depth, }, 0)
 }
 
 ///|
 /// Exhaustive only over the stated finite interval; this is not a proof for all n.
 pub fn plural_coverage(
   rule : PluralRule,
-  maximum? : Int = 1000,
-  budget? : Int = 10000,
-  maximum_depth? : Int = 64,
+  maximum~ : Int32 = 1000,
+  budget~ : Int32 = 10000,
+  maximum_depth~ : Int32 = 64,
 ) -> Result[PluralCoverage, String] {
   if maximum < 0 || maximum > 100000 {
     return Err("Plural sampling maximum must be in 0..100000")
@@ -412,8 +429,8 @@ pub fn plural_coverage(
   if rule.nplurals < 1 || rule.nplurals > 64 {
     return Err("Plural count must be in 1..64")
   }
-  let reached : Array[Int] = []
-  let examples : Array[Int] = []
+  let reached : Array[Int32] = []
+  let examples : Array[Int32] = []
   let failures : Array[String] = []
   for n = 0; n <= maximum; n = n + 1 {
     match evaluate_plural(rule.tree, n, budget~, maximum_depth~) {
@@ -423,7 +440,14 @@ pub fn plural_coverage(
       }
       Ok(index) => {
         if index < 0 || index >= rule.nplurals {
-          failures.push("n=" + n.to_string() + " produced index " + index.to_string() + " outside 0.." + (rule.nplurals - 1).to_string())
+          failures.push(
+            "n=" +
+            n.to_string() +
+            " produced index " +
+            index.to_string() +
+            " outside 0.." +
+            (rule.nplurals - 1).to_string(),
+          )
           break
         }
         if !reached.contains(index) {
@@ -433,5 +457,5 @@ pub fn plural_coverage(
       }
     }
   }
-  Ok({ maximum, reached, examples, failures })
+  Ok({ maximum, reached, examples, failures, })
 }

@@ -8,8 +8,8 @@ pub(all) enum Severity {
 
 ///|
 pub(all) struct Position {
-  line : Int
-  column : Int
+  line : Int32
+  column : Int32
 } derive(Eq, Debug)
 
 ///|
@@ -25,7 +25,7 @@ pub(all) struct Diagnostic {
   message : String
   file : String
   span : Span
-  entry : Int?
+  entry : Int32?
   related : Span?
   hint : String
 } derive(Eq, Debug)
@@ -39,7 +39,7 @@ pub(all) struct Comment {
 
 ///|
 pub(all) struct Translation {
-  index : Int
+  index : Int32
   value : String
   span : Span
 } derive(Eq, Debug)
@@ -71,11 +71,11 @@ pub(all) struct Options {
   empty_severity : Severity
   fuzzy_severity : Severity
   strict : Bool
-  plural_max : Int
-  expression_depth : Int
-  expression_budget : Int
-  max_entries : Int
-  max_line_chars : Int
+  plural_max : Int32
+  expression_depth : Int32
+  expression_budget : Int32
+  max_entries : Int32
+  max_line_chars : Int32
 } derive(Eq, Debug)
 
 ///|
@@ -94,16 +94,16 @@ pub fn default_options() -> Options {
 
 ///|
 pub(all) struct Statistics {
-  total : Int
-  active : Int
-  obsolete : Int
-  translated : Int
-  untranslated : Int
-  fuzzy : Int
-  plural : Int
-  errors : Int
-  warnings : Int
-  infos : Int
+  total : Int32
+  active : Int32
+  obsolete : Int32
+  translated : Int32
+  untranslated : Int32
+  fuzzy : Int32
+  plural : Int32
+  errors : Int32
+  warnings : Int32
+  infos : Int32
 } derive(Eq, Debug)
 
 ///|
@@ -111,18 +111,18 @@ pub(all) struct Report {
   catalog : Catalog
   diagnostics : Array[Diagnostic]
   stats : Statistics
-  exit_code : Int
-  plural_checked_through : Int?
+  exit_code : Int32
+  plural_checked_through : Int32?
 } derive(Debug)
 
 ///|
-fn point(line : Int, column : Int) -> Position {
-  { line, column }
+fn point(line : Int32, column : Int32) -> Position {
+  { line, column, }
 }
 
 ///|
-fn line_span(line : Int, column : Int, length : Int) -> Span {
-  { start: point(line, column), end: point(line, column + length) }
+fn line_span(line : Int32, column : Int32, length : Int32) -> Span {
+  { start: point(line, column), end: point(line, column + length), }
 }
 
 ///|
@@ -132,15 +132,15 @@ fn issue(
   message : String,
   file : String,
   span : Span,
-  entry? : Int,
+  entry? : Int32,
   related? : Span,
-  hint? : String = "",
+  hint~ : String = "",
 ) -> Diagnostic {
-  { code, severity, message, file, span, entry, related, hint }
+  { code, severity, message, file, span, entry, related, hint, }
 }
 
 ///|
-pub fn Entry::translation(self : Entry, index : Int) -> String? {
+pub fn Entry::translation(self : Entry, index : Int32) -> String? {
   for value in self.translations {
     if value.index == index {
       return Some(value.value)
@@ -161,8 +161,7 @@ pub fn Entry::is_header(self : Entry) -> Bool {
 
 ///|
 pub fn Entry::is_translated(self : Entry) -> Bool {
-  !self.translations.is_empty() &&
-  self.translations.all(t => t.value != "")
+  !self.translations.is_empty() && self.translations.all(t => t.value != "")
 }
 
 ///|
@@ -185,7 +184,10 @@ pub fn severity_name(severity : Severity) -> String {
 }
 
 ///|
-pub fn statistics(catalog : Catalog, diagnostics : Array[Diagnostic]) -> Statistics {
+pub fn statistics(
+  catalog : Catalog,
+  diagnostics : Array[Diagnostic],
+) -> Statistics {
   let mut active = 0
   let mut obsolete = 0
   let mut translated = 0
