@@ -7,7 +7,7 @@ permissions:
   contents: read
 jobs:
   validate:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
@@ -40,7 +40,7 @@ jobs:
           .ci-venv/bin/python -m pip install polib==1.2.0
           msgfmt --version >> toolchain-version.txt
           node scripts/fetch-fixtures.mjs
-          .ci-venv/bin/python tests/oracle.py tests/external/moonbit-docs-0.po tests/external/moonbit-docs-1.po --gnu
+          .ci-venv/bin/python tests/oracle.py tests/external/moonbit-docs-0.po tests/external/moonbit-docs-1.po --gnu | tee independent-verification.txt
       - name: Test independently extracted Mooncakes package
         run: |
           moon package
@@ -58,6 +58,7 @@ jobs:
           path: |
             source-count.json
             toolchain-version.txt
+            independent-verification.txt
             demo-report.json
             dist/
             _build/publish/*.zip
