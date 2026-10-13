@@ -1,0 +1,7 @@
+import {
+  "2111950632/szs",
+}
+
+pkgtype(kind: "executable")
+
+supported_targets = "js"

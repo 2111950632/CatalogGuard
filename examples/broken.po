@@ -1,0 +1,20 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: SZS demo 1.0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+
+#, fuzzy, c-format
+msgid "%d file"
+msgid_plural "%d files"
+msgstr[0] "%s fichier"
+
+#, python-brace-format
+msgid "Hello {name!s}, balance {amount:.2f}"
+msgstr "Bonjour {user!s}, solde {amount:d}"
+
+msgid "Empty"
+msgstr ""

@@ -1,0 +1,5 @@
+{
+  "schema_version": 1,
+  "options": { "strict": true, "plural_max": 1000 },
+  "rules": { "C006": "error", "C007": "error" }
+}
