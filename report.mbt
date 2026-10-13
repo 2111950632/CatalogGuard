@@ -16,7 +16,7 @@ pub fn diagnostic_json(diagnostic : Diagnostic) -> Json {
     "message": Json(diagnostic.message),
     "file": Json(diagnostic.file),
     "span": span_json(diagnostic.span),
-    "entry": Json(diagnostic.entry),
+    "entry": optional_json(diagnostic.entry),
     "related": match diagnostic.related {
       None => Json::null()
       Some(span) => span_json(span)
@@ -44,9 +44,9 @@ pub fn statistics_json(stats : Statistics) -> Json {
 ///|
 pub fn entry_json(entry : Entry) -> Json {
   {
-    "context": Json(entry.context),
+    "context": optional_json(entry.context),
     "id": Json(entry.id),
-    "plural": Json(entry.plural),
+    "plural": optional_json(entry.plural),
     "translations": Json(
       entry.translations.map(t => {
         "index": Json(t.index),
@@ -92,7 +92,7 @@ pub fn report_json(report : Report) -> Json {
     "file": Json(report.catalog.file),
     "exit_code": Json(report.exit_code),
     "statistics": statistics_json(report.stats),
-    "plural_checked_through": Json(report.plural_checked_through),
+    "plural_checked_through": optional_json(report.plural_checked_through),
     "diagnostics": Json(report.diagnostics.map(diagnostic_json)),
   }
 }

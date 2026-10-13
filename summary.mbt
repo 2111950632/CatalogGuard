@@ -104,12 +104,12 @@ pub fn catalog_summary_json(catalog : Catalog) -> Json {
   paths.sort()
   let header = read_header(catalog)
   {
-    "language": Json(header.get("Language")),
-    "project": Json(header.get("Project-Id-Version")),
+    "language": optional_json(header.get("Language")),
+    "project": optional_json(header.get("Project-Id-Version")),
     "unreferenced": Json(unreferenced),
     "contexts": Json(
       context_summaries(catalog).map(group => {
-        "context": Json(group.context),
+        "context": optional_json(group.context),
         "active": Json(group.active),
         "translated": Json(group.translated),
         "fuzzy": Json(group.fuzzy),

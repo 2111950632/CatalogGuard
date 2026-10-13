@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-import { readFile, writeFile, access } from 'node:fs/promises';
+import { writeFile, access } from 'node:fs/promises';
+import { createReadStream } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
@@ -30,7 +31,8 @@ const commands = new Set(['check', 'inspect', 'normalize', 'stats', 'plural', 'r
 const args = process.argv.slice(2);
 const request = { command: 'check', files: [], options: {} };
 const inputPaths = [];
-let json = false;
+const optionEnd = args.indexOf('--');
+let json = args.slice(0, optionEnd < 0 ? args.length : optionEnd).includes('--json');
 let pot = false;
 let templatePath;
 let configPath;
@@ -45,9 +47,14 @@ function takeValue(index, option) {
 }
 
 async function readUtf8(path) {
-  const bytes = await readFile(path === '-' ? 0 : resolve(path));
-  totalBytes += bytes.length;
-  if (totalBytes > maxBytes) throw new Error('Input total exceeds 32 MiB');
+  const stream = path === '-' ? process.stdin : createReadStream(resolve(path));
+  const chunks = [];
+  for await (const chunk of stream) {
+    totalBytes += chunk.length;
+    if (totalBytes > maxBytes) throw new Error('Input total exceeds 32 MiB');
+    chunks.push(chunk);
+  }
+  const bytes = Buffer.concat(chunks);
   return new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(bytes);
 }
 
@@ -87,6 +94,7 @@ try {
   } else if (request.command === 'rules') {
     if (inputPaths.length) throw new Error('rules accepts no input files');
   } else {
+    if (inputPaths.filter(path => path === '-').length > 1) throw new Error('stdin may be read only once');
     for (const path of inputPaths) {
       request.files.push({ path, text: await readUtf8(path), template: pot || /\.pot$/i.test(path) });
     }

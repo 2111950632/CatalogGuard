@@ -1,0 +1,44 @@
+name: Check SZS
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install official MoonBit toolchain
+        run: |
+          curl --fail --show-error --location https://cli.moonbitlang.com/install/unix.sh -o /tmp/install-moonbit.sh
+          bash /tmp/install-moonbit.sh
+          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+      - name: Record toolchain and check core
+        run: |
+          moon version --all
+          moon check --target all --deny-warn
+          moon fmt --check
+          moon info
+          git diff --exit-code -- '*.mbti'
+      - name: Test both JavaScript and Wasm GC
+        run: |
+          moon test --target js --deny-warn
+          moon test --target wasm-gc --deny-warn
+          moon build --target js --release --deny-warn
+          node --test tests/integration.mjs
+      - name: Compare with independent parsers and GNU gettext
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gettext
+          python -m pip install polib==1.2.0
+          node scripts/fetch-fixtures.mjs
+          python tests/oracle.py tests/external/moonbit-docs-0.po tests/external/moonbit-docs-1.po --gnu
+      - name: Record source counts and package JS core
+        run: |
+          node scripts/count-source.mjs > source-count.json
+          node scripts/package.mjs

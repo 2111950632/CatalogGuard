@@ -1,0 +1,17 @@
+{
+  "repository": "moonbitlang/moonbit-docs",
+  "revision": "8d9f3ba206eb17f80ee1836e4c1139068d1351b5",
+  "license_url": "https://github.com/moonbitlang/moonbit-docs/blob/8d9f3ba206eb17f80ee1836e4c1139068d1351b5/LICENSE.md",
+  "fixtures": [
+    {
+      "name": "moonbit-docs-0.po",
+      "url": "https://raw.githubusercontent.com/moonbitlang/moonbit-docs/8d9f3ba206eb17f80ee1836e4c1139068d1351b5/next/locales/zh_CN/LC_MESSAGES/example/gmachine/gmachine-1.po",
+      "sha256": "0323d82ea7a15afdeb9557f26b17afb23b5e92fa3a90248bf88d054b42e2ec8d"
+    },
+    {
+      "name": "moonbit-docs-1.po",
+      "url": "https://raw.githubusercontent.com/moonbitlang/moonbit-docs/8d9f3ba206eb17f80ee1836e4c1139068d1351b5/next/locales/ja/LC_MESSAGES/example/lambda/index.po",
+      "sha256": "49dba8b1449628ede4b680bb6baebd7c7fa75002c73565811514a013747aa8f7"
+    }
+  ]
+}

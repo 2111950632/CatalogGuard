@@ -5,7 +5,7 @@ priv enum Field {
   IdField
   PluralField
   TranslationField(Int32)
-} derive(Eq, Debug)
+}
 
 ///|
 priv struct TranslationBuilder {

@@ -18,6 +18,7 @@ pub(all) struct PluralRule {
 ///|
 pub(all) struct PluralCoverage {
   maximum : Int32
+  checked_through : Int32
   reached : Array[Int32]
   examples : Array[Int32]
   failures : Array[String]
@@ -432,7 +433,9 @@ pub fn plural_coverage(
   let reached : Array[Int32] = []
   let examples : Array[Int32] = []
   let failures : Array[String] = []
+  let mut checked_through = -1
   for n = 0; n <= maximum; n = n + 1 {
+    checked_through = n
     match evaluate_plural(rule.tree, n, budget~, maximum_depth~) {
       Err(error) => {
         failures.push("n=" + n.to_string() + ": " + error)
@@ -457,5 +460,5 @@ pub fn plural_coverage(
       }
     }
   }
-  Ok({ maximum, reached, examples, failures, })
+  Ok({ maximum, checked_through, reached, examples, failures, })
 }

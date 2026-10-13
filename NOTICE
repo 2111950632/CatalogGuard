@@ -1,0 +1,9 @@
+SZS CatalogGuard
+Copyright 2026 szs / 2111950632
+
+The compiled JavaScript distribution includes portions of the MoonBit standard
+library, copyright International Digital Economy Academy, under Apache-2.0.
+The accompanying LICENSE provides the Apache-2.0 terms.
+
+External PO test corpora and independent Python/GNU tools are not included in
+this distribution. See THIRD_PARTY.md for sources and their separate licenses.

@@ -86,7 +86,9 @@ fn protocol_plural(request : Json, policy : Policy) -> Json {
     lines.push(failure)
   }
   lines.push(
-    "Test interval: n=0.." +
+    "Checked through n=" +
+    coverage.checked_through.to_string() +
+    "; requested maximum=" +
     coverage.maximum.to_string() +
     "; finite sampling only.",
   )
@@ -98,6 +100,7 @@ fn protocol_plural(request : Json, policy : Policy) -> Json {
       "nplurals": Json(rule.nplurals),
       "expression": Json(rule.expression),
       "maximum": Json(coverage.maximum),
+      "checked_through": Json(coverage.checked_through),
       "reached": Json(coverage.reached),
       "examples": Json(coverage.examples),
       "failures": Json(coverage.failures),
