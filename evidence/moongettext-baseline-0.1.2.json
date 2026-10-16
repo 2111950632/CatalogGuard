@@ -12,5 +12,7 @@
   },
   "duplicate_control_detected": true,
   "warning_79_suppressed_for_baseline_only": true,
-  "log": "Total tests: 4, passed: 4, failed: 0.\nUsing cached moonbitlang/x@0.4.45\n"
+  "registry_initialized": true,
+  "resolution_log": "Registry index cloned successfully\nSymbols updated successfully\n",
+  "log": "Total tests: 4, passed: 4, failed: 0.\nDownloading moonbitlang/x@0.4.45\n"
 }

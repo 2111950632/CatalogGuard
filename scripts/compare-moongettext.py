@@ -46,12 +46,16 @@ def main():
         (consumer/'consumer_wbtest.mbt').write_text('\n'.join(tests)+'\n',encoding='utf8')
         # Warning 79 concerns old derived-method promotion under this newer compiler.
         # Only the baseline build suppresses it. No baseline code or checks are changed.
+        # A fresh MoonBit installation has no registry index. Resolve the pinned
+        # baseline's moonbitlang/x dependency before running its public API.
+        resolution_log=run([args.moon,'update'],consumer)
         log=run([args.moon,'test','--target','js','--warn-list','-79','-p','catalogguard-review/baseline'],consumer)
         assert 'Total tests: 4, passed: 4, failed: 0.' in log,log
         evidence=dict(schema_version=1,baseline_repository='https://github.com/YanFangNie/moongettext',
                       baseline_commit=BASELINE,source_modified=False,cases=4,passed=4,
                       format_mismatch_errors_detected={'c-format':False,'python-format':False,'python-brace-format':False},
-                      duplicate_control_detected=True,warning_79_suppressed_for_baseline_only=True,log=log)
+                      duplicate_control_detected=True,warning_79_suppressed_for_baseline_only=True,
+                      registry_initialized=True,resolution_log=resolution_log,log=log)
         args.output.parent.mkdir(parents=True,exist_ok=True)
         args.output.write_text(json.dumps(evidence,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
         print('Pinned moongettext comparison: 4/4 probes passed; 3 format mismatches are outside its validator scope.')
