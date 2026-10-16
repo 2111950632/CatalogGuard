@@ -57,6 +57,38 @@ fn add_format_argument(
 }
 
 ///|
+// A Python field can legally occur with several presentations/conversions.
+// Preserve the complete set of uses, independent of order or repetition.
+fn add_python_argument(
+  arguments : Array[FormatArgument],
+  kinds : Map[String, String],
+  name : String,
+  kind : String,
+  offset : Int32,
+) -> Result[Unit, String] {
+  match kinds.get(name) {
+    None => add_format_argument(arguments, kinds, name, kind, offset)
+    Some(previous) => {
+      let uses = previous.split("|").map(s => s.to_owned()).to_array()
+      if uses.contains(kind) {
+        return Ok(())
+      }
+      uses.push(kind)
+      uses.sort()
+      let combined = join_strings(uses, "|")
+      kinds.set(name, combined)
+      for index, argument in arguments {
+        if argument.name == name {
+          arguments[index] = { name, kind: combined, offset: argument.offset, }
+          break
+        }
+      }
+      Ok(())
+    }
+  }
+}
+
+///|
 fn PrintfState::add(
   self : PrintfState,
   index : Int32?,
@@ -159,6 +191,36 @@ fn printf_kind(conversion : Char, length : String) -> Result[String?, String] {
 }
 
 ///|
+fn printf_options(
+  conversion : Char,
+  flags : Array[Char],
+  width : Bool,
+  precision : Bool,
+) -> Result[Unit, String] {
+  if conversion == 'n' && (!flags.is_empty() || width || precision) {
+    return Err("C11 %n does not allow flags, width, or precision")
+  }
+  if flags.contains('#') &&
+    !['o', 'x', 'X', 'a', 'A', 'e', 'E', 'f', 'F', 'g', 'G', 'm'].contains(
+      conversion,
+    ) {
+    return Err("Alternate form is not defined for this C conversion")
+  }
+  if flags.contains('0') &&
+    !['d', 'i', 'o', 'u', 'x', 'X', 'a', 'A', 'e', 'E', 'f', 'F', 'g', 'G'].contains(
+      conversion,
+    ) {
+    return Err("Zero padding is not defined for this C conversion")
+  }
+  if precision && ['c', 'p', 'n'].contains(conversion) {
+    return Err(
+      "Precision is not defined for C character, pointer, or count conversion",
+    )
+  }
+  Ok(())
+}
+
+///|
 /// Extract typed printf arguments, including positional width and precision.
 pub fn printf_contract(text : String) -> Result[FormatContract, String] {
   let chars = text.to_array()
@@ -189,11 +251,15 @@ pub fn printf_contract(text : String) -> Result[FormatContract, String] {
       return Err("Printf argument position must be in 1..10000")
     }
     i = after_position
+    let flags : Array[Char] = []
     while i < chars.length() &&
           ['-', '+', ' ', '#', '0', '\'', 'I'].contains(chars[i]) {
+      flags.push(chars[i])
       i += 1
     }
+    let mut has_width = false
     if i < chars.length() && chars[i] == '*' {
+      has_width = true
       i += 1
       let (width, after, numbered) = printf_number(chars, i)
       if numbered && (width is None || width == Some(0)) {
@@ -205,11 +271,15 @@ pub fn printf_contract(text : String) -> Result[FormatContract, String] {
         Ok(_) => ()
       }
     } else {
+      let width_start = i
       while i < chars.length() && chars[i].is_ascii_digit() {
         i += 1
       }
+      has_width = i > width_start
     }
+    let mut has_precision = false
     if i < chars.length() && chars[i] == '.' {
+      has_precision = true
       i += 1
       if i < chars.length() && chars[i] == '*' {
         i += 1
@@ -249,6 +319,11 @@ pub fn printf_contract(text : String) -> Result[FormatContract, String] {
     }
     let conversion = chars[i]
     i += 1
+    match printf_options(conversion, flags, has_width, has_precision) {
+      Err(error) =>
+        return Err(error + " at character " + (offset + 1).to_string())
+      Ok(_) => ()
+    }
     match printf_kind(conversion, length) {
       Err(error) =>
         return Err(error + " at character " + (offset + 1).to_string())

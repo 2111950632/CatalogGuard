@@ -1,10 +1,10 @@
 name = "2111950632/szs"
 
-version = "0.1.1"
+version = "0.1.2"
 
 readme = "README.md"
 
-repository = "https://github.com/2111950632/szs"
+repository = "https://github.com/2111950632/CatalogGuard"
 
 license = "Apache-2.0"
 

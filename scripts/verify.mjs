@@ -22,6 +22,7 @@ const steps = [
 if (independent) {
   steps.push([process.execPath, ['scripts/fetch-fixtures.mjs']]);
   steps.push([python, ['tests/oracle.py', 'tests/external/moonbit-docs-0.po', 'tests/external/moonbit-docs-1.po', '--gnu']]);
+  steps.push([python, ['tests/format_conformance.py']]);
 }
 const results = [];
 for (const [program, args] of steps) {

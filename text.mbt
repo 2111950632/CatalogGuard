@@ -86,16 +86,6 @@ fn skip_spaces(chars : Array[Char], from : Int32) -> Int32 {
 }
 
 ///|
-fn is_identifier_start(c : Char) -> Bool {
-  c == '_' || c.is_ascii_alphabetic()
-}
-
-///|
-fn is_identifier_part(c : Char) -> Bool {
-  is_identifier_start(c) || c.is_ascii_digit()
-}
-
-///|
 fn entry_key(entry : Entry) -> String {
   // Prefix each component with its length to avoid separator collisions.
   let context = entry.context.unwrap_or("")

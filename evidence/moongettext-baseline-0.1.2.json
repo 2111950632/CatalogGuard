@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "baseline_repository": "https://github.com/YanFangNie/moongettext",
+  "baseline_commit": "7ef95764ed37b47d4b8fabe1a6ed12c719850437",
+  "source_modified": false,
+  "cases": 4,
+  "passed": 4,
+  "format_mismatch_errors_detected": {
+    "c-format": false,
+    "python-format": false,
+    "python-brace-format": false
+  },
+  "duplicate_control_detected": true,
+  "warning_79_suppressed_for_baseline_only": true,
+  "log": "Total tests: 4, passed: 4, failed: 0.\nUsing cached moonbitlang/x@0.4.45\n"
+}

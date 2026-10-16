@@ -4,7 +4,7 @@ import { createReadStream } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
-const help = `SZS CatalogGuard 0.1.1 — MoonBit PO/POT checker
+const help = `CatalogGuard 0.1.2 — MoonBit PO/POT checker
 
 Usage: node cli.mjs [check|inspect|normalize|stats] FILE... [options]
        node cli.mjs plural 'nplurals=2; plural=(n!=1);' [options]
@@ -65,7 +65,7 @@ try {
     process.exit(0);
   }
   if (optionArgs.includes('--version')) {
-    process.stdout.write('szs 0.1.1\n');
+    process.stdout.write('szs 0.1.2\n');
     process.exit(0);
   }
   if (commands.has(args[0])) request.command = args.shift();

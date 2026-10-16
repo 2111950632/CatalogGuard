@@ -155,7 +155,7 @@ test('rules help and version work without catalog inputs', () => {
   assert.ok(rules.some(r => r.code === 'P011'));
   assert.ok(rules.some(r => r.code === 'F008'));
   assert.equal(run(['--help']).status, 0);
-  assert.equal(run(['--version']).stdout.trim(), 'szs 0.1.1');
+  assert.equal(run(['--version']).stdout.trim(), 'szs 0.1.2');
 });
 
 test('duplicate stdin and excessive input are bounded IO failures', () => {

@@ -24,12 +24,16 @@ fn brace_name(state : BraceState, raw : String) -> Result[String, String] {
     i += 1
   }
   let root = char_slice(chars, 0, i)
-  if root == "" {
-    return Err("Brace field requires a root argument")
+  let mut canonical = if root == "" {
+    match brace_name(state, "") {
+      Ok(name) => name
+      Err(error) => return Err(error)
+    }
+  } else {
+    root
   }
-  let mut canonical = root
-  if root.to_array().all(c => c.is_ascii_digit()) {
-    canonical = match decimal_text(root, 10000) {
+  if root != "" && root.to_array().all(c => format_decimal_digit(c) is Some(_)) {
+    canonical = match format_decimal_text(root, 10000) {
       None => return Err("Brace argument index exceeds 10000")
       Some(index) => index.to_string()
     }
@@ -37,21 +41,15 @@ fn brace_name(state : BraceState, raw : String) -> Result[String, String] {
     if state.automatic {
       return Err("Cannot mix automatic and numbered brace fields")
     }
-  } else {
-    let root_chars = root.to_array()
-    if !is_identifier_start(root_chars[0]) ||
-      !root_chars.all(is_identifier_part) {
-      return Err("Unsupported brace argument identifier: " + root)
-    }
   }
   while i < chars.length() {
     if chars[i] == '.' {
       i += 1
       let start = i
-      while i < chars.length() && is_identifier_part(chars[i]) {
+      while i < chars.length() && chars[i] != '.' && chars[i] != '[' {
         i += 1
       }
-      if i == start || !is_identifier_start(chars[start]) {
+      if i == start {
         return Err("Invalid attribute in brace field")
       }
       canonical += "." + char_slice(chars, start, i)
@@ -59,17 +57,16 @@ fn brace_name(state : BraceState, raw : String) -> Result[String, String] {
       i += 1
       let start = i
       while i < chars.length() && chars[i] != ']' {
-        if chars[i] == '[' || chars[i] == '{' || chars[i] == '}' {
-          return Err("Unsupported nested index in brace field")
-        }
         i += 1
       }
       if i == start || i == chars.length() {
         return Err("Brace index requires content and a closing bracket")
       }
       let index_text = char_slice(chars, start, i)
-      let index = if index_text.to_array().all(c => c.is_ascii_digit()) {
-        match decimal_text(index_text, 2147483647) {
+      let index = if index_text
+        .to_array()
+        .all(c => format_decimal_digit(c) is Some(_)) {
+        match format_decimal_text(index_text, 2147483647) {
           Some(index) => index.to_string()
           None =>
             return Err("Brace element index exceeds the signed 32-bit range")
@@ -93,18 +90,27 @@ fn brace_presentation(spec : String) -> Result[String, String] {
     return Ok("default")
   }
   let mut i = 0
+  let mut numeric_align = false
   if chars.length() >= 2 && ['<', '>', '=', '^'].contains(chars[1]) {
+    numeric_align = chars[1] == '='
     i = 2
   } else if ['<', '>', '=', '^'].contains(chars[0]) {
+    numeric_align = chars[0] == '='
     i = 1
   }
+  let mut sign = false
   if i < chars.length() && ['+', '-', ' '].contains(chars[i]) {
+    sign = true
     i += 1
   }
+  let mut negative_zero = false
   if i < chars.length() && chars[i] == 'z' {
+    negative_zero = true
     i += 1
   }
+  let mut alternate = false
   if i < chars.length() && chars[i] == '#' {
+    alternate = true
     i += 1
   }
   if i < chars.length() && chars[i] == '0' {
@@ -113,10 +119,16 @@ fn brace_presentation(spec : String) -> Result[String, String] {
   while i < chars.length() && chars[i].is_ascii_digit() {
     i += 1
   }
+  let mut grouping = false
+  let mut comma = false
   if i < chars.length() && [',', '_'].contains(chars[i]) {
+    grouping = true
+    comma = chars[i] == ','
     i += 1
   }
+  let mut precision = false
   if i < chars.length() && chars[i] == '.' {
+    precision = true
     i += 1
     let start = i
     while i < chars.length() && chars[i].is_ascii_digit() {
@@ -127,7 +139,13 @@ fn brace_presentation(spec : String) -> Result[String, String] {
     }
   }
   if i == chars.length() {
-    return Ok("default")
+    return Ok(
+      if numeric_align || sign || negative_zero || alternate || grouping {
+        "numeric"
+      } else {
+        "default"
+      },
+    )
   }
   if i + 1 != chars.length() {
     return Err("Unsupported brace format specification: " + spec)
@@ -141,6 +159,27 @@ fn brace_presentation(spec : String) -> Result[String, String] {
     _ =>
       return Err("Unsupported brace presentation type: " + chars[i].to_string())
   }
+  if kind == "string" &&
+    (numeric_align || sign || negative_zero || alternate || grouping) {
+    return Err("String presentation does not accept numeric format options")
+  }
+  if (kind == "integer" || kind == "character") && precision {
+    return Err("Integer and character presentation do not accept precision")
+  }
+  if negative_zero && kind != "numeric" {
+    return Err("Negative zero coercion requires floating-point presentation")
+  }
+  if kind == "locale-numeric" && grouping {
+    return Err("Locale n presentation does not accept a grouping option")
+  }
+  if kind == "character" && (sign || alternate || grouping) {
+    return Err(
+      "Character presentation does not accept sign, alternate form, or grouping",
+    )
+  }
+  if comma && ['b', 'o', 'x', 'X'].contains(chars[i]) {
+    return Err("Non-decimal integer presentation requires underscore grouping")
+  }
   Ok(kind)
 }
 
@@ -151,8 +190,10 @@ fn brace_field(
   state : BraceState,
   depth : Int32,
 ) -> Result[Int32, String] {
-  if depth > 8 {
-    return Err("Brace fields exceed the nesting limit of 8")
+  if depth > 1 {
+    return Err(
+      "Python str.format permits only one nested replacement-field level",
+    )
   }
   let mut i = start + 1
   let name_start = i
@@ -167,7 +208,7 @@ fn brace_field(
     if !bracket && (c == '!' || c == ':' || c == '}') {
       break
     }
-    if c == '{' {
+    if c == '{' && !bracket {
       return Err("Unexpected opening brace inside a field name")
     }
     i += 1
@@ -218,8 +259,13 @@ fn brace_field(
   if i >= chars.length() || chars[i] != '}' {
     return Err("Brace field has no closing brace")
   }
+  if conversion != "" && presentation != "default" && presentation != "string" {
+    return Err(
+      "!s, !r, and !a produce a string and cannot use numeric presentation",
+    )
+  }
   match
-    add_format_argument(
+    add_python_argument(
       state.arguments,
       state.kinds,
       name,

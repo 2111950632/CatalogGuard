@@ -38,8 +38,8 @@ pub fn python_percent_contract(text : String) -> Result[FormatContract, String] 
           i += 1
         }
       }
-      if i == chars.length() || i == start {
-        return Err("Python mapping key is empty or has no closing parenthesis")
+      if i == chars.length() {
+        return Err("Python mapping key has no closing parenthesis")
       }
       name = Some(char_slice(chars, start, i))
       i += 1
@@ -127,7 +127,7 @@ pub fn python_percent_contract(text : String) -> Result[FormatContract, String] 
         name
       }
     }
-    match add_format_argument(arguments, kinds, argument, kind, offset) {
+    match add_python_argument(arguments, kinds, argument, kind, offset) {
       Err(error) => return Err(error)
       Ok(_) => ()
     }

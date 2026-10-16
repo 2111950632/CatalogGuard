@@ -2,6 +2,8 @@
 
 本项目 MoonBit 实现为新编写的代码，未复制下列同类工具实现。使用 AI 协助设计与开发；提交者负责验证及维护。
 
+0.1.2 对照 [moongettext 固定提交 7ef9576](https://github.com/YanFangNie/moongettext/tree/7ef95764ed37b47d4b8fabe1a6ed12c719850437) 的公开 API 运行范围探针，不修改、复制或分发其源码。格式标准参考 WG14 N1570、POSIX、Python 3.12 文档；独立运行参考为 CPython 3.12.14 与 GNU gettext-tools 1.0。Unicode 十进制数字起点是从 CPython unicodedata 的 Unicode 15.0 数字性质导出的数据，非复制解释器实现代码。完整目标及差异见 docs/FORMAT_CONTRACTS.md。
+
 | 来源 | 使用方式 |
 |---|---|
 | [MoonBit core](https://github.com/moonbitlang/core) | 官方标准库 JSON、UTF-8、Debug trait；Apache-2.0 |
