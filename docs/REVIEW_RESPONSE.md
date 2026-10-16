@@ -2,7 +2,7 @@
 
 日期：2026-10-16。项目维护者：石子硕，GitHub ID：2111950632。
 
-针对本次初审意见，我已收窄项目的净增范围、明确三类目标标准与完整兼容终点，并补充合法重排、边界语法及原样基线对照。之前材料没有清楚区分共性能力和净增检查，也未给出足够的标准分支证据，现以可运行案例补充。
+针对初审意见，我已明确净增范围、三类目标标准与完整兼容终点，并补充合法重排、边界语法及原样基线对照，现以可运行案例补充。
 
 ## 与 moongettext 的共性及净增
 
@@ -51,11 +51,7 @@ PO/POT 解析与写出、上下文与复数、目录校验、统计和模板处�
 - 原样 moongettext 基线 4 个探针通过：3 个范围差异及 1 个重复键控制。polib 对照仍为 4 文件、221 条消息。
 
 ```sh
-moon check --target all --deny-warn
-moon test --target js --deny-warn
-moon test --target wasm-gc --deny-warn
-node --test tests/integration.mjs
-python tests/format_conformance.py --msgfmt PATH
+npm run verify:independent
 python scripts/compare-moongettext.py
 ```
 

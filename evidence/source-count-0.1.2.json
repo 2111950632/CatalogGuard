@@ -1,0 +1,186 @@
+{
+  "method": "Nonempty lines excluding whole-line // comments; includes structural syntax. Not an organizer-certified effective-line count. Tests, generated interfaces, external fixtures and host JS are separate.",
+  "totals": {
+    "production": {
+      "files": 22,
+      "total": 4643,
+      "nonblank_noncomment": 4244
+    },
+    "tests": {
+      "files": 11,
+      "total": 2244,
+      "nonblank_noncomment": 1985
+    }
+  },
+  "files": {
+    "production": [
+      {
+        "file": "brace.mbt",
+        "total": 312,
+        "nonblank_noncomment": 301
+      },
+      {
+        "file": "bytes.mbt",
+        "total": 60,
+        "nonblank_noncomment": 56
+      },
+      {
+        "file": "checker.mbt",
+        "total": 559,
+        "nonblank_noncomment": 545
+      },
+      {
+        "file": "cmd/main/main.mbt",
+        "total": 12,
+        "nonblank_noncomment": 7
+      },
+      {
+        "file": "format.mbt",
+        "total": 412,
+        "nonblank_noncomment": 384
+      },
+      {
+        "file": "format_decimal.mbt",
+        "total": 47,
+        "nonblank_noncomment": 40
+      },
+      {
+        "file": "header.mbt",
+        "total": 360,
+        "nonblank_noncomment": 340
+      },
+      {
+        "file": "json_input.mbt",
+        "total": 48,
+        "nonblank_noncomment": 46
+      },
+      {
+        "file": "json_optional.mbt",
+        "total": 8,
+        "nonblank_noncomment": 6
+      },
+      {
+        "file": "model.mbt",
+        "total": 240,
+        "nonblank_noncomment": 196
+      },
+      {
+        "file": "parser.mbt",
+        "total": 612,
+        "nonblank_noncomment": 590
+      },
+      {
+        "file": "plural.mbt",
+        "total": 464,
+        "nonblank_noncomment": 420
+      },
+      {
+        "file": "policy.mbt",
+        "total": 207,
+        "nonblank_noncomment": 185
+      },
+      {
+        "file": "protocol.mbt",
+        "total": 251,
+        "nonblank_noncomment": 239
+      },
+      {
+        "file": "public_methods.mbt",
+        "total": 129,
+        "nonblank_noncomment": 43
+      },
+      {
+        "file": "python_percent.mbt",
+        "total": 152,
+        "nonblank_noncomment": 147
+      },
+      {
+        "file": "report.mbt",
+        "total": 151,
+        "nonblank_noncomment": 136
+      },
+      {
+        "file": "rules.mbt",
+        "total": 100,
+        "nonblank_noncomment": 94
+      },
+      {
+        "file": "summary.mbt",
+        "total": 127,
+        "nonblank_noncomment": 116
+      },
+      {
+        "file": "template.mbt",
+        "total": 149,
+        "nonblank_noncomment": 139
+      },
+      {
+        "file": "text.mbt",
+        "total": 104,
+        "nonblank_noncomment": 84
+      },
+      {
+        "file": "writer.mbt",
+        "total": 139,
+        "nonblank_noncomment": 130
+      }
+    ],
+    "tests": [
+      {
+        "file": "additional_wbtest.mbt",
+        "total": 84,
+        "nonblank_noncomment": 73
+      },
+      {
+        "file": "api_test.mbt",
+        "total": 9,
+        "nonblank_noncomment": 8
+      },
+      {
+        "file": "checker_wbtest.mbt",
+        "total": 69,
+        "nonblank_noncomment": 58
+      },
+      {
+        "file": "format_conformance_wbtest.mbt",
+        "total": 1784,
+        "nonblank_noncomment": 1591
+      },
+      {
+        "file": "format_wbtest.mbt",
+        "total": 56,
+        "nonblank_noncomment": 47
+      },
+      {
+        "file": "model_wbtest.mbt",
+        "total": 8,
+        "nonblank_noncomment": 7
+      },
+      {
+        "file": "parser_wbtest.mbt",
+        "total": 40,
+        "nonblank_noncomment": 33
+      },
+      {
+        "file": "plural_wbtest.mbt",
+        "total": 45,
+        "nonblank_noncomment": 38
+      },
+      {
+        "file": "protocol_wbtest.mbt",
+        "total": 55,
+        "nonblank_noncomment": 48
+      },
+      {
+        "file": "release_wbtest.mbt",
+        "total": 51,
+        "nonblank_noncomment": 44
+      },
+      {
+        "file": "template_writer_wbtest.mbt",
+        "total": 43,
+        "nonblank_noncomment": 38
+      }
+    ]
+  }
+}
