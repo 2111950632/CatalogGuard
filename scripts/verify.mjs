@@ -14,6 +14,8 @@ const steps = [
   [moon, ['test', '--target', 'wasm-gc', '--deny-warn']],
   [moon, ['fmt', '--check']],
   [moon, ['info']],
+  [process.execPath, ['--test', 'tests/interfaces.mjs']],
+  [process.execPath, ['scripts/check-interfaces.mjs']],
   [moon, ['build', '--target', 'js', '--release', '--deny-warn']],
   [process.execPath, ['--test', 'tests/integration.mjs']],
   [moon, ['package']],

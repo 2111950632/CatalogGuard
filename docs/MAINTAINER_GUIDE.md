@@ -22,6 +22,8 @@ project.mbt 组合原有单文件校验、新的标记和跨文件校验，再�
 
 ## 对照赛事要求
 
+本地 `moon info` 后运行 `node --test tests/interfaces.mjs` 和 `node scripts/check-interfaces.mjs`，核对公开接口。工具链可能把内建 Int 输出为 Int32，检查只接受这项等价写法；其他公开接口变化仍需审阅并提交生成文件。遇到未来新增的泛型或同名自定义类型时，检查保守采用精确比较。CI 的 core-verification.txt 保存编译、格式和接口步骤输出。
+
 官方页面 https://moonbitlang.github.io/Hackathon2026/ 当前列明：MoonBit 为主、公开可追踪仓库、README/示例/测试、实质新增、开源合规、AI 成果可解释。本次对应证据为生产源码单独统计、CHANGELOG/提交历史、两分钟样例与 CI、63+26 个新核心案例、THIRD_PARTY.md，以及本讲解。
 
 官网还写明十月最多提交 3 次、报名与验收在 2026-10-31 截止。你已收到两轮驳回通知，下一次更新前应核对回执中的有效提交次数，并使用原报名记录的修改入口。材料完成和测试通过不等于组委会已经批准；本次没有自动提交飞书。

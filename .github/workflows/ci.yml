@@ -20,12 +20,15 @@ jobs:
           echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
       - name: Record toolchain and check core
         run: |
+          set -o pipefail
+          exec > >(tee core-verification.txt) 2>&1
           moon version --all | tee toolchain-version.txt
           node --version >> toolchain-version.txt
           moon check --target all --deny-warn
           moon fmt --check
           moon info
-          git diff --exit-code -- '*.mbti'
+          node --test tests/interfaces.mjs
+          node scripts/check-interfaces.mjs
       - name: Test both JavaScript and Wasm GC
         run: |
           moon test --target js --deny-warn
@@ -70,6 +73,7 @@ jobs:
           path: |
             source-count.json
             toolchain-version.txt
+            core-verification.txt
             independent-verification.txt
             format-conformance.json
             moongettext-baseline.json
