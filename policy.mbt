@@ -123,7 +123,7 @@ pub fn options_from_json(
 fn configurable_rule(code : String) -> Bool {
   [
     "H001", "H006", "H007", "H008", "H009", "C006", "C007", "C011", "C013", "L005",
-    "T002", "F007",
+    "T002", "F007", "X001", "X002", "X004", "X005",
   ].contains(code)
 }
 

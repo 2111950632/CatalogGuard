@@ -29,6 +29,7 @@ fn request_files(request : Json) -> Result[Array[RequestFile], String] {
     return Err("A request supports at most 1000 files")
   }
   let result : Array[RequestFile] = []
+  let paths : Map[String, Bool] = Map([])
   for file in files {
     let path = match json_field(file, "path").bind(json_string) {
       Some(path) => path
@@ -38,6 +39,10 @@ fn request_files(request : Json) -> Result[Array[RequestFile], String] {
       Some(text) => text
       None => return Err("Every input requires UTF-8 decoded text")
     }
+    if paths.contains(path) {
+      return Err("Duplicate input path: " + path)
+    }
+    paths.set(path, true)
     let template = match json_field(file, "template") {
       None => false
       Some(value) =>
@@ -119,23 +124,31 @@ fn run_request(request : Json) -> Json {
     Some(String(command)) => command
     _ => return protocol_error("command must be a string")
   }
-  let mut policy = default_policy()
+  let mut project = default_project_policy()
   if json_field(request, "config") is Some(value) {
     let text = match value {
       String(text) => text
       _ => return protocol_error("config must be a JSON text string")
     }
-    policy = match parse_policy(text) {
-      Ok(policy) => policy
+    project = match parse_project_policy(text) {
+      Ok(project) => project
       Err(error) => return protocol_error(error)
     }
   }
+  if json_field(request, "quality") is Some(value) {
+    project = match quality_from_json(project, value) {
+      Ok(project) => project
+      Err(error) => return protocol_error(error)
+    }
+  }
+  let mut policy = project.policy
   if json_field(request, "options") is Some(value) {
     match options_from_json(policy.options, value) {
       Ok(options) => policy = { ..policy, options, }
       Err(error) => return protocol_error(error)
     }
   }
+  project = { ..project, policy, }
   if command == "plural" {
     return protocol_plural(request, policy)
   }
@@ -169,9 +182,11 @@ fn run_request(request : Json) -> Json {
     }
   }
   let reports : Array[Json] = []
+  let raw_reports : Array[Report] = []
+  let templates : Array[Int32] = []
   let texts : Array[String] = []
   let mut exit_code = 0
-  for file in files {
+  for index, file in files {
     let catalog = parse_catalog(
       file.text,
       file=file.path,
@@ -206,14 +221,20 @@ fn run_request(request : Json) -> Json {
       Some(reference) =>
         check_against_template(reference, catalog, options=policy.options)
     }
-    let report = apply_policy(raw_report, policy)
+    raw_reports.push(raw_report)
+    if file.template {
+      templates.push(index)
+    }
+  }
+  let checked = project_reports(raw_reports, project, templates)
+  for report in checked.reports {
     if report.exit_code > exit_code {
       exit_code = report.exit_code
     }
     reports.push(
       if command == "stats" {
         {
-          "file": Json(file.path),
+          "file": Json(report.catalog.file),
           "statistics": statistics_json(report.stats),
           "summary": catalog_summary_json(report.catalog),
           "exit_code": Json(report.exit_code),
@@ -232,6 +253,7 @@ fn run_request(request : Json) -> Json {
       "command": Json(command),
       "exit_code": Json(exit_code),
       "files": Json(reports),
+      "project_findings": Json(checked.findings.map(project_finding_json)),
     },
   }
 }

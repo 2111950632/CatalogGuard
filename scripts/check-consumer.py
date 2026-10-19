@@ -52,6 +52,25 @@ def main():
   assert_eq(@szs.evaluate_plural(tree, 1), Ok(0))
   assert_eq(@szs.evaluate_plural(tree, 2), Ok(1))
 }
+test "packaged markup API accepts safe subtree reordering" {
+  let source = @szs.markup_contract("<b>one</b><i>two</i>").unwrap()
+  let target = @szs.markup_contract("<i>二</i><b>一</b>").unwrap()
+  assert_eq(source.signature, target.signature)
+}
+test "packaged consistency API retains the other file" {
+  let header = "msgid \\"\\"\\nmsgstr \\"Language: zh_CN\\\\n\\"\\n\\n"
+  let first = @szs.parse_catalog(header + "msgid \\"Save\\"\\nmsgstr \\"保存\\"\\n", file="first.po")
+  let second = @szs.parse_catalog(header + "msgid \\"Save\\"\\nmsgstr \\"存储\\"\\n", file="second.po")
+  let found = @szs.check_consistency([first, second])
+  assert_eq(found[0].diagnostic.code, "X002")
+  assert_eq(found[0].related_file, Some("first.po"))
+}
+test "packaged project policy activates markup checks" {
+  let config = @szs.parse_project_policy("{\\"quality\\":{\\"markup\\":{\\"mode\\":\\"html\\"}}}").unwrap()
+  let catalog = @szs.parse_catalog("msgid \\"<b>x</b>\\"\\nmsgstr \\"plain\\"\\n")
+  let checked = @szs.check_project([catalog], configuration=config)
+  assert_eq(checked.exit_code, 1)
+}
 ''', encoding="utf8")
     for target in ["js", "wasm-gc"]:
         subprocess.run([args.moon, "test", "--target", target, "--deny-warn"], cwd=consumer, check=True, timeout=180)

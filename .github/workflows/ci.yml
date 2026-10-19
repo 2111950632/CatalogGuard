@@ -48,6 +48,11 @@ jobs:
       - name: Check pinned moongettext baseline
         run: |
           python scripts/compare-moongettext.py --output moongettext-baseline.json
+      - name: Check markup and cross-file behavior with independent references
+        run: |
+          .ci-venv/bin/python -m pip install -r tests/quality-requirements.txt
+          .ci-venv/bin/python tests/quality_oracle.py --output quality-conformance.json
+          node scripts/check-project-demo.mjs project-demo.json
       - name: Test independently extracted Mooncakes package
         run: |
           moon package
@@ -68,6 +73,8 @@ jobs:
             independent-verification.txt
             format-conformance.json
             moongettext-baseline.json
+            quality-conformance.json
+            project-demo.json
             demo-report.json
             dist/
             _build/publish/*.zip

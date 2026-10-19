@@ -1,0 +1,2083 @@
+{
+  "schema_version": 1,
+  "profile": "CGFC-1",
+  "python_version": "3.12.14",
+  "gnu_version": "msgfmt.exe (GNU gettext-tools) 1.0",
+  "cases": 96,
+  "styles": {
+    "c-format": 34,
+    "python-format": 24,
+    "python-brace-format": 38
+  },
+  "gnu_compared": 73,
+  "python_probes": 55,
+  "failed": [],
+  "results": [
+    {
+      "id": "C-01",
+      "style": "c-format",
+      "category": "legal-reorder",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": ""
+    },
+    {
+      "id": "C-02",
+      "style": "c-format",
+      "category": "legal-reorder",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": ""
+    },
+    {
+      "id": "C-03",
+      "style": "c-format",
+      "category": "legal-repeat",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": ""
+    },
+    {
+      "id": "C-04",
+      "style": "c-format",
+      "category": "literal",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": ""
+    },
+    {
+      "id": "C-05",
+      "style": "c-format",
+      "category": "conversion-family",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": ""
+    },
+    {
+      "id": "C-06",
+      "style": "c-format",
+      "category": "width-precision",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": ""
+    },
+    {
+      "id": "C-07",
+      "style": "c-format",
+      "category": "length",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": false,
+      "gnu_pass": true,
+      "gnu_difference": "C11 permits l on floating conversions; GNU 1.0 rejects %lf here.",
+      "gnu_diagnostic": "$CASES\\C-07.po:11: 'msgstr' is not a valid C format string, unlike 'msgid'. Reason: In the directive number 1, the argument size specifier is invalid.\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error"
+    },
+    {
+      "id": "C-08",
+      "style": "c-format",
+      "category": "length",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": ""
+    },
+    {
+      "id": "C-09",
+      "style": "c-format",
+      "category": "length",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": ""
+    },
+    {
+      "id": "C-10",
+      "style": "c-format",
+      "category": "wide-and-pointer",
+      "expected_codes": [
+        "F001"
+      ],
+      "actual_codes": [
+        "F001"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": null,
+      "gnu_pass": null,
+      "gnu_diagnostic": ""
+    },
+    {
+      "id": "C-11",
+      "style": "c-format",
+      "category": "wide-and-pointer",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": ""
+    },
+    {
+      "id": "C-12",
+      "style": "c-format",
+      "category": "float",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": ""
+    },
+    {
+      "id": "C-13",
+      "style": "c-format",
+      "category": "gnu-extension",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": ""
+    },
+    {
+      "id": "C-14",
+      "style": "c-format",
+      "category": "missing",
+      "expected_codes": [
+        "F003"
+      ],
+      "actual_codes": [
+        "F003"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": false,
+      "gnu_pass": true,
+      "gnu_diagnostic": "$CASES\\C-14.po:11: number of format specifications in 'msgid' and 'msgstr' does not match\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error"
+    },
+    {
+      "id": "C-15",
+      "style": "c-format",
+      "category": "extra",
+      "expected_codes": [
+        "F004"
+      ],
+      "actual_codes": [
+        "F004"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": false,
+      "gnu_pass": true,
+      "gnu_diagnostic": "$CASES\\C-15.po:11: number of format specifications in 'msgid' and 'msgstr' does not match\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error"
+    },
+    {
+      "id": "C-16",
+      "style": "c-format",
+      "category": "type-change",
+      "expected_codes": [
+        "F005"
+      ],
+      "actual_codes": [
+        "F005"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": false,
+      "gnu_pass": true,
+      "gnu_diagnostic": "$CASES\\C-16.po:11: format specifications in 'msgid' and 'msgstr' for argument 1 are not the same\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error"
+    },
+    {
+      "id": "C-17",
+      "style": "c-format",
+      "category": "type-change",
+      "expected_codes": [
+        "F005"
+      ],
+      "actual_codes": [
+        "F005"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": false,
+      "gnu_pass": true,
+      "gnu_diagnostic": "$CASES\\C-17.po:11: format specifications in 'msgid' and 'msgstr' for argument 1 are not the same\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error"
+    },
+    {
+      "id": "C-18",
+      "style": "c-format",
+      "category": "type-change",
+      "expected_codes": [
+        "F005"
+      ],
+      "actual_codes": [
+        "F005"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": false,
+      "gnu_pass": true,
+      "gnu_diagnostic": "$CASES\\C-18.po:11: format specifications in 'msgid' and 'msgstr' for argument 1 are not the same\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error"
+    },
+    {
+      "id": "C-19",
+      "style": "c-format",
+      "category": "syntax",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": false,
+      "gnu_pass": true,
+      "gnu_diagnostic": "$CASES\\C-19.po:11: 'msgstr' is not a valid C format string, unlike 'msgid'. Reason: The string ends in the middle of a directive.\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error"
+    },
+    {
+      "id": "C-20",
+      "style": "c-format",
+      "category": "syntax",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": false,
+      "gnu_pass": true,
+      "gnu_diagnostic": "$CASES\\C-20.po:11: 'msgstr' is not a valid C format string, unlike 'msgid'. Reason: The string refers to arguments both through absolute argument numbers and through unnumbered argument specifications.\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error"
+    },
+    {
+      "id": "C-21",
+      "style": "c-format",
+      "category": "syntax",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": false,
+      "gnu_pass": true,
+      "gnu_diagnostic": "$CASES\\C-21.po:11: 'msgstr' is not a valid C format string, unlike 'msgid'. Reason: In the directive number 1, the argument number 0 is not a positive integer.\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error"
+    },
+    {
+      "id": "C-22",
+      "style": "c-format",
+      "category": "syntax",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": false,
+      "gnu_pass": true,
+      "gnu_diagnostic": "$CASES\\C-22.po:11: 'msgstr' is not a valid C format string, unlike 'msgid'. Reason: The string refers to argument number 2 but ignores argument number 1.\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error"
+    },
+    {
+      "id": "C-23",
+      "style": "c-format",
+      "category": "syntax",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": false,
+      "gnu_pass": true,
+      "gnu_diagnostic": "$CASES\\C-23.po:11: 'msgstr' is not a valid C format string, unlike 'msgid'. Reason: In the directive number 1, the argument size specifier is invalid.\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error"
+    },
+    {
+      "id": "C-24",
+      "style": "c-format",
+      "category": "conflicting-reuse",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": false,
+      "gnu_pass": true,
+      "gnu_diagnostic": "$CASES\\C-24.po:11: 'msgstr' is not a valid C format string, unlike 'msgid'. Reason: The string refers to argument number 1 in incompatible ways.\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error"
+    },
+    {
+      "id": "C-25",
+      "style": "c-format",
+      "category": "outside-profile",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": null,
+      "gnu_pass": null,
+      "gnu_diagnostic": "$CASES\\C-25.po:11: format specifications in 'msgid' and 'msgstr' for argument 1 are not the same\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error"
+    },
+    {
+      "id": "C-26",
+      "style": "c-format",
+      "category": "escaped-percent",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_difference": "GNU 1.0 accepts width on percent; the C11 profile requires exact %%. ",
+      "gnu_diagnostic": ""
+    },
+    {
+      "id": "C-27",
+      "style": "c-format",
+      "category": "undefined-C-combination",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": null,
+      "gnu_pass": null,
+      "gnu_diagnostic": ""
+    },
+    {
+      "id": "C-28",
+      "style": "c-format",
+      "category": "undefined-C-combination",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": null,
+      "gnu_pass": null,
+      "gnu_diagnostic": ""
+    },
+    {
+      "id": "C-29",
+      "style": "c-format",
+      "category": "undefined-C-combination",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": null,
+      "gnu_pass": null,
+      "gnu_diagnostic": ""
+    },
+    {
+      "id": "C-30",
+      "style": "c-format",
+      "category": "undefined-C-combination",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": null,
+      "gnu_pass": null,
+      "gnu_diagnostic": ""
+    },
+    {
+      "id": "C-31",
+      "style": "c-format",
+      "category": "undefined-C-combination",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": null,
+      "gnu_pass": null,
+      "gnu_diagnostic": ""
+    },
+    {
+      "id": "C-32",
+      "style": "c-format",
+      "category": "undefined-C-combination",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": null,
+      "gnu_pass": null,
+      "gnu_diagnostic": "$CASES\\C-32.po:11: number of format specifications in 'msgid' and 'msgstr' does not match\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error"
+    },
+    {
+      "id": "C-33",
+      "style": "c-format",
+      "category": "undefined-C-combination",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": null,
+      "gnu_pass": null,
+      "gnu_diagnostic": "$CASES\\C-33.po:11: number of format specifications in 'msgid' and 'msgstr' does not match\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error"
+    },
+    {
+      "id": "C-34",
+      "style": "c-format",
+      "category": "positional-gap",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": false,
+      "gnu_pass": true,
+      "gnu_diagnostic": "$CASES\\C-34.po:11: 'msgstr' is not a valid C format string, unlike 'msgid'. Reason: The string refers to argument number 2 but ignores argument number 1.\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error"
+    },
+    {
+      "id": "P-01",
+      "style": "python-format",
+      "category": "legal-reorder",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "Ada 3"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "3 Ada"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "P-02",
+      "style": "python-format",
+      "category": "legal-repeat",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "Ada"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "Ada Ada"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "P-03",
+      "style": "python-format",
+      "category": "dynamic-width",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "      1.25"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": " +1.25e+00"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "P-04",
+      "style": "python-format",
+      "category": "length",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "1 2 3"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "1 2 3"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "P-05",
+      "style": "python-format",
+      "category": "literal",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "% 2"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "2 %"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "P-06",
+      "style": "python-format",
+      "category": "conversion-family",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "1 2 3 4 5 6"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "1 2 3 4 5 6"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "P-07",
+      "style": "python-format",
+      "category": "float",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "1.250000e+00 1.250000E+00 1.250000 1.250000 1.25 1.25"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "1.250000 1.25 1.25 1.250000e+00 1.250000E+00 1.250000"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "P-08",
+      "style": "python-format",
+      "category": "character",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "A"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "  A"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "P-09",
+      "style": "python-format",
+      "category": "object-conversion",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "a 'b' 'c'"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "         a 'b' 'c'       "
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "P-10",
+      "style": "python-format",
+      "category": "mapping-key",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "Ada"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "       Ada"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "P-11",
+      "style": "python-format",
+      "category": "mapping-key",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "Ada"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "       Ada"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "P-12",
+      "style": "python-format",
+      "category": "mapping-key",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "Ada"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "       Ada"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "P-13",
+      "style": "python-format",
+      "category": "legal-repeated-uses",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "Ada 'Ada'"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "'Ada' Ada"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "P-14",
+      "style": "python-format",
+      "category": "legal-repeated-uses",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "2 2.000000"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "2.000000 2"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "P-15",
+      "style": "python-format",
+      "category": "type-change",
+      "expected_codes": [
+        "F005"
+      ],
+      "actual_codes": [
+        "F005"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": false,
+      "gnu_pass": true,
+      "gnu_diagnostic": "$CASES\\P-15.po:11: format specifications in 'msgid' and 'msgstr' for argument 'x' are not the same\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "2"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "2"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "P-16",
+      "style": "python-format",
+      "category": "missing",
+      "expected_codes": [
+        "F003"
+      ],
+      "actual_codes": [
+        "F003"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": false,
+      "gnu_pass": true,
+      "gnu_diagnostic": "$CASES\\P-16.po:11: a format specification for argument 'y' doesn't exist in 'msgstr'\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "2 Ada"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "2"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "P-17",
+      "style": "python-format",
+      "category": "extra",
+      "expected_codes": [
+        "F004"
+      ],
+      "actual_codes": [
+        "F004"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": false,
+      "gnu_pass": true,
+      "gnu_diagnostic": "$CASES\\P-17.po:11: a format specification for argument 'y', as in 'msgstr', doesn't exist in 'msgid'\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "2"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "2 Ada"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "P-18",
+      "style": "python-format",
+      "category": "missing-star-operand",
+      "expected_codes": [
+        "F003",
+        "F005"
+      ],
+      "actual_codes": [
+        "F003",
+        "F005"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": false,
+      "gnu_pass": true,
+      "gnu_diagnostic": "$CASES\\P-18.po:11: number of format specifications in 'msgid' and 'msgstr' does not match\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error"
+    },
+    {
+      "id": "P-19",
+      "style": "python-format",
+      "category": "syntax",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": false,
+      "gnu_pass": true,
+      "gnu_diagnostic": "$CASES\\P-19.po:11: 'msgstr' is not a valid Python format string, unlike 'msgid'. Reason: The string ends in the middle of a directive.\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "a"
+        },
+        {
+          "side": "target",
+          "valid": false,
+          "error": "ValueError: incomplete format"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "P-20",
+      "style": "python-format",
+      "category": "syntax",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": false,
+      "gnu_pass": true,
+      "gnu_diagnostic": "$CASES\\P-20.po:11: 'msgstr' is not a valid Python format string, unlike 'msgid'. Reason: In the directive number 1, the character 'q' is not a valid conversion specifier.\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "a"
+        },
+        {
+          "side": "target",
+          "valid": false,
+          "error": "ValueError: unsupported format character 'q' (0x71) at index 1"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "P-21",
+      "style": "python-format",
+      "category": "outside-profile",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": false,
+      "gnu_pass": true,
+      "gnu_diagnostic": "$CASES\\P-21.po:11: 'msgstr' is not a valid Python format string, unlike 'msgid'. Reason: The string refers to arguments both through argument names and through unnamed argument specifications.\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error"
+    },
+    {
+      "id": "P-22",
+      "style": "python-format",
+      "category": "syntax",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": false,
+      "gnu_pass": true,
+      "gnu_diagnostic": "$CASES\\P-22.po:11: 'msgstr' is not a valid Python format string, unlike 'msgid'. Reason: The string refers to arguments both through argument names and through unnamed argument specifications.\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "a"
+        },
+        {
+          "side": "target",
+          "valid": false,
+          "error": "TypeError: * wants int"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "P-23",
+      "style": "python-format",
+      "category": "syntax",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": false,
+      "gnu_pass": true,
+      "gnu_diagnostic": "$CASES\\P-23.po:11: 'msgstr' is not a valid Python format string, unlike 'msgid'. Reason: In the directive number 1, the character 'l' is not a valid conversion specifier.\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "a"
+        },
+        {
+          "side": "target",
+          "valid": false,
+          "error": "ValueError: unsupported format character 'l' (0x6c) at index 2"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "P-24",
+      "style": "python-format",
+      "category": "syntax",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": false,
+      "gnu_pass": true,
+      "gnu_diagnostic": "$CASES\\P-24.po:11: 'msgstr' is not a valid Python format string, unlike 'msgid'. Reason: The string ends in the middle of a directive.\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "a"
+        },
+        {
+          "side": "target",
+          "valid": false,
+          "error": "ValueError: incomplete format key"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-01",
+      "style": "python-brace-format",
+      "category": "legal-reorder",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "Ada 3"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "3 Ada"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-02",
+      "style": "python-brace-format",
+      "category": "legal-reorder",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "Ada 3"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "3 Ada"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-03",
+      "style": "python-brace-format",
+      "category": "legal-repeat",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "31"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "31 1f"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-04",
+      "style": "python-brace-format",
+      "category": "escape",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "{name} Ada"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "Ada {name}"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-05",
+      "style": "python-brace-format",
+      "category": "dynamic-width-precision",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "    1.25 Ada"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "Ada     1.25"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-06",
+      "style": "python-brace-format",
+      "category": "path",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "Ada a"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "a Ada"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-07",
+      "style": "python-brace-format",
+      "category": "canonical-index",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": false,
+      "gnu_pass": true,
+      "gnu_difference": "CPython canonicalizes decimal indexes with leading zeros; GNU 1.0 compares differently.",
+      "gnu_diagnostic": "$CASES\\B-07.po:11: a format specification for argument '0', as in 'msgstr', doesn't exist in 'msgid'\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "Ada b"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "Ada b"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-08",
+      "style": "python-brace-format",
+      "category": "automatic-path",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "Ada"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "Ada"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-09",
+      "style": "python-brace-format",
+      "category": "automatic-path",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "3"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "3"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-10",
+      "style": "python-brace-format",
+      "category": "legal-repeated-uses",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "3 3"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "3 3"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-11",
+      "style": "python-brace-format",
+      "category": "legal-repeated-uses",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "Ada 'Ada'"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "'Ada' Ada"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-12",
+      "style": "python-brace-format",
+      "category": "mini-language",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "***+1,234.50"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "+00,001.234e+03"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-13",
+      "style": "python-brace-format",
+      "category": "mini-language",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": false,
+      "gnu_pass": true,
+      "gnu_difference": "CPython 3.12 supports underscore grouping; GNU 1.0 rejects this specifier.",
+      "gnu_diagnostic": "$CASES\\B-13.po:11: 'msgstr' is not a valid Python brace format string, unlike 'msgid'. Reason: The directive number 0 is unterminated.\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "0x00001f"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "1_1111"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-14",
+      "style": "python-brace-format",
+      "category": "mini-language",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "0.00"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "-1.000e-04"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-15",
+      "style": "python-brace-format",
+      "category": "conversion",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "       Ada 2 '\\u6708'"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "'\\u6708' 2     Ada     "
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-16",
+      "style": "python-brace-format",
+      "category": "type-change",
+      "expected_codes": [
+        "F005"
+      ],
+      "actual_codes": [
+        "F005"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": null,
+      "gnu_pass": null,
+      "gnu_diagnostic": "$CASES\\B-16.po:11: 'msgstr' is not a valid Python brace format string, unlike 'msgid'. Reason: The directive number 0 is unterminated.\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error"
+    },
+    {
+      "id": "B-17",
+      "style": "python-brace-format",
+      "category": "missing-dynamic-operand",
+      "expected_codes": [
+        "F003"
+      ],
+      "actual_codes": [
+        "F003"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_difference": "CGFC-1 preserves all dependency fields; GNU permits dropping this named dependency.",
+      "gnu_diagnostic": ""
+    },
+    {
+      "id": "B-18",
+      "style": "python-brace-format",
+      "category": "missing",
+      "expected_codes": [
+        "F003"
+      ],
+      "actual_codes": [
+        "F003"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": false,
+      "gnu_pass": true,
+      "gnu_diagnostic": "$CASES\\B-18.po:11: a format specification for argument 'y' doesn't exist in 'msgstr'\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error"
+    },
+    {
+      "id": "B-19",
+      "style": "python-brace-format",
+      "category": "extra",
+      "expected_codes": [
+        "F004"
+      ],
+      "actual_codes": [
+        "F004"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": false,
+      "gnu_pass": true,
+      "gnu_diagnostic": "$CASES\\B-19.po:11: a format specification for argument 'y', as in 'msgstr', doesn't exist in 'msgid'\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error"
+    },
+    {
+      "id": "B-20",
+      "style": "python-brace-format",
+      "category": "syntax",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": false,
+      "gnu_pass": true,
+      "gnu_diagnostic": "$CASES\\B-20.po:11: 'msgstr' is not a valid Python brace format string, unlike 'msgid'. Reason: The string refers to arguments both through absolute argument numbers and through unnamed argument specifications.\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "a b"
+        },
+        {
+          "side": "target",
+          "valid": false,
+          "error": "ValueError: cannot switch from automatic field numbering to manual field specification"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-21",
+      "style": "python-brace-format",
+      "category": "syntax",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": false,
+      "gnu_pass": true,
+      "gnu_diagnostic": "$CASES\\B-21.po:11: 'msgstr' is not a valid Python brace format string, unlike 'msgid'. Reason: The directive number 0 is unterminated.\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "a"
+        },
+        {
+          "side": "target",
+          "valid": false,
+          "error": "ValueError: expected '}' before end of string"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-22",
+      "style": "python-brace-format",
+      "category": "syntax",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": false,
+      "gnu_pass": true,
+      "gnu_diagnostic": "$CASES\\B-22.po:11: a format specification for argument 'x' doesn't exist in 'msgstr'\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "a"
+        },
+        {
+          "side": "target",
+          "valid": false,
+          "error": "ValueError: Single '}' encountered in format string"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-23",
+      "style": "python-brace-format",
+      "category": "syntax",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": false,
+      "gnu_pass": true,
+      "gnu_diagnostic": "$CASES\\B-23.po:11: 'msgstr' is not a valid Python brace format string, unlike 'msgid'. Reason: The directive number 0 is unterminated.\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "a"
+        },
+        {
+          "side": "target",
+          "valid": false,
+          "error": "ValueError: Unknown conversion specifier q"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-24",
+      "style": "python-brace-format",
+      "category": "syntax",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": null,
+      "gnu_pass": null,
+      "gnu_diagnostic": "$CASES\\B-24.po:11: 'msgstr' is not a valid Python brace format string, unlike 'msgid'. Reason: The directive number 0 is unterminated.\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "1.000000"
+        },
+        {
+          "side": "target",
+          "valid": false,
+          "error": "ValueError: Format specifier missing precision"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-25",
+      "style": "python-brace-format",
+      "category": "nesting-boundary",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": null,
+      "gnu_pass": null,
+      "gnu_diagnostic": "$CASES\\B-25.po:11: 'msgstr' is not a valid Python brace format string, unlike 'msgid'. Reason: In the directive number 0, no more nesting is allowed in a format specifier.\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "  1"
+        },
+        {
+          "side": "target",
+          "valid": false,
+          "error": "ValueError: Max string recursion exceeded"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-26",
+      "style": "python-brace-format",
+      "category": "mini-language-type-boundary",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": null,
+      "gnu_pass": null,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "a"
+        },
+        {
+          "side": "target",
+          "valid": false,
+          "error": "ValueError: Sign not allowed in string format specifier"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-27",
+      "style": "python-brace-format",
+      "category": "mini-language-type-boundary",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": null,
+      "gnu_pass": null,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "2"
+        },
+        {
+          "side": "target",
+          "valid": false,
+          "error": "ValueError: Precision not allowed in integer format specifier"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-28",
+      "style": "python-brace-format",
+      "category": "mini-language-type-boundary",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": null,
+      "gnu_pass": null,
+      "gnu_diagnostic": "$CASES\\B-28.po:11: 'msgstr' is not a valid Python brace format string, unlike 'msgid'. Reason: The directive number 0 is unterminated.\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "2"
+        },
+        {
+          "side": "target",
+          "valid": false,
+          "error": "ValueError: Negative zero coercion (z) not allowed in integer format specifier"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-29",
+      "style": "python-brace-format",
+      "category": "mini-language-type-boundary",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": null,
+      "gnu_pass": null,
+      "gnu_diagnostic": "$CASES\\B-29.po:11: 'msgstr' is not a valid Python brace format string, unlike 'msgid'. Reason: The directive number 0 is unterminated.\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "2"
+        },
+        {
+          "side": "target",
+          "valid": false,
+          "error": "ValueError: Cannot specify ',' with 'n'."
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-30",
+      "style": "python-brace-format",
+      "category": "conversion-type-boundary",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": null,
+      "gnu_pass": null,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "2"
+        },
+        {
+          "side": "target",
+          "valid": false,
+          "error": "ValueError: Unknown format code 'd' for object of type 'str'"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-31",
+      "style": "python-brace-format",
+      "category": "unicode-name",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "Ada"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "     Ada"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-32",
+      "style": "python-brace-format",
+      "category": "literal-index",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": true,
+      "gnu_pass": true,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "Ada"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "Ada"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-33",
+      "style": "python-brace-format",
+      "category": "unicode-decimal-index",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": null,
+      "gnu_pass": null,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "Ada"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "Ada"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-34",
+      "style": "python-brace-format",
+      "category": "unicode-decimal-index",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": null,
+      "gnu_pass": null,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "0 12"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "0 12"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-35",
+      "style": "python-brace-format",
+      "category": "unicode-path",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": null,
+      "gnu_pass": null,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "Ada"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "     Ada"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-36",
+      "style": "python-brace-format",
+      "category": "literal-index",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": null,
+      "gnu_pass": null,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "Ada"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "Ada"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-37",
+      "style": "python-brace-format",
+      "category": "literal-index",
+      "expected_codes": [],
+      "actual_codes": [],
+      "catalogguard_pass": true,
+      "gnu_accepts": true,
+      "gnu_expected_1_0": null,
+      "gnu_pass": null,
+      "gnu_diagnostic": "",
+      "python": [
+        {
+          "side": "source",
+          "valid": true,
+          "output": "Ada"
+        },
+        {
+          "side": "target",
+          "valid": true,
+          "output": "Ada"
+        }
+      ],
+      "python_pass": true
+    },
+    {
+      "id": "B-38",
+      "style": "python-brace-format",
+      "category": "resource-boundary",
+      "expected_codes": [
+        "F002"
+      ],
+      "actual_codes": [
+        "F002"
+      ],
+      "catalogguard_pass": true,
+      "gnu_accepts": false,
+      "gnu_expected_1_0": null,
+      "gnu_pass": null,
+      "gnu_diagnostic": "$CASES\\B-38.po:11: a format specification for argument '0' doesn't exist in 'msgstr'\nC:\\Users\\Lenovo\\Documents\\Codex\\2026-10-13\\https-bxup9uklfcb-feishu-cn-wiki-dx4bwd6d1i3gfhkajqccf7szned\\work\\gettext-msys2\\ucrt64\\bin\\msgfmt.exe: found 1 fatal error"
+    }
+  ]
+}

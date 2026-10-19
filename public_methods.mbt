@@ -127,3 +127,30 @@ pub extend Reference with @debug.Debug::{to_repr}
 
 ///|
 pub extend TemplateDelta with @debug.Debug::{to_repr}
+
+///|
+pub extend MarkupOptions with @debug.Debug::{to_repr}
+
+///|
+pub extend MarkupError with Eq::{equal, not_equal}
+
+///|
+pub extend MarkupError with @debug.Debug::{to_repr}
+
+///|
+pub extend MarkupContract with Eq::{equal, not_equal}
+
+///|
+pub extend MarkupContract with @debug.Debug::{to_repr}
+
+///|
+pub extend ConsistencyOptions with @debug.Debug::{to_repr}
+
+///|
+pub extend ProjectFinding with @debug.Debug::{to_repr}
+
+///|
+pub extend ProjectPolicy with @debug.Debug::{to_repr}
+
+///|
+pub extend ProjectReport with @debug.Debug::{to_repr}

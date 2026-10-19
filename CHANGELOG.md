@@ -1,5 +1,14 @@
 # 更新记录
 
+## 0.2.0 - 2026-10-19
+
+- 新增 MoonBit HTML/XML 平衡片段解析和树合同：检查嵌套、数量、属性与受保护值，允许同级及属性重排，区分两种模式的 void、大小写和实体语法。
+- 新增按 Language/context/msgid 分组的跨文件译文、复数源文、格式 flags 冲突，以及可选的逆向同译文审阅；保留冲突双方文件和字段位置。
+- 新增 ProjectPolicy/check_project 公开 API、quality 配置、CLI 项目开关与递归目录输入，保持旧 Options/Policy 和 JSON schema 1 兼容。
+- 新增 63 个标记案例、26 个项目/配置/资源用例和 10 个 CLI 用例，固定 Translate Toolkit 3.20.0 及独立 XML 解析对照。
+- 补充 7 个可运行 PO、两分钟演示、独立包新旧 API 消费、规范边界、维护者讲解与第二轮复审材料。
+- 不宣称完整 HTML5/XML 或 Translate Toolkit 兼容；范围外和超限构造明确失败。
+
 ## 0.1.2 — 2026-10-16
 
 - 明确相对 moongettext 固定提交的净增范围与三类标准、兼容终点和已知差异。

@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-import { writeFile, stat } from 'node:fs/promises';
+import { writeFile, stat, readdir } from 'node:fs/promises';
 import { createReadStream } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
-const help = `CatalogGuard 0.1.2 — MoonBit PO/POT checker
+const help = `CatalogGuard 0.2.0 — MoonBit PO/POT checker
 
 Usage: node cli.mjs [check|inspect|normalize|stats] FILE... [options]
        node cli.mjs plural 'nplurals=2; plural=(n!=1);' [options]
@@ -16,6 +16,11 @@ Options:
   --template FILE.pot     Compare exact keys against a POT template
   --pot                   Treat all inputs as templates
   --config FILE.json      Read options and review-rule policies
+  --markup MODE           Check balanced markup fragments: html, xml, or off
+  --consistency           Compare translations across files in the same locale
+  --ignore-context        Include different contexts in consistency groups
+  --inverse-consistency   Review different sources sharing one translation
+  --recursive             Read PO/POT files from input directories recursively
   --plural-max N          Test plural counts from 0 through N (default 1000)
   --empty-severity LEVEL  error, warning, or info (default warning)
   --fuzzy-severity LEVEL  error, warning, or info (default warning)
@@ -29,7 +34,7 @@ Only UTF-8 catalogs are supported. Format flags select format checking.
 
 const commands = new Set(['check', 'inspect', 'normalize', 'stats', 'plural', 'rules']);
 const args = process.argv.slice(2);
-const request = { command: 'check', files: [], options: {} };
+const request = { command: 'check', files: [], options: {}, quality: {} };
 const inputPaths = [];
 const optionEnd = args.indexOf('--');
 const optionArgs = args.slice(0, optionEnd < 0 ? args.length : optionEnd);
@@ -39,6 +44,7 @@ let templatePath;
 let configPath;
 let outputPath;
 let endOptions = false;
+let recursive = false;
 const maxBytes = 32 * 1024 * 1024;
 let totalBytes = 0;
 
@@ -59,13 +65,30 @@ async function readUtf8(path) {
   return new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(bytes);
 }
 
+async function expandInput(path, depth = 0) {
+  if (path === '-') return [path];
+  if (depth > 32) throw new Error('Directory traversal exceeds depth 32');
+  const info = await stat(resolve(path));
+  if (!info.isDirectory()) return [path];
+  if (!recursive) throw new Error('Directory input requires --recursive');
+  const entries = (await readdir(resolve(path), { withFileTypes: true })).sort((a,b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
+  const files = [];
+  for (const entry of entries) {
+    if (entry.isSymbolicLink() || ['.git','node_modules','_build','.mooncakes'].includes(entry.name)) continue;
+    if (entry.isDirectory()) files.push(...await expandInput(join(path,entry.name), depth+1));
+    else if (entry.isFile() && /\.pot?$/i.test(entry.name)) files.push(join(path,entry.name));
+    if (files.length > 1000) throw new Error('A request supports at most 1000 files');
+  }
+  return files;
+}
+
 try {
   if (optionArgs.includes('--help') || optionArgs.includes('-h') || args.length === 0) {
     process.stdout.write(help);
     process.exit(0);
   }
   if (optionArgs.includes('--version')) {
-    process.stdout.write('szs 0.1.2\n');
+    process.stdout.write('szs 0.2.0\n');
     process.exit(0);
   }
   if (commands.has(args[0])) request.command = args.shift();
@@ -76,10 +99,16 @@ try {
       if (arg === '--json') { json = true; continue; }
       if (arg === '--strict') { request.options.strict = true; continue; }
       if (arg === '--pot') { pot = true; continue; }
+      if (arg === '--recursive') { recursive = true; continue; }
+      if (arg === '--consistency') { request.quality.consistency = { ...request.quality.consistency, enabled: true }; continue; }
+      if (arg === '--ignore-context' || arg === '--inverse-consistency') {
+        request.quality.consistency = { ...request.quality.consistency, enabled: true, [arg === '--ignore-context' ? 'ignore_context' : 'inverse']: true }; continue;
+      }
       const value = takeValue(i, arg);
       if (arg === '--template') templatePath = value;
       else if (arg === '--config') configPath = value;
       else if (arg === '--output') outputPath = value;
+      else if (arg === '--markup') request.quality.markup = { mode: value };
       else if (arg === '--plural-max') {
         if (!/^\d+$/.test(value)) throw new Error('--plural-max requires an integer');
         request.options.plural_max = Number(value);
@@ -96,7 +125,16 @@ try {
     if (inputPaths.length) throw new Error('rules accepts no input files');
   } else {
     if (inputPaths.filter(path => path === '-').length > 1) throw new Error('stdin may be read only once');
+    const expanded = [];
     for (const path of inputPaths) {
+      expanded.push(...await expandInput(path));
+      if (expanded.length > 1000) throw new Error('A request supports at most 1000 files');
+    }
+    const seen = new Set();
+    for (const path of expanded) {
+      const identity = path === '-' ? '-' : resolve(path);
+      if (seen.has(identity)) throw new Error('Duplicate input path: ' + path);
+      seen.add(identity);
       request.files.push({ path, text: await readUtf8(path), template: pot || /\.pot$/i.test(path) });
     }
   }

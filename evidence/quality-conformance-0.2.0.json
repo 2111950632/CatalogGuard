@@ -1,0 +1,700 @@
+{
+  "schema_version": 1,
+  "client_date": "2026-10-19",
+  "profile": "CGM-1 / CGP-1",
+  "python": "3.12.14",
+  "toolkit": "3.20.0",
+  "lxml": "6.1.3",
+  "fixture_sha256": "b738293a79c31672635f14708c61a3f638b015d433a2f9c628ff9e5c54131445",
+  "markup_cases": 63,
+  "xml_probes": 23,
+  "toolkit_markup_observations": 63,
+  "project_scenarios": 5,
+  "toolkit_markup_assertions": 16,
+  "toolkit_project_assertions": 5,
+  "failed": [],
+  "markup_results": [
+    {
+      "id": "H01",
+      "mode": "html",
+      "catalogguard_codes": [],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": true,
+      "toolkit_expected": true,
+      "toolkit_probe_pass": true
+    },
+    {
+      "id": "H02",
+      "mode": "html",
+      "catalogguard_codes": [],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": true,
+      "toolkit_expected": true,
+      "toolkit_probe_pass": true
+    },
+    {
+      "id": "H03",
+      "mode": "html",
+      "catalogguard_codes": [],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Different XML tags",
+      "toolkit_expected": false,
+      "toolkit_probe_pass": true
+    },
+    {
+      "id": "H04",
+      "mode": "html",
+      "catalogguard_codes": [],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Different XML tags",
+      "toolkit_expected": false,
+      "toolkit_probe_pass": true
+    },
+    {
+      "id": "H05",
+      "mode": "html",
+      "catalogguard_codes": [],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Different XML tags",
+      "toolkit_expected": false,
+      "toolkit_probe_pass": true
+    },
+    {
+      "id": "H06",
+      "mode": "html",
+      "catalogguard_codes": [
+        "M003"
+      ],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Different XML tags",
+      "toolkit_expected": false,
+      "toolkit_probe_pass": true
+    },
+    {
+      "id": "H07",
+      "mode": "html",
+      "catalogguard_codes": [
+        "M003"
+      ],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Different XML tags",
+      "toolkit_expected": false,
+      "toolkit_probe_pass": true
+    },
+    {
+      "id": "H08",
+      "mode": "html",
+      "catalogguard_codes": [
+        "M003"
+      ],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Different XML tags"
+    },
+    {
+      "id": "H09",
+      "mode": "html",
+      "catalogguard_codes": [
+        "M003"
+      ],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Different XML tags"
+    },
+    {
+      "id": "H10",
+      "mode": "html",
+      "catalogguard_codes": [
+        "M002"
+      ],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Different XML tags",
+      "toolkit_expected": false,
+      "toolkit_probe_pass": true
+    },
+    {
+      "id": "H11",
+      "mode": "html",
+      "catalogguard_codes": [
+        "M002"
+      ],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Different XML tags"
+    },
+    {
+      "id": "H12",
+      "mode": "html",
+      "catalogguard_codes": [
+        "M002"
+      ],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Added XML tags"
+    },
+    {
+      "id": "H13",
+      "mode": "html",
+      "catalogguard_codes": [],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": true,
+      "toolkit_expected": true,
+      "toolkit_probe_pass": true
+    },
+    {
+      "id": "H14",
+      "mode": "html",
+      "catalogguard_codes": [],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Different XML tags"
+    },
+    {
+      "id": "H15",
+      "mode": "html",
+      "catalogguard_codes": [],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": true
+    },
+    {
+      "id": "H16",
+      "mode": "html",
+      "catalogguard_codes": [],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": true,
+      "toolkit_expected": true,
+      "toolkit_probe_pass": true
+    },
+    {
+      "id": "H17",
+      "mode": "html",
+      "catalogguard_codes": [
+        "M002"
+      ],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": true,
+      "toolkit_expected": true,
+      "toolkit_probe_pass": true
+    },
+    {
+      "id": "H18",
+      "mode": "html",
+      "catalogguard_codes": [
+        "M002"
+      ],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Different XML tags"
+    },
+    {
+      "id": "H19",
+      "mode": "html",
+      "catalogguard_codes": [],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Different XML tags"
+    },
+    {
+      "id": "H20",
+      "mode": "html",
+      "catalogguard_codes": [
+        "M002"
+      ],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Different XML tags"
+    },
+    {
+      "id": "H21",
+      "mode": "html",
+      "catalogguard_codes": [
+        "M002"
+      ],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": true,
+      "toolkit_expected": true,
+      "toolkit_probe_pass": true
+    },
+    {
+      "id": "H22",
+      "mode": "html",
+      "catalogguard_codes": [
+        "M002"
+      ],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Different XML tags"
+    },
+    {
+      "id": "H23",
+      "mode": "html",
+      "catalogguard_codes": [
+        "M001"
+      ],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": true
+    },
+    {
+      "id": "H24",
+      "mode": "html",
+      "catalogguard_codes": [
+        "M002"
+      ],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Added XML tags"
+    },
+    {
+      "id": "H25",
+      "mode": "html",
+      "catalogguard_codes": [
+        "M002"
+      ],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Added XML tags"
+    },
+    {
+      "id": "H26",
+      "mode": "html",
+      "catalogguard_codes": [],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Different XML tags"
+    },
+    {
+      "id": "H27",
+      "mode": "html",
+      "catalogguard_codes": [
+        "M002"
+      ],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Added XML tags"
+    },
+    {
+      "id": "H28",
+      "mode": "html",
+      "catalogguard_codes": [
+        "M002"
+      ],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": true,
+      "toolkit_expected": true,
+      "toolkit_probe_pass": true
+    },
+    {
+      "id": "H29",
+      "mode": "html",
+      "catalogguard_codes": [],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Different XML tags"
+    },
+    {
+      "id": "H30",
+      "mode": "html",
+      "catalogguard_codes": [],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": true
+    },
+    {
+      "id": "H31",
+      "mode": "html",
+      "catalogguard_codes": [],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Different XML tags"
+    },
+    {
+      "id": "H32",
+      "mode": "html",
+      "catalogguard_codes": [],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Different XML tags"
+    },
+    {
+      "id": "H33",
+      "mode": "html",
+      "catalogguard_codes": [
+        "M003"
+      ],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Different XML tags"
+    },
+    {
+      "id": "H34",
+      "mode": "html",
+      "catalogguard_codes": [],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": true
+    },
+    {
+      "id": "H35",
+      "mode": "html",
+      "catalogguard_codes": [
+        "M001"
+      ],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": true
+    },
+    {
+      "id": "H36",
+      "mode": "html",
+      "catalogguard_codes": [],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": true
+    },
+    {
+      "id": "H37",
+      "mode": "html",
+      "catalogguard_codes": [],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Different XML tags"
+    },
+    {
+      "id": "H38",
+      "mode": "html",
+      "catalogguard_codes": [
+        "M001"
+      ],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": true
+    },
+    {
+      "id": "X01",
+      "mode": "xml",
+      "catalogguard_codes": [],
+      "catalogguard_pass": true,
+      "xml_target_valid": true,
+      "xml_probe_pass": true,
+      "toolkit_xmltags_accepts": true,
+      "toolkit_expected": true,
+      "toolkit_probe_pass": true
+    },
+    {
+      "id": "X02",
+      "mode": "xml",
+      "catalogguard_codes": [
+        "M003"
+      ],
+      "catalogguard_pass": true,
+      "xml_target_valid": true,
+      "xml_probe_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Different XML tags"
+    },
+    {
+      "id": "X03",
+      "mode": "xml",
+      "catalogguard_codes": [
+        "M002"
+      ],
+      "catalogguard_pass": true,
+      "xml_target_valid": false,
+      "xml_probe_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Different XML tags"
+    },
+    {
+      "id": "X04",
+      "mode": "xml",
+      "catalogguard_codes": [
+        "M002"
+      ],
+      "catalogguard_pass": true,
+      "xml_target_valid": false,
+      "xml_probe_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Different XML tags"
+    },
+    {
+      "id": "X05",
+      "mode": "xml",
+      "catalogguard_codes": [
+        "M002"
+      ],
+      "catalogguard_pass": true,
+      "xml_target_valid": false,
+      "xml_probe_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Different XML tags"
+    },
+    {
+      "id": "X06",
+      "mode": "xml",
+      "catalogguard_codes": [],
+      "catalogguard_pass": true,
+      "xml_target_valid": true,
+      "xml_probe_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Different XML tags"
+    },
+    {
+      "id": "X07",
+      "mode": "xml",
+      "catalogguard_codes": [],
+      "catalogguard_pass": true,
+      "xml_target_valid": true,
+      "xml_probe_pass": true,
+      "toolkit_xmltags_accepts": true
+    },
+    {
+      "id": "X08",
+      "mode": "xml",
+      "catalogguard_codes": [
+        "M003"
+      ],
+      "catalogguard_pass": true,
+      "xml_target_valid": true,
+      "xml_probe_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Different XML tags"
+    },
+    {
+      "id": "X09",
+      "mode": "xml",
+      "catalogguard_codes": [
+        "M002"
+      ],
+      "catalogguard_pass": true,
+      "xml_target_valid": false,
+      "xml_probe_pass": true,
+      "toolkit_xmltags_accepts": true,
+      "toolkit_expected": true,
+      "toolkit_probe_pass": true
+    },
+    {
+      "id": "X10",
+      "mode": "xml",
+      "catalogguard_codes": [
+        "M002"
+      ],
+      "catalogguard_pass": true,
+      "xml_target_valid": false,
+      "xml_probe_pass": true,
+      "toolkit_xmltags_accepts": true
+    },
+    {
+      "id": "X11",
+      "mode": "xml",
+      "catalogguard_codes": [
+        "M002"
+      ],
+      "catalogguard_pass": true,
+      "xml_target_valid": false,
+      "xml_probe_pass": true,
+      "toolkit_xmltags_accepts": true,
+      "toolkit_expected": true,
+      "toolkit_probe_pass": true
+    },
+    {
+      "id": "X12",
+      "mode": "xml",
+      "catalogguard_codes": [
+        "M002"
+      ],
+      "catalogguard_pass": true,
+      "xml_target_valid": false,
+      "xml_probe_pass": true,
+      "toolkit_xmltags_accepts": true
+    },
+    {
+      "id": "X13",
+      "mode": "xml",
+      "catalogguard_codes": [
+        "M002"
+      ],
+      "catalogguard_pass": true,
+      "xml_target_valid": false,
+      "xml_probe_pass": true,
+      "toolkit_xmltags_accepts": true
+    },
+    {
+      "id": "X14",
+      "mode": "xml",
+      "catalogguard_codes": [],
+      "catalogguard_pass": true,
+      "xml_target_valid": true,
+      "xml_probe_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Different XML tags"
+    },
+    {
+      "id": "X15",
+      "mode": "xml",
+      "catalogguard_codes": [],
+      "catalogguard_pass": true,
+      "xml_target_valid": true,
+      "xml_probe_pass": true,
+      "toolkit_xmltags_accepts": true
+    },
+    {
+      "id": "X16",
+      "mode": "xml",
+      "catalogguard_codes": [
+        "M002"
+      ],
+      "catalogguard_pass": true,
+      "xml_target_valid": false,
+      "xml_probe_pass": true,
+      "toolkit_xmltags_accepts": true
+    },
+    {
+      "id": "X17",
+      "mode": "xml",
+      "catalogguard_codes": [
+        "M001"
+      ],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Different XML tags"
+    },
+    {
+      "id": "X18",
+      "mode": "xml",
+      "catalogguard_codes": [
+        "M002"
+      ],
+      "catalogguard_pass": true,
+      "xml_target_valid": true,
+      "xml_probe_pass": true,
+      "toolkit_xmltags_accepts": true
+    },
+    {
+      "id": "X19",
+      "mode": "xml",
+      "catalogguard_codes": [
+        "M002"
+      ],
+      "catalogguard_pass": true,
+      "xml_target_valid": false,
+      "xml_probe_pass": true,
+      "toolkit_xmltags_accepts": true
+    },
+    {
+      "id": "X20",
+      "mode": "xml",
+      "catalogguard_codes": [
+        "M002"
+      ],
+      "catalogguard_pass": true,
+      "xml_target_valid": false,
+      "xml_probe_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Different XML tags"
+    },
+    {
+      "id": "X21",
+      "mode": "xml",
+      "catalogguard_codes": [],
+      "catalogguard_pass": true,
+      "xml_target_valid": true,
+      "xml_probe_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Different XML tags"
+    },
+    {
+      "id": "X22",
+      "mode": "xml",
+      "catalogguard_codes": [
+        "M002"
+      ],
+      "catalogguard_pass": true,
+      "xml_target_valid": false,
+      "xml_probe_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Different XML tags"
+    },
+    {
+      "id": "X23",
+      "mode": "xml",
+      "catalogguard_codes": [
+        "M001"
+      ],
+      "catalogguard_pass": true,
+      "toolkit_xmltags_accepts": true
+    },
+    {
+      "id": "X24",
+      "mode": "xml",
+      "catalogguard_codes": [],
+      "catalogguard_pass": true,
+      "xml_target_valid": true,
+      "xml_probe_pass": true,
+      "toolkit_xmltags_accepts": true
+    },
+    {
+      "id": "X25",
+      "mode": "xml",
+      "catalogguard_codes": [
+        "M002"
+      ],
+      "catalogguard_pass": true,
+      "xml_target_valid": false,
+      "xml_probe_pass": true,
+      "toolkit_xmltags_accepts": false,
+      "toolkit_message": "Different XML tags"
+    }
+  ],
+  "project_results": [
+    {
+      "id": "same-source-conflict",
+      "catalogguard_codes": [
+        "X002"
+      ],
+      "catalogguard_pass": true,
+      "toolkit_conflict": true,
+      "toolkit_expected": true,
+      "toolkit_pass": true,
+      "difference": null
+    },
+    {
+      "id": "same-source-consistent",
+      "catalogguard_codes": [],
+      "catalogguard_pass": true,
+      "toolkit_conflict": false,
+      "toolkit_expected": false,
+      "toolkit_pass": true,
+      "difference": null
+    },
+    {
+      "id": "inverse-collision",
+      "catalogguard_codes": [
+        "X005"
+      ],
+      "catalogguard_pass": true,
+      "toolkit_conflict": true,
+      "toolkit_expected": true,
+      "toolkit_pass": true,
+      "difference": null
+    },
+    {
+      "id": "different-sources",
+      "catalogguard_codes": [],
+      "catalogguard_pass": true,
+      "toolkit_conflict": false,
+      "toolkit_expected": false,
+      "toolkit_pass": true,
+      "difference": null
+    },
+    {
+      "id": "different-locales",
+      "catalogguard_codes": [],
+      "catalogguard_pass": true,
+      "toolkit_conflict": true,
+      "toolkit_expected": true,
+      "toolkit_pass": true,
+      "difference": "CatalogGuard separates Language groups; poconflicts input must be locale-scoped by its caller."
+    }
+  ]
+}

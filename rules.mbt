@@ -64,6 +64,28 @@ pub fn rule_definitions() -> Array[RuleDefinition] {
     ("T003", "template", "Plural source differs from template"),
     ("T004", "template", "Format flags differ from template"),
     ("O001", "configuration", "An option is outside supported bounds"),
+    (
+      "M001", "markup", "Source markup is invalid or outside the fragment profile",
+    ),
+    (
+      "M002", "markup", "Translation markup is invalid or outside the fragment profile",
+    ),
+    ("M003", "markup", "Markup tree or protected attribute contract changed"),
+    ("M004", "markup", "Singular and plural source markup contracts differ"),
+    (
+      "X001", "consistency", "Language metadata cannot establish a comparison group",
+    ),
+    (
+      "X002", "consistency", "Same source has conflicting translations across files",
+    ),
+    (
+      "X003", "consistency", "Same source has different plural definitions across files",
+    ),
+    ("X004", "consistency", "Format flags differ across files"),
+    (
+      "X005", "consistency", "Different sources share a translation (inverse review)",
+    ),
+    ("X009", "resource", "Project consistency entry limit exceeded"),
   ]
   definitions.map(definition => {
     let (code, category, summary) = definition

@@ -1,0 +1,18 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: SZS demo 1.0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid "Save"
+msgstr "保存"
+
+msgid "<a href=\"/help\">Help</a>"
+msgstr "<a href=\"/help\">帮助</a>"
+
+msgid "<b><i>Important</i></b>"
+msgstr "<b><i>重要</i></b>"
+

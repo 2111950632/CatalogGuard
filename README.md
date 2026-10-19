@@ -2,9 +2,9 @@
 
 MoonBit 编写的 PO/POT 翻译目录检查库与命令行工具。项目由 `2111950632` 维护，面向 MoonBit 文档、应用本地化和 GitHub CI 中的翻译检查。
 
-本次参赛净增范围是三类格式参数合同检查。PO/POT、目录校验、复数和模板处理与 [moongettext](https://github.com/YanFangNie/moongettext) 存在重叠，不申报为独有能力。目标标准、完整兼容终点、合法重排、边界语法及固定提交对照见 [格式合同说明](docs/FORMAT_CONTRACTS.md)。0.1.2 新增 96 个标准案例，不把案例集通过写成已实现全规范兼容。
+0.2.0 针对第二轮初审新增 **HTML/XML 标记结构和跨文件一致性检查**，与原有三类格式合同组成可嵌入 MoonBit 的翻译质量检查核心。新增功能、与固定版本 Translate Toolkit 的实际对照、合法与错误案例见 [项目质量检查边界](docs/PROJECT_QUALITY.md)。PO/POT、目录校验、复数和模板处理与 [moongettext](https://github.com/YanFangNie/moongettext) 存在重叠，不申报为独有能力；格式标准和兼容终点仍见 [格式合同说明](docs/FORMAT_CONTRACTS.md)。
 
-解析、格式参数检查、复数求值、模板对比、配置校验、报告生成均在 MoonBit 中实现；Node.js 入口负责参数传递、UTF-8 文件读取和输出。核心不执行宿主语言 `eval`，不需要第三方运行时包。
+解析、格式与标记合同、跨文件分组比较、复数求值、模板对比、配置校验、报告生成均在 MoonBit 中实现；Node.js 入口负责参数传递、目录遍历、UTF-8 文件读取和输出。核心不执行宿主语言 `eval`，不需要第三方运行时包。
 
 ## 快速运行
 
@@ -13,6 +13,7 @@ MoonBit 编写的 PO/POT 翻译目录检查库与命令行工具。项目由 `21
 ```sh
 moon build --target js --release
 node cli.mjs check examples/zh_CN.po --template examples/messages.pot --strict
+node cli.mjs examples/project-quality/valid --recursive --markup html --consistency --strict --json
 ```
 
 预期输出：3 条有效消息，3 条已翻译，0 个错误、0 个警告。故意出错的例子用于演示诊断和失败退出码：
@@ -46,6 +47,8 @@ node scripts/package.mjs
 | 源位置 | 文件名、条目索引、从 1 开始的行列；字符串续行纳入范围；end 为排他位置 |
 | 目录与 metadata | 重复 context/msgid、缺失字段、头字段、charset、日期、空翻译、fuzzy、NUL、换行边界 |
 | 格式合同 | 显式 `c-format`、`python-format`、`python-brace-format` 的参数身份和类型；C 参数序号、星号宽度精度；Python 命名字段 |
+| HTML/XML 标记 | 显式选择片段模式；配对与嵌套、祖先关系、数量、属性存在与受保护值；允许同级子树、属性顺序及可翻译值变化 |
+| 跨文件项目检查 | 按语言/上下文/源文建索引，报告译文、复数源文和格式标记冲突，提供双方位置；可选逆向同译文审阅 |
 | 复数 | 受限语法解析、短路求值、除零与整数溢出、索引范围、翻译槽位完整性、有限区间覆盖 |
 | POT 对比 | 精确匹配 context/msgid，报告缺失、多余、plural 来源变化、format flags 变化 |
 | 配置 | 合法性校验、空翻译/fuzzy 严重性、严格模式、资源限制；部分审阅规则可关闭或改级 |
@@ -65,6 +68,7 @@ node cli.mjs normalize examples/zh_CN.po --output normalized.po
 
 - 只接受 UTF-8；不读 MO，不自动转换编码，不提取源代码，不执行译文格式化，不做机器翻译或语义评分。
 - 根据显式 flags 检查格式。普通文本中的 `%` 或 `{}` 不触发推测检查；`possible-*` 和未支持的格式 flags 有提示。`no-*` 表示不检查对应格式，矛盾 flags 报错。
+- 标记和跨文件检查默认关闭，分别用 `--markup html|xml`、`--consistency` 启用。CGM-1 是受限平衡片段合同，不是完整 HTML5/XML 验证器；范围外构造明确失败。语言、上下文隔离与冲突审阅策略详见项目质量检查边界。
 - C printf 目标为 C11/POSIX 静态参数合同，另支持列明的 GNU 扩展。Python 目标为 3.12 的 str 百分号和 str.format 内建规格；支持 Unicode 名称、数字身份、自动路径和一层嵌套依赖。同一参数的不同合法用途记录为集合，可重排但须保留。合同语义和未覆盖范围见格式合同说明，不等同于完整格式化执行器。
 - 复数是受检的有符号 32 位整数语义，**仅测试 `n=0..plural_max`，不证明所有整数输入都安全或所有形式都可达**。默认上限 1000，可设 0..100000；嵌套、token 和操作预算有上限。报告包含实际检查进度。
 - 头字段诊断指向所在 msgstr 范围，不猜测 decoded metadata 的原始精确行。源引用按空白分词；包含空白的复杂文件名不是完整支持范围。
@@ -80,7 +84,7 @@ let report = @szs.check_catalog(catalog)
 let json = @szs.report_json(report)
 ```
 
-还提供原始字节入口、复数 parser/evaluator、格式合同、POT 对比、规范化和工作量统计。Mooncakes 已发布 0.1.1；本次复审源码版本为 0.1.2，不能把 0.1.1 的发布验收当成 0.1.2 的验收。发布步骤见 [发布说明](docs/RELEASE.md)。
+还提供原始字节入口、复数 parser/evaluator、格式合同、POT 对比、规范化和工作量统计。0.2.0 新 API 包括 markup_contract、check_markup_catalog、check_consistency、parse_project_policy 和 check_project。旧 Options、Policy 与 check_catalog 保持兼容。包名继续使用 2111950632/szs；版本对应的线上/发布验收另附交付记录。发布步骤见 [发布说明](docs/RELEASE.md)。
 
 ## 验证
 
@@ -99,7 +103,7 @@ node scripts/count-source.mjs
 
 安装 Python 3.9 或更新版本后，`npm run verify` 按顺序完成核心检查、两种后端测试、CLI 测试、打包和独立 consumer 验证。它从 `moon package` 的真实压缩包提取源码，在单独项目中调用 API；需要 Python 标准库，不需要 polib。`SZS_MOON`、`SZS_PYTHON` 可指定本机工具路径。
 
-装好 polib 和 GNU gettext 后，可执行 `npm run verify:independent` 加上独立对照。依赖缺失或网络下载失败会停止验证，不会跳过后宣称成功。CI 同时保存工具版本、示例报告、源码统计与包供下载。
+装好 Python 3.12、`tests/quality-requirements.txt` 中的固定参考工具和 GNU gettext 后，可执行 `npm run verify:independent` 加上独立对照。依赖缺失或网络下载失败会停止验证，不会跳过后宣称成功。CI 同时保存工具版本、示例报告、源码统计与包供下载。
 
 独立比对使用 polib 1.2.0 和固定提交的 MoonBit 官方中日文 PO 文件；只比较明确支持的解析字段。外部语料不计入项目代码、不打包分发：
 

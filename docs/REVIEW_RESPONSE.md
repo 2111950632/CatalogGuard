@@ -1,64 +1,54 @@
-# CatalogGuard 初审补充说明
+# CatalogGuard 第二轮初审补充说明
 
-日期：2026-10-16。项目维护者：石子硕，GitHub ID：2111950632。
+2026-10-19 · 石子硕 · GitHub 2111950632 · 源码版本 0.2.0
 
-针对初审意见，我已明确净增范围、三类目标标准与完整兼容终点，并补充合法重排、边界语法及原样基线对照，现以可运行案例补充。
+针对“增量有限，至少补充 HTML/XML 标记结构、跨文件一致性及案例”的意见，本次已新增 MoonBit 标记片段解析器、树合同比较、跨文件冲突索引，以及库 API、配置、CLI 和独立参考验证。原有三类格式合同继续保留，共性 PO/POT 功能不申报为独有创新。
 
-## 与 moongettext 的共性及净增
+## 本次实质新增
 
-PO/POT 解析与写出、上下文与复数、目录校验、统计和模板处理，与 moongettext 有重叠，本次不将这些共性功能申报为净增创新。moongettext 的 MO 编译和运行时查询也不是本项目要替代的能力。
-
-本次净增范围集中于三个使用 MoonBit 实现的静态格式参数合同检查器：C printf、Python str 百分号格式、Python str.format 字段与内建规格。检查参数身份、用途集合、动态宽度精度依赖，以及源文和译文之间的缺失、多余和用途变化，并输出源位置、JSON 及失败退出码。
-
-基线为 [moongettext 提交 7ef9576](https://github.com/YanFangNie/moongettext/tree/7ef95764ed37b47d4b8fabe1a6ed12c719850437)。实际调用其公开 validate_po：三类类型错配均不报告 error，重复键控制案例能报告 error。本项目对同样三类错配报告 F005。基线原代码未修改，脚本与证据公开；这说明范围差异，不是对基线质量的否定。
-
-## 目标标准和兼容终点
-
-| 检查器 | 固定目标 |
+| 模块 | 已实现范围 |
 |---|---|
-| c-format | C11 WG14 N1570 7.21.6.1 的 printf 静态合同，加 POSIX 编号参数；GNU 扩展逐项列明 |
-| python-format | Python 3.12 str 百分号格式的可移植字典/顺序实参语法；实测 CPython 3.12.14 |
-| python-brace-format | Python 3.12 str.format 字段及内建 Mini-Language；实测 CPython 3.12.14，Unicode 15.0 数字身份 |
+| HTML/XML 标记 | 显式分模式，检查配对、交叉闭合、树祖先关系、数量、属性存在性及受保护值；处理引号、实体、注释、XML CDATA、HTML void 元素及资源上限 |
+| 合法翻译变化 | 允许同级子树、属性顺序、文本和指定属性值变化，保留链接、资源路径、id 与所属子树的关联；不以简单标签计数代替树比较 |
+| 跨文件一致性 | 按 Language/msgctxt/msgid 分组，比较所有译文槽位、复数源文和格式 flags；可选忽略上下文或逆向同译文审阅，报告双方文件和范围 |
+| 工程入口 | 新增 check_project 等公开 API、quality 配置、递归目录输入、JSON 项目关联诊断；严格模式和规则严重性一致生效，输入与资源超限明确失败 |
 
-完整兼容终点是 CGFC-1 所列静态合同规范全部产式、类型组合和资源边界的实现与正反案例覆盖，两后端一致，并完成同版本发布后消费验收。它不包括 GNU gettext 全功能、任意 Python 对象执行、自定义格式器或 f-string 表达式。
+检查核心位于 markup.mbt、consistency.mbt、project.mbt。Node.js 仅负责目录遍历、UTF-8 读写和参数传递；生产代码没有 Python、lxml 或 Translate Toolkit 依赖。
 
-当前 0.1.2 已完成本次 96 个分类案例及发现问题的修复，不将这 96 个案例视为所有字符串的穷尽证明，也不声称全规范兼容已完成。剩余工作及终点验收门槛在 [FORMAT_CONTRACTS.md](FORMAT_CONTRACTS.md) 单独列明；未完成计划不计作当前成果。
+## 合法与错误案例
 
-## 合法重排与边界证据
+| 案例 | 源文 / 译文变化 | 实际结果 |
+|---|---|---|
+| 同级重排 | `<b>One</b><i>Two</i>` → `<i>二</i><b>一</b>` | 通过 |
+| 属性重排与翻译 | href 保留，title 翻译，属性换序 | 通过 |
+| 错误嵌套 | `<b><i>中</b></i>` | M002 |
+| 保护值变化 | href `/help` → `/pay` | M003 |
+| 相同计数、祖先变化 | 将 i 从 b 内移到 u 内 | M003 |
+| XML 实体 | 译文含未声明实体或 `&#0;` | M002 |
+| 同源不同译文 | 两个中文文件 Save → 保存 / 存储 | X002，含双方位置 |
+| 语言或上下文不同 | 中文/法文；动词/形容词上下文 | 默认不冲突 |
 
-| 类型 | 源文 | 译文 | 结果 |
-|---|---|---|---|
-| C 编号重排 | `%s has %d files` | `%2$d files for %1$s` | 通过 |
-| C 动态宽度精度 | `%*.*f %s` | `%4$s %3$*1$.*2$f` | 通过 |
-| Python 字典重排 | `%(name)s %(count)d` | `%(count)d %(name)s` | 通过 |
-| 同一键多种用途 | `%(x)s %(x)r` | `%(x)r %(x)s` | 通过 |
-| brace 显式编号 | `{} {:d}` | `{1:d} {0}` | 通过 |
-| brace 嵌套依赖 | `{v:{w}.{p}f} {name!s}` | `{name!s} {v:{w}.{p}f}` | 通过 |
-| 自动路径 | `{[name]}` | `{0[name]}` | 通过 |
-| 混用 C 编号 | `%s %d` | `%1$s %d` | F002 |
-| 字典动态星号 | `%(x)s` | `%(x)*s` | F002 |
-| 过深嵌套 | `{0:{1}}` | `{0:{1:{2}}}` | F002 |
-| 字符串非法选项 | `{x:s}` | `{x:+s}` | F002 |
-| 转换后非法规格 | `{x!s}` | `{x!s:d}` | F002 |
+完整规范案例为 tests/markup-cases.json；另有 26 个项目、配置和资源用例。examples/project-quality 提供 7 个直接运行的 PO 文件、配置和预期结果，正常/错误项目和正常/错误 XML 四个命令预期退出码分别为 0、1、0、1。
 
-本次修复包括：Python 空字典键、同参数多种合法用途被误拒，brace 自动路径和 Unicode 数字身份，以及过深嵌套、内建非法选项、C11 未定义组合漏检。
+## 实际验证和参考边界
 
-## 实际验证与复现
+222 个核心用例在 JavaScript 与 Wasm GC 各通过，包含此前 133 项、本次 63 个标记案例和 26 个项目/边界用例；29 个 CLI 用例通过。真实压缩包提取后的独立 consumer 同时调用旧 API 和新 API，在两后端各通过；226 项总数含库的 222 项，仅新增 4 个消费探针。
 
-- 96 个新格式案例：34 个 C、24 个 Python 百分号、38 个 brace。加原有 37 个用例，共 133 个核心用例，在 JS/Wasm GC 各通过；不是 266 个不同用例。
-- 19 个 CLI 用例通过，独立提取的真实打包 consumer 在两后端通过。consumer 的 134 项总数包含库原有 133 项，仅新增 1 个调用探针。
-- 55 项 CPython 3.12.14 运行探针通过；73 项 GNU 1.0 固定预期通过，另 23 项只记录观察，不充作通过。GNU 与目标标准的差异逐项保留，不用修改标准预期来迎合参考工具。
-- 原样 moongettext 基线 4 个探针通过：3 个范围差异及 1 个重复键控制。polib 对照仍为 4 文件、221 条消息。
+独立验证使用 Translate Toolkit 3.20.0：63 个标签行为观测中 16 项固定预期作断言，另外 47 项只观察；5 个跨文件场景均断言本项目和 poconflicts 的预期。Python ElementTree 另外验证 23 个 XML 目标。原有 96 个格式案例、55 项 Python 运行探针、73 项 GNU 1.0 固定预期及 polib 4 文件/221 条消息对照仍通过，不把重复运行或观察项计作新增通过数。
+
+CGM-1 是受限平衡片段合同，不是浏览器 HTML5 建树、完整 XML 文档、命名空间等价或 DTD/schema 验证；外部实体不展开，范围外构造会明确失败。CGP-1 的冲突是质量审阅线索，不自动裁定哪一种译法正确。完整边界、资源上限及固定参考差异见 docs/PROJECT_QUALITY.md，原有格式终点见 docs/FORMAT_CONTRACTS.md。
+
+本项目允许同级与属性换序，而固定 Toolkit xmltags 在相应案例中拒绝；本项目额外拒绝部分不平衡或非法 XML 实体案例。poconflicts 需要调用者提供单一语言输入，本项目在核心中按 Language 隔离。以上是固定版本的实测差异，不泛化为 Toolkit 全部能力的评价，也不宣称完全兼容。
+
+## 复现与开源说明
 
 ```sh
-npm run verify:independent
-python scripts/compare-moongettext.py
+moon build --target js --release
+cd examples/project-quality
+node ../../cli.mjs valid --recursive --markup html --consistency --strict --json
+node ../../cli.mjs broken --recursive --markup html --consistency --strict --json
 ```
 
-Python 独立探针固定使用 3.12。GNU 1.0 用于锁定交叉预期，其他 GNU 版本只作版本化观察。CI 同时保留格式案例及基线结果。公开证据为 [格式矩阵结果](../evidence/format-conformance-0.1.2.json)、[基线结果](../evidence/moongettext-baseline-0.1.2.json) 和源码中的测试矩阵。
+公共仓库 https://github.com/2111950632/CatalogGuard ，模块名继续为 2111950632/szs。本次本地验收见 evidence/VALIDATION-0.2.0.md，独立参考证据为 evidence/quality-conformance-0.2.0.json；对应版本的线上检查与注册表发布以另附交付记录为准。
 
-## 版本与提交信息
-
-仓库：https://github.com/2111950632/CatalogGuard 。本次源码版本为 0.1.2，模块名继续使用 2111950632/szs。历史 Mooncakes 0.1.1 的验收只证明旧版本，不作为本次新增能力的发布证明。最新线上检查、0.1.2 发布及独立下载结果另附最终交付记录，未确认前不写成成功。
-
-项目采用 Apache-2.0。AI 辅助方案设计、实现、测试和文档，提交者对最终成果及维护负责。希望组委会依据补充的净增范围、标准与可复现实例重新审核；本材料不代表已通过复审。
+MoonBit 实现为本项目新编写的代码，未复制 Translate Toolkit 等工具源码。参考标准和测试工具来源、版本及许可证见 THIRD_PARTY.md；生产代码 Apache-2.0。使用 AI 辅助设计、实现、测试和文档，提交者负责理解、验证及维护。本材料用于请求重新审核，不代表已通过复审。

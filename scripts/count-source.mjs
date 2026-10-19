@@ -8,7 +8,7 @@ const files = [];
 async function walk(directory) {
   for (const entry of await readdir(directory, { withFileTypes: true })) {
     const path = join(directory, entry.name);
-    if (entry.isDirectory() && !ignored.has(entry.name)) await walk(path);
+    if (entry.isDirectory() && !ignored.has(entry.name) && !entry.name.startsWith('.szs-test-')) await walk(path);
     else if (entry.isFile() && entry.name.endsWith('.mbt')) files.push(path);
   }
 }

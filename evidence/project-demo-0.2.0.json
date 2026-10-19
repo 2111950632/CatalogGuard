@@ -1,0 +1,604 @@
+{
+  "schema_version": 1,
+  "client_date": "2026-10-19",
+  "cases": 5,
+  "passed": 5,
+  "results": [
+    {
+      "name": "valid",
+      "args": [
+        "examples/project-quality/valid",
+        "--recursive",
+        "--markup",
+        "html",
+        "--consistency",
+        "--strict"
+      ],
+      "exit_code": 0,
+      "diagnostic_codes": [],
+      "report": {
+        "schema_version": 1,
+        "command": "check",
+        "exit_code": 0,
+        "files": [
+          {
+            "schema_version": 1,
+            "tool": "szs",
+            "version": "0.2.0",
+            "file": "examples\\project-quality\\valid\\fr\\ui.po",
+            "exit_code": 0,
+            "statistics": {
+              "total": 2,
+              "active": 2,
+              "obsolete": 0,
+              "translated": 2,
+              "untranslated": 0,
+              "fuzzy": 0,
+              "plural": 0,
+              "errors": 0,
+              "warnings": 0,
+              "infos": 0
+            },
+            "plural_checked_through": 1000,
+            "diagnostics": []
+          },
+          {
+            "schema_version": 1,
+            "tool": "szs",
+            "version": "0.2.0",
+            "file": "examples\\project-quality\\valid\\settings.po",
+            "exit_code": 0,
+            "statistics": {
+              "total": 2,
+              "active": 2,
+              "obsolete": 0,
+              "translated": 2,
+              "untranslated": 0,
+              "fuzzy": 0,
+              "plural": 0,
+              "errors": 0,
+              "warnings": 0,
+              "infos": 0
+            },
+            "plural_checked_through": 1000,
+            "diagnostics": []
+          },
+          {
+            "schema_version": 1,
+            "tool": "szs",
+            "version": "0.2.0",
+            "file": "examples\\project-quality\\valid\\ui.po",
+            "exit_code": 0,
+            "statistics": {
+              "total": 2,
+              "active": 2,
+              "obsolete": 0,
+              "translated": 2,
+              "untranslated": 0,
+              "fuzzy": 0,
+              "plural": 0,
+              "errors": 0,
+              "warnings": 0,
+              "infos": 0
+            },
+            "plural_checked_through": 1000,
+            "diagnostics": []
+          }
+        ],
+        "project_findings": []
+      }
+    },
+    {
+      "name": "broken",
+      "args": [
+        "examples/project-quality/broken",
+        "--recursive",
+        "--markup",
+        "html",
+        "--consistency",
+        "--strict"
+      ],
+      "exit_code": 1,
+      "diagnostic_codes": [
+        "M002",
+        "M003",
+        "X002"
+      ],
+      "report": {
+        "schema_version": 1,
+        "command": "check",
+        "exit_code": 1,
+        "files": [
+          {
+            "schema_version": 1,
+            "tool": "szs",
+            "version": "0.2.0",
+            "file": "examples\\project-quality\\broken\\first.po",
+            "exit_code": 0,
+            "statistics": {
+              "total": 3,
+              "active": 3,
+              "obsolete": 0,
+              "translated": 3,
+              "untranslated": 0,
+              "fuzzy": 0,
+              "plural": 0,
+              "errors": 0,
+              "warnings": 0,
+              "infos": 0
+            },
+            "plural_checked_through": 1000,
+            "diagnostics": []
+          },
+          {
+            "schema_version": 1,
+            "tool": "szs",
+            "version": "0.2.0",
+            "file": "examples\\project-quality\\broken\\second.po",
+            "exit_code": 1,
+            "statistics": {
+              "total": 3,
+              "active": 3,
+              "obsolete": 0,
+              "translated": 3,
+              "untranslated": 0,
+              "fuzzy": 0,
+              "plural": 0,
+              "errors": 2,
+              "warnings": 3,
+              "infos": 0
+            },
+            "plural_checked_through": 1000,
+            "diagnostics": [
+              {
+                "code": "M003",
+                "severity": "error",
+                "message": "Markup tree, attribute presence or protected attribute value differs from source",
+                "file": "examples\\project-quality\\broken\\second.po",
+                "span": {
+                  "start": {
+                    "line": 14,
+                    "column": 1
+                  },
+                  "end": {
+                    "line": 14,
+                    "column": 33
+                  }
+                },
+                "entry": 2,
+                "related": {
+                  "start": {
+                    "line": 13,
+                    "column": 1
+                  },
+                  "end": {
+                    "line": 13,
+                    "column": 35
+                  }
+                },
+                "hint": "Sibling/attribute order and translated text may change; tag ancestry, multiplicity and protected values must remain."
+              },
+              {
+                "code": "M002",
+                "severity": "error",
+                "message": "Mismatched or unexpected closing tag: b",
+                "file": "examples\\project-quality\\broken\\second.po",
+                "span": {
+                  "start": {
+                    "line": 17,
+                    "column": 1
+                  },
+                  "end": {
+                    "line": 17,
+                    "column": 26
+                  }
+                },
+                "entry": 3,
+                "related": {
+                  "start": {
+                    "line": 16,
+                    "column": 1
+                  },
+                  "end": {
+                    "line": 16,
+                    "column": 32
+                  }
+                },
+                "hint": "Decoded translation character offset 12; PO span identifies the containing field."
+              },
+              {
+                "code": "X002",
+                "severity": "warning",
+                "message": "Same locale/context/source has conflicting translations across files",
+                "file": "examples\\project-quality\\broken\\second.po",
+                "span": {
+                  "start": {
+                    "line": 10,
+                    "column": 1
+                  },
+                  "end": {
+                    "line": 10,
+                    "column": 13
+                  }
+                },
+                "entry": 1,
+                "related": null,
+                "hint": "Compare with examples\\project-quality\\broken\\first.po:10; review deliberate translation differences before changing text."
+              },
+              {
+                "code": "X002",
+                "severity": "warning",
+                "message": "Same locale/context/source has conflicting translations across files",
+                "file": "examples\\project-quality\\broken\\second.po",
+                "span": {
+                  "start": {
+                    "line": 13,
+                    "column": 1
+                  },
+                  "end": {
+                    "line": 13,
+                    "column": 35
+                  }
+                },
+                "entry": 2,
+                "related": null,
+                "hint": "Compare with examples\\project-quality\\broken\\first.po:13; review deliberate translation differences before changing text."
+              },
+              {
+                "code": "X002",
+                "severity": "warning",
+                "message": "Same locale/context/source has conflicting translations across files",
+                "file": "examples\\project-quality\\broken\\second.po",
+                "span": {
+                  "start": {
+                    "line": 16,
+                    "column": 1
+                  },
+                  "end": {
+                    "line": 16,
+                    "column": 32
+                  }
+                },
+                "entry": 3,
+                "related": null,
+                "hint": "Compare with examples\\project-quality\\broken\\first.po:16; review deliberate translation differences before changing text."
+              }
+            ]
+          }
+        ],
+        "project_findings": [
+          {
+            "diagnostic": {
+              "code": "X002",
+              "severity": "warning",
+              "message": "Same locale/context/source has conflicting translations across files",
+              "file": "examples\\project-quality\\broken\\second.po",
+              "span": {
+                "start": {
+                  "line": 10,
+                  "column": 1
+                },
+                "end": {
+                  "line": 10,
+                  "column": 13
+                }
+              },
+              "entry": 1,
+              "related": null,
+              "hint": "Compare with examples\\project-quality\\broken\\first.po:10; review deliberate translation differences before changing text."
+            },
+            "file_index": 1,
+            "related": {
+              "file": "examples\\project-quality\\broken\\first.po",
+              "span": {
+                "start": {
+                  "line": 10,
+                  "column": 1
+                },
+                "end": {
+                  "line": 10,
+                  "column": 13
+                }
+              },
+              "entry": 1
+            }
+          },
+          {
+            "diagnostic": {
+              "code": "X002",
+              "severity": "warning",
+              "message": "Same locale/context/source has conflicting translations across files",
+              "file": "examples\\project-quality\\broken\\second.po",
+              "span": {
+                "start": {
+                  "line": 13,
+                  "column": 1
+                },
+                "end": {
+                  "line": 13,
+                  "column": 35
+                }
+              },
+              "entry": 2,
+              "related": null,
+              "hint": "Compare with examples\\project-quality\\broken\\first.po:13; review deliberate translation differences before changing text."
+            },
+            "file_index": 1,
+            "related": {
+              "file": "examples\\project-quality\\broken\\first.po",
+              "span": {
+                "start": {
+                  "line": 13,
+                  "column": 1
+                },
+                "end": {
+                  "line": 13,
+                  "column": 35
+                }
+              },
+              "entry": 2
+            }
+          },
+          {
+            "diagnostic": {
+              "code": "X002",
+              "severity": "warning",
+              "message": "Same locale/context/source has conflicting translations across files",
+              "file": "examples\\project-quality\\broken\\second.po",
+              "span": {
+                "start": {
+                  "line": 16,
+                  "column": 1
+                },
+                "end": {
+                  "line": 16,
+                  "column": 32
+                }
+              },
+              "entry": 3,
+              "related": null,
+              "hint": "Compare with examples\\project-quality\\broken\\first.po:16; review deliberate translation differences before changing text."
+            },
+            "file_index": 1,
+            "related": {
+              "file": "examples\\project-quality\\broken\\first.po",
+              "span": {
+                "start": {
+                  "line": 16,
+                  "column": 1
+                },
+                "end": {
+                  "line": 16,
+                  "column": 32
+                }
+              },
+              "entry": 3
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "xml-good",
+      "args": [
+        "examples/project-quality/xml-good.po",
+        "--markup",
+        "xml",
+        "--strict"
+      ],
+      "exit_code": 0,
+      "diagnostic_codes": [],
+      "report": {
+        "schema_version": 1,
+        "command": "check",
+        "exit_code": 0,
+        "files": [
+          {
+            "schema_version": 1,
+            "tool": "szs",
+            "version": "0.2.0",
+            "file": "examples/project-quality/xml-good.po",
+            "exit_code": 0,
+            "statistics": {
+              "total": 2,
+              "active": 2,
+              "obsolete": 0,
+              "translated": 2,
+              "untranslated": 0,
+              "fuzzy": 0,
+              "plural": 0,
+              "errors": 0,
+              "warnings": 0,
+              "infos": 0
+            },
+            "plural_checked_through": 1000,
+            "diagnostics": []
+          }
+        ],
+        "project_findings": []
+      }
+    },
+    {
+      "name": "xml-broken",
+      "args": [
+        "examples/project-quality/xml-broken.po",
+        "--markup",
+        "xml",
+        "--strict"
+      ],
+      "exit_code": 1,
+      "diagnostic_codes": [
+        "M002",
+        "M003"
+      ],
+      "report": {
+        "schema_version": 1,
+        "command": "check",
+        "exit_code": 1,
+        "files": [
+          {
+            "schema_version": 1,
+            "tool": "szs",
+            "version": "0.2.0",
+            "file": "examples/project-quality/xml-broken.po",
+            "exit_code": 1,
+            "statistics": {
+              "total": 2,
+              "active": 2,
+              "obsolete": 0,
+              "translated": 2,
+              "untranslated": 0,
+              "fuzzy": 0,
+              "plural": 0,
+              "errors": 2,
+              "warnings": 0,
+              "infos": 0
+            },
+            "plural_checked_through": 1000,
+            "diagnostics": [
+              {
+                "code": "M003",
+                "severity": "error",
+                "message": "Markup tree, attribute presence or protected attribute value differs from source",
+                "file": "examples/project-quality/xml-broken.po",
+                "span": {
+                  "start": {
+                    "line": 11,
+                    "column": 1
+                  },
+                  "end": {
+                    "line": 11,
+                    "column": 44
+                  }
+                },
+                "entry": 1,
+                "related": {
+                  "start": {
+                    "line": 10,
+                    "column": 1
+                  },
+                  "end": {
+                    "line": 10,
+                    "column": 43
+                  }
+                },
+                "hint": "Sibling/attribute order and translated text may change; tag ancestry, multiplicity and protected values must remain."
+              },
+              {
+                "code": "M002",
+                "severity": "error",
+                "message": "Undeclared XML entity; DTD and external entity expansion are unsupported",
+                "file": "examples/project-quality/xml-broken.po",
+                "span": {
+                  "start": {
+                    "line": 14,
+                    "column": 1
+                  },
+                  "end": {
+                    "line": 14,
+                    "column": 26
+                  }
+                },
+                "entry": 2,
+                "related": {
+                  "start": {
+                    "line": 13,
+                    "column": 1
+                  },
+                  "end": {
+                    "line": 13,
+                    "column": 20
+                  }
+                },
+                "hint": "Decoded translation character offset 12; PO span identifies the containing field."
+              }
+            ]
+          }
+        ],
+        "project_findings": []
+      }
+    },
+    {
+      "name": "configured",
+      "args": [
+        "examples/project-quality/valid",
+        "--recursive",
+        "--config",
+        "examples/project-quality/ci.json"
+      ],
+      "exit_code": 0,
+      "diagnostic_codes": [],
+      "report": {
+        "schema_version": 1,
+        "command": "check",
+        "exit_code": 0,
+        "files": [
+          {
+            "schema_version": 1,
+            "tool": "szs",
+            "version": "0.2.0",
+            "file": "examples\\project-quality\\valid\\fr\\ui.po",
+            "exit_code": 0,
+            "statistics": {
+              "total": 2,
+              "active": 2,
+              "obsolete": 0,
+              "translated": 2,
+              "untranslated": 0,
+              "fuzzy": 0,
+              "plural": 0,
+              "errors": 0,
+              "warnings": 0,
+              "infos": 0
+            },
+            "plural_checked_through": 1000,
+            "diagnostics": []
+          },
+          {
+            "schema_version": 1,
+            "tool": "szs",
+            "version": "0.2.0",
+            "file": "examples\\project-quality\\valid\\settings.po",
+            "exit_code": 0,
+            "statistics": {
+              "total": 2,
+              "active": 2,
+              "obsolete": 0,
+              "translated": 2,
+              "untranslated": 0,
+              "fuzzy": 0,
+              "plural": 0,
+              "errors": 0,
+              "warnings": 0,
+              "infos": 0
+            },
+            "plural_checked_through": 1000,
+            "diagnostics": []
+          },
+          {
+            "schema_version": 1,
+            "tool": "szs",
+            "version": "0.2.0",
+            "file": "examples\\project-quality\\valid\\ui.po",
+            "exit_code": 0,
+            "statistics": {
+              "total": 2,
+              "active": 2,
+              "obsolete": 0,
+              "translated": 2,
+              "untranslated": 0,
+              "fuzzy": 0,
+              "plural": 0,
+              "errors": 0,
+              "warnings": 0,
+              "infos": 0
+            },
+            "plural_checked_through": 1000,
+            "diagnostics": []
+          }
+        ],
+        "project_findings": []
+      }
+    }
+  ]
+}

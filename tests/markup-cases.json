@@ -1,0 +1,649 @@
+{
+  "schema_version": 1,
+  "profile": "CGM-1",
+  "cases": [
+    {
+      "id": "H01",
+      "mode": "html",
+      "category": "plain text",
+      "source": "Save & close",
+      "target": "保存并关闭",
+      "expected_codes": [],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H02",
+      "mode": "html",
+      "category": "balanced nested tags",
+      "source": "<b><i>Save</i></b>",
+      "target": "<b><i>保存</i></b>",
+      "expected_codes": [],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H03",
+      "mode": "html",
+      "category": "legal sibling reorder",
+      "source": "<b>one</b><i>two</i>",
+      "target": "<i>二</i><b>一</b>",
+      "expected_codes": [],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H04",
+      "mode": "html",
+      "category": "legal attribute reorder",
+      "source": "<a href=\"/help\" class=\"x\">Help</a>",
+      "target": "<a class=\"x\" href=\"/help\">帮助</a>",
+      "expected_codes": [],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H05",
+      "mode": "html",
+      "category": "translatable attributes",
+      "source": "<img src=\"a.png\" alt=\"Image\" title=\"Hint\">",
+      "target": "<img title=\"提示\" alt=\"图片\" src=\"a.png\">",
+      "expected_codes": [],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H06",
+      "mode": "html",
+      "category": "protected href",
+      "source": "<a href=\"/help\">Help</a>",
+      "target": "<a href=\"/pay\">帮助</a>",
+      "expected_codes": [
+        "M003"
+      ],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H07",
+      "mode": "html",
+      "category": "missing tag",
+      "source": "<b>Save</b>",
+      "target": "保存",
+      "expected_codes": [
+        "M003"
+      ],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H08",
+      "mode": "html",
+      "category": "translated tag name",
+      "source": "<b>Save</b>",
+      "target": "<strong>保存</strong>",
+      "expected_codes": [
+        "M003"
+      ],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H09",
+      "mode": "html",
+      "category": "same counts changed ancestry",
+      "source": "<b><i>one</i></b><u>two</u>",
+      "target": "<b>一</b><u><i>二</i></u>",
+      "expected_codes": [
+        "M003"
+      ],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H10",
+      "mode": "html",
+      "category": "crossed closing tags",
+      "source": "<b><i>Save</i></b>",
+      "target": "<b><i>保存</b></i>",
+      "expected_codes": [
+        "M002"
+      ],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H11",
+      "mode": "html",
+      "category": "unclosed tag",
+      "source": "<b>Save</b>",
+      "target": "<b>保存",
+      "expected_codes": [
+        "M002"
+      ],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H12",
+      "mode": "html",
+      "category": "unexpected closing tag",
+      "source": "Save",
+      "target": "保存</b>",
+      "expected_codes": [
+        "M002"
+      ],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H13",
+      "mode": "html",
+      "category": "quoted greater-than",
+      "source": "<a data-x=\"a>b\">x</a>",
+      "target": "<a data-x=\"a>b\">中</a>",
+      "expected_codes": [],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H14",
+      "mode": "html",
+      "category": "HTML unquoted attributes",
+      "source": "<a href=/help>Help</a>",
+      "target": "<a href=\"/help\">帮助</a>",
+      "expected_codes": [],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H15",
+      "mode": "html",
+      "category": "HTML boolean attribute",
+      "source": "<input disabled>",
+      "target": "<input disabled=\"\">",
+      "expected_codes": [],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H16",
+      "mode": "html",
+      "category": "HTML void self closing",
+      "source": "<br>",
+      "target": "<br/>",
+      "expected_codes": [],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H17",
+      "mode": "html",
+      "category": "HTML void closing prohibited",
+      "source": "<br>",
+      "target": "<br></br>",
+      "expected_codes": [
+        "M002"
+      ],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H18",
+      "mode": "html",
+      "category": "nonvoid HTML slash is not a close",
+      "source": "<b>Save</b>",
+      "target": "<b/>",
+      "expected_codes": [
+        "M002"
+      ],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H19",
+      "mode": "html",
+      "category": "HTML ASCII case folding",
+      "source": "<B TITLE=\"Help\">Help</B>",
+      "target": "<b title=\"帮助\">帮助</b>",
+      "expected_codes": [],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H20",
+      "mode": "html",
+      "category": "duplicate attributes",
+      "source": "<a href=\"x\">x</a>",
+      "target": "<a href=\"x\" HREF=\"x\">中</a>",
+      "expected_codes": [
+        "M002"
+      ],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H21",
+      "mode": "html",
+      "category": "attribute whitespace",
+      "source": "<a href=\"x\">x</a>",
+      "target": "<a href=\"x\"title=\"中\">中</a>",
+      "expected_codes": [
+        "M002"
+      ],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H22",
+      "mode": "html",
+      "category": "unterminated attribute",
+      "source": "<a href=\"x\">x</a>",
+      "target": "<a href=\"x>中</a>",
+      "expected_codes": [
+        "M002"
+      ],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H23",
+      "mode": "html",
+      "category": "source raw text unsupported",
+      "source": "<script>x</script>",
+      "target": "<script>y</script>",
+      "expected_codes": [
+        "M001"
+      ],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H24",
+      "mode": "html",
+      "category": "target raw text unsupported",
+      "source": "Save",
+      "target": "<script>保存</script>",
+      "expected_codes": [
+        "M002"
+      ],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H25",
+      "mode": "html",
+      "category": "HTML declaration unsupported",
+      "source": "Save",
+      "target": "<!DOCTYPE html>保存",
+      "expected_codes": [
+        "M002"
+      ],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H26",
+      "mode": "html",
+      "category": "comments do not freeze translations",
+      "source": "<b>Save</b><!-- source -->",
+      "target": "<!-- target --><b>保存</b>",
+      "expected_codes": [],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H27",
+      "mode": "html",
+      "category": "malformed comment",
+      "source": "Save",
+      "target": "<!-- a--b -->保存",
+      "expected_codes": [
+        "M002"
+      ],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H28",
+      "mode": "html",
+      "category": "unterminated start tag",
+      "source": "Save",
+      "target": "<b",
+      "expected_codes": [
+        "M002"
+      ],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H29",
+      "mode": "html",
+      "category": "multiple root fragments",
+      "source": "A<b>B</b><i>C</i>",
+      "target": "<i>丙</i>甲<b>乙</b>",
+      "expected_codes": [],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H30",
+      "mode": "html",
+      "category": "literal ampersand in HTML",
+      "source": "A & B",
+      "target": "甲 & 乙",
+      "expected_codes": [],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H31",
+      "mode": "html",
+      "category": "protected entity equivalence",
+      "source": "<a href=\"?x=1&amp;y=2\">x</a>",
+      "target": "<a href=\"?x=1&#38;y=2\">中</a>",
+      "expected_codes": [],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H32",
+      "mode": "html",
+      "category": "numeric reference identity",
+      "source": "<a href=\"a\">x</a>",
+      "target": "<a href=\"&#x61;\">中</a>",
+      "expected_codes": [],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H33",
+      "mode": "html",
+      "category": "protected class changes",
+      "source": "<b class=\"warning\">x</b>",
+      "target": "<b class=\"ok\">中</b>",
+      "expected_codes": [
+        "M003"
+      ],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H34",
+      "mode": "html",
+      "category": "escaped angle brackets are text",
+      "source": "&lt;Error&gt;",
+      "target": "错误",
+      "expected_codes": [],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H35",
+      "mode": "html",
+      "category": "opt-in plain less-than boundary",
+      "source": "1 < 2",
+      "target": "一小于二",
+      "expected_codes": [
+        "M001"
+      ],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H36",
+      "mode": "html",
+      "category": "HTML named entities in text",
+      "source": "&copy; A",
+      "target": "&reg; 乙",
+      "expected_codes": [],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H37",
+      "mode": "html",
+      "category": "HTML uppercase hexadecimal reference",
+      "source": "<a href=\"a\">x</a>",
+      "target": "<a href=\"&#X61;\">中</a>",
+      "expected_codes": [],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H38",
+      "mode": "html",
+      "category": "HTML element names start with ASCII letters",
+      "source": "<标签>x</标签>",
+      "target": "<标签>中</标签>",
+      "expected_codes": [
+        "M001"
+      ],
+      "xml_target_valid": null
+    },
+    {
+      "id": "X01",
+      "mode": "xml",
+      "category": "XML empty and paired elements",
+      "source": "<br/>",
+      "target": "<br></br>",
+      "expected_codes": [],
+      "xml_target_valid": true
+    },
+    {
+      "id": "X02",
+      "mode": "xml",
+      "category": "XML case-sensitive names",
+      "source": "<B>x</B>",
+      "target": "<b>中</b>",
+      "expected_codes": [
+        "M003"
+      ],
+      "xml_target_valid": true
+    },
+    {
+      "id": "X03",
+      "mode": "xml",
+      "category": "XML case-sensitive closing",
+      "source": "<B>x</B>",
+      "target": "<B>中</b>",
+      "expected_codes": [
+        "M002"
+      ],
+      "xml_target_valid": false
+    },
+    {
+      "id": "X04",
+      "mode": "xml",
+      "category": "XML quoted attributes required",
+      "source": "<a x=\"1\"/>",
+      "target": "<a x=1/>",
+      "expected_codes": [
+        "M002"
+      ],
+      "xml_target_valid": false
+    },
+    {
+      "id": "X05",
+      "mode": "xml",
+      "category": "XML boolean attributes invalid",
+      "source": "<a x=\"\"/>",
+      "target": "<a x/>",
+      "expected_codes": [
+        "M002"
+      ],
+      "xml_target_valid": false
+    },
+    {
+      "id": "X06",
+      "mode": "xml",
+      "category": "XML CDATA and comments",
+      "source": "<b><![CDATA[<name>]]></b>",
+      "target": "<!--中--><b><![CDATA[<名字>]]></b>",
+      "expected_codes": [],
+      "xml_target_valid": true
+    },
+    {
+      "id": "X07",
+      "mode": "xml",
+      "category": "qualified names retained",
+      "source": "<x:a xmlns:x=\"urn:x\">one</x:a>",
+      "target": "<x:a xmlns:x=\"urn:x\">一</x:a>",
+      "expected_codes": [],
+      "xml_target_valid": true
+    },
+    {
+      "id": "X08",
+      "mode": "xml",
+      "category": "prefix changes are lexical contract changes",
+      "source": "<x:a xmlns:x=\"urn:x\"/>",
+      "target": "<y:a xmlns:y=\"urn:x\"/>",
+      "expected_codes": [
+        "M003"
+      ],
+      "xml_target_valid": true
+    },
+    {
+      "id": "X09",
+      "mode": "xml",
+      "category": "undefined XML entity",
+      "source": "<b>x</b>",
+      "target": "<b>&unknown;</b>",
+      "expected_codes": [
+        "M002"
+      ],
+      "xml_target_valid": false
+    },
+    {
+      "id": "X10",
+      "mode": "xml",
+      "category": "bare XML ampersand",
+      "source": "<b>x</b>",
+      "target": "<b>A & B</b>",
+      "expected_codes": [
+        "M002"
+      ],
+      "xml_target_valid": false
+    },
+    {
+      "id": "X11",
+      "mode": "xml",
+      "category": "NUL reference",
+      "source": "<b>x</b>",
+      "target": "<b>&#0;</b>",
+      "expected_codes": [
+        "M002"
+      ],
+      "xml_target_valid": false
+    },
+    {
+      "id": "X12",
+      "mode": "xml",
+      "category": "surrogate reference",
+      "source": "<b>x</b>",
+      "target": "<b>&#xD800;</b>",
+      "expected_codes": [
+        "M002"
+      ],
+      "xml_target_valid": false
+    },
+    {
+      "id": "X13",
+      "mode": "xml",
+      "category": "out of range reference",
+      "source": "<b>x</b>",
+      "target": "<b>&#99999999;</b>",
+      "expected_codes": [
+        "M002"
+      ],
+      "xml_target_valid": false
+    },
+    {
+      "id": "X14",
+      "mode": "xml",
+      "category": "hex decimal attribute identity",
+      "source": "<b x=\"&#65;\"/>",
+      "target": "<b x=\"&#x41;\"/>",
+      "expected_codes": [],
+      "xml_target_valid": true
+    },
+    {
+      "id": "X15",
+      "mode": "xml",
+      "category": "Unicode XML names",
+      "source": "<标签 属性=\"值\">one</标签>",
+      "target": "<标签 属性=\"值\">一</标签>",
+      "expected_codes": [],
+      "xml_target_valid": true
+    },
+    {
+      "id": "X16",
+      "mode": "xml",
+      "category": "CDATA terminator outside CDATA",
+      "source": "<b>x</b>",
+      "target": "<b>]]></b>",
+      "expected_codes": [
+        "M002"
+      ],
+      "xml_target_valid": false
+    },
+    {
+      "id": "X17",
+      "mode": "xml",
+      "category": "DTD source unsupported",
+      "source": "<!DOCTYPE a><a/>",
+      "target": "<a/>",
+      "expected_codes": [
+        "M001"
+      ],
+      "xml_target_valid": null
+    },
+    {
+      "id": "X18",
+      "mode": "xml",
+      "category": "processing instruction unsupported",
+      "source": "<a/>",
+      "target": "<?target value?><a/>",
+      "expected_codes": [
+        "M002"
+      ],
+      "xml_target_valid": true
+    },
+    {
+      "id": "X19",
+      "mode": "xml",
+      "category": "unterminated CDATA",
+      "source": "<a/>",
+      "target": "<a><![CDATA[x</a>",
+      "expected_codes": [
+        "M002"
+      ],
+      "xml_target_valid": false
+    },
+    {
+      "id": "X20",
+      "mode": "xml",
+      "category": "less-than in quoted attribute",
+      "source": "<a x=\"1\"/>",
+      "target": "<a x=\"<\"/>",
+      "expected_codes": [
+        "M002"
+      ],
+      "xml_target_valid": false
+    },
+    {
+      "id": "X21",
+      "mode": "xml",
+      "category": "XML attribute whitespace normalization",
+      "source": "<a x=\"a b\"/>",
+      "target": "<a x=\"a\tb\"/>",
+      "expected_codes": [],
+      "xml_target_valid": true
+    },
+    {
+      "id": "X22",
+      "mode": "xml",
+      "category": "XML duplicate attribute",
+      "source": "<a x=\"1\"/>",
+      "target": "<a x=\"1\" x=\"1\"/>",
+      "expected_codes": [
+        "M002"
+      ],
+      "xml_target_valid": false
+    },
+    {
+      "id": "X23",
+      "mode": "xml",
+      "category": "XML has no void tags",
+      "source": "<br>",
+      "target": "<br/>",
+      "expected_codes": [
+        "M001"
+      ],
+      "xml_target_valid": null
+    },
+    {
+      "id": "X24",
+      "mode": "xml",
+      "category": "XML escaped text may translate",
+      "source": "<b>A&amp;B</b>",
+      "target": "<b>甲&#38;乙</b>",
+      "expected_codes": [],
+      "xml_target_valid": true
+    },
+    {
+      "id": "X25",
+      "mode": "xml",
+      "category": "XML uppercase hexadecimal prefix is invalid",
+      "source": "<a x=\"a\"/>",
+      "target": "<a x=\"&#X61;\"/>",
+      "expected_codes": [
+        "M002"
+      ],
+      "xml_target_valid": false
+    }
+  ]
+}

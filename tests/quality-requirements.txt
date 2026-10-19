@@ -1,0 +1,5 @@
+# Independent reference tools only; not CatalogGuard runtime dependencies.
+polib==1.2.0
+translate-toolkit==3.20.0
+lxml==6.1.3
+unicode-segmentation-rs==0.3.3

@@ -20,6 +20,12 @@ pub fn check_bytes(Bytes, file? : String, options? : Options, template? : Bool) 
 
 pub fn check_catalog(Catalog, options? : Options, template? : Bool) -> Report
 
+pub fn check_consistency(Array[Catalog], options? : ConsistencyOptions) -> Array[ProjectFinding]
+
+pub fn check_markup_catalog(Catalog, options? : MarkupOptions) -> Array[Diagnostic]
+
+pub fn check_project(Array[Catalog], configuration? : ProjectPolicy) -> ProjectReport
+
 pub fn check_text(String, file? : String, options? : Options, template? : Bool) -> Report
 
 pub fn compare_contracts(FormatContract, FormatContract) -> Array[FormatDifference]
@@ -28,9 +34,15 @@ pub fn compare_template(Catalog, Catalog) -> TemplateDelta
 
 pub fn context_summaries(Catalog) -> Array[ContextSummary]
 
+pub fn default_consistency_options() -> ConsistencyOptions
+
+pub fn default_markup_options() -> MarkupOptions
+
 pub fn default_options() -> Options
 
 pub fn default_policy() -> Policy
+
+pub fn default_project_policy() -> ProjectPolicy
 
 pub fn diagnostic_json(Diagnostic) -> Json
 
@@ -41,6 +53,8 @@ pub fn entry_json(Entry) -> Json
 pub fn evaluate_plural(PluralExpr, Int, budget? : Int, maximum_depth? : Int) -> Result[Int, String]
 
 pub fn format_contract(String, String) -> Result[FormatContract, String]
+
+pub fn markup_contract(String, options? : MarkupOptions) -> Result[MarkupContract, MarkupError]
 
 pub fn options_from_json(Options, Json) -> Result[Options, String]
 
@@ -54,6 +68,8 @@ pub fn parse_plural_rule(String, maximum_depth? : Int) -> Result[PluralRule, Str
 
 pub fn parse_policy(String) -> Result[Policy, String]
 
+pub fn parse_project_policy(String) -> Result[ProjectPolicy, String]
+
 pub fn parse_reference(String) -> Reference
 
 pub fn parse_severity(String) -> Severity?
@@ -61,6 +77,8 @@ pub fn parse_severity(String) -> Severity?
 pub fn plural_coverage(PluralRule, maximum? : Int, budget? : Int, maximum_depth? : Int) -> Result[PluralCoverage, String]
 
 pub fn printf_contract(String) -> Result[FormatContract, String]
+
+pub fn project_finding_json(ProjectFinding) -> Json
 
 pub fn python_percent_contract(String) -> Result[FormatContract, String]
 
@@ -83,6 +101,8 @@ pub fn statistics(Catalog, Array[Diagnostic]) -> Statistics
 pub fn statistics_json(Statistics) -> Json
 
 pub fn validate_header(Catalog, CatalogHeader, template? : Bool) -> Array[Diagnostic]
+
+pub fn validate_markup_options(MarkupOptions) -> Array[String]
 
 pub fn validate_options(Options) -> Array[String]
 
@@ -112,6 +132,14 @@ pub(all) struct Comment {
 pub fn Comment::equal(Self, Self) -> Bool
 pub fn Comment::not_equal(Self, Self) -> Bool
 pub fn Comment::to_repr(Self) -> @debug.Repr
+
+pub(all) struct ConsistencyOptions {
+  enabled : Bool
+  ignore_context : Bool
+  inverse : Bool
+  max_entries : Int
+} derive(@debug.Debug)
+pub fn ConsistencyOptions::to_repr(Self) -> @debug.Repr
 
 pub(all) struct ContextSummary {
   context : String?
@@ -195,6 +223,32 @@ pub fn HeaderField::equal(Self, Self) -> Bool
 pub fn HeaderField::not_equal(Self, Self) -> Bool
 pub fn HeaderField::to_repr(Self) -> @debug.Repr
 
+pub(all) struct MarkupContract {
+  mode : String
+  nodes : Int
+  signature : String
+} derive(Eq, @debug.Debug)
+pub fn MarkupContract::equal(Self, Self) -> Bool
+pub fn MarkupContract::not_equal(Self, Self) -> Bool
+pub fn MarkupContract::to_repr(Self) -> @debug.Repr
+
+pub(all) struct MarkupError {
+  offset : Int
+  message : String
+} derive(Eq, @debug.Debug)
+pub fn MarkupError::equal(Self, Self) -> Bool
+pub fn MarkupError::not_equal(Self, Self) -> Bool
+pub fn MarkupError::to_repr(Self) -> @debug.Repr
+
+pub(all) struct MarkupOptions {
+  mode : String
+  translatable_attributes : Array[String]
+  max_chars : Int
+  max_nodes : Int
+  max_depth : Int
+} derive(@debug.Debug)
+pub fn MarkupOptions::to_repr(Self) -> @debug.Repr
+
 pub(all) struct Options {
   empty_severity : Severity
   fuzzy_severity : Severity
@@ -254,6 +308,29 @@ pub(all) struct Position {
 pub fn Position::equal(Self, Self) -> Bool
 pub fn Position::not_equal(Self, Self) -> Bool
 pub fn Position::to_repr(Self) -> @debug.Repr
+
+pub(all) struct ProjectFinding {
+  file_index : Int
+  diagnostic : Diagnostic
+  related_file : String?
+  related_span : Span?
+  related_entry : Int?
+} derive(@debug.Debug)
+pub fn ProjectFinding::to_repr(Self) -> @debug.Repr
+
+pub(all) struct ProjectPolicy {
+  policy : Policy
+  markup : MarkupOptions
+  consistency : ConsistencyOptions
+} derive(@debug.Debug)
+pub fn ProjectPolicy::to_repr(Self) -> @debug.Repr
+
+pub(all) struct ProjectReport {
+  reports : Array[Report]
+  findings : Array[ProjectFinding]
+  exit_code : Int
+} derive(@debug.Debug)
+pub fn ProjectReport::to_repr(Self) -> @debug.Repr
 
 pub(all) struct Reference {
   path : String

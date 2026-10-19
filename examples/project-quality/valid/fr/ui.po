@@ -1,0 +1,15 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: SZS demo 1.0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid "Save"
+msgstr "Enregistrer"
+
+msgid "<a href=\"/help\" title=\"Help\">Help</a><b>Now</b>"
+msgstr "<a title=\"Aide\" href=\"/help\">Aide</a><b>Maintenant</b>"
+

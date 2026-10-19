@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "options": {
+    "strict": true
+  },
+  "quality": {
+    "markup": {
+      "mode": "html"
+    },
+    "consistency": {
+      "enabled": true
+    }
+  },
+  "rules": {
+    "X002": "error"
+  }
+}

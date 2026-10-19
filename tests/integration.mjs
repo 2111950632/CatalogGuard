@@ -28,6 +28,104 @@ function input(name, content) {
   return path;
 }
 
+const qualityHeader = readFileSync(join(root,'examples/zh_CN.po'),'utf8').replaceAll('\r\n','\n').split('\n\n')[0]+'\n\n';
+function qualityInput(name, source, target, context) {
+  return input(name, qualityHeader+(context === undefined ? '' : 'msgctxt '+JSON.stringify(context)+'\n')+'msgid '+JSON.stringify(source)+'\nmsgstr '+JSON.stringify(target)+'\n');
+}
+
+test('markup is opt-in and HTML/XML void semantics differ', () => {
+  const path=qualityInput('markup-void.po','<br>','<br/>');
+  assert.equal(run([path,'--markup','html','--json']).status,0);
+  const xml=run([path,'--markup','xml','--json']);
+  assert.equal(xml.status,1);
+  assert.ok(data(xml).files[0].diagnostics.some(d=>d.code==='M001'));
+  const broken=qualityInput('markup-opt-in.po','<b>x</b>','plain');
+  assert.equal(run([broken,'--json']).status,0);
+  assert.equal(run([broken,'--markup','html','--json']).status,1);
+});
+
+test('markup accepts translation reorder but protects attribute associations', () => {
+  const good=qualityInput('markup-reorder.po','<b>One</b><a href="/help" title="Help">Two</a>','<a title="帮助" href="/help">二</a><b>一</b>');
+  assert.equal(run([good,'--markup','html','--strict','--json']).status,0);
+  const bad=qualityInput('markup-href.po','<a href="/help">Help</a>','<a href="/pay">帮助</a>');
+  const result=run([bad,'--markup','html','--json']);
+  assert.equal(result.status,1);
+  assert.ok(data(result).files[0].diagnostics.some(d=>d.code==='M003' && d.related && d.span.start.line>1));
+});
+
+test('cross-file findings preserve both locations and strict failure policy', () => {
+  const first=qualityInput('conflict-first.po','Save','保存');
+  const second=qualityInput('conflict-second.po','Save','存储');
+  const normal=run([first,second,'--consistency','--json']);
+  assert.equal(normal.status,0);
+  const finding=data(normal).project_findings[0];
+  assert.equal(finding.diagnostic.code,'X002');
+  assert.equal(finding.diagnostic.file,second);
+  assert.equal(finding.related.file,first);
+  assert.ok(finding.related.span.start.line>0);
+  assert.equal(run([first,second,'--consistency','--strict','--json']).status,1);
+});
+
+test('contexts and locale variants avoid spurious cross-file conflicts', () => {
+  const first=qualityInput('context-first.po','Open','打开','verb');
+  const second=qualityInput('context-second.po','Open','开放','adjective');
+  assert.deepEqual(data(run([first,second,'--consistency','--json'])).project_findings,[]);
+  assert.equal(data(run([first,second,'--ignore-context','--json'])).project_findings[0].diagnostic.code,'X002');
+  const other=input('other-locale.po',readFileSync(second,'utf8').replace('zh_CN','zh_TW'));
+  assert.deepEqual(data(run([first,other,'--ignore-context','--json'])).project_findings,[]);
+});
+
+test('quality configuration enables checks and CLI flags override it', () => {
+  const path=qualityInput('quality-config.po','<b>x</b>','plain');
+  const config=input('quality.json',JSON.stringify({schema_version:1,quality:{markup:{mode:'html'}}}));
+  assert.equal(run([path,'--config',config,'--json']).status,1);
+  assert.equal(run([path,'--config',config,'--markup','off','--json']).status,0);
+});
+
+test('recursive input is deterministic and ignores noncatalogs and POT conflicts', () => {
+  const folder=join(temp,'project-tree'); mkdirSync(join(folder,'nested'),{recursive:true});
+  writeFileSync(join(folder,'a.po'),qualityHeader+'msgid "Save"\nmsgstr "保存"\n');
+  writeFileSync(join(folder,'nested','b.po'),qualityHeader+'msgid "Save"\nmsgstr "存储"\n');
+  writeFileSync(join(folder,'ignore.txt'),'not a catalog');
+  writeFileSync(join(folder,'template.pot'),'msgid "Save"\nmsgstr ""\n');
+  const result=run([folder,'--recursive','--consistency','--json']);
+  assert.equal(result.status,0,result.stdout+result.stderr);
+  assert.equal(data(result).files.length,3);
+  assert.deepEqual(data(result).project_findings.map(f=>f.diagnostic.code),['X002']);
+  assert.match(data(result).project_findings[0].related.file,/a\.po$/);
+});
+
+test('invalid quality options reject the invocation', () => {
+  const path=qualityInput('quality-invalid.po','x','X');
+  for(const quality of [{markup:{mode:'auto'}},{markup:{max_depth:129}},{consistency:{enabled:'yes'}},{markup:{translatable_attributes:[1]}},{markup:{typo:true}}]){
+    const config=input('invalid-quality.json',JSON.stringify({quality}));
+    assert.equal(run([path,'--config',config,'--json']).status,2);
+  }
+  assert.equal(run([path,'--markup','auto','--json']).status,2);
+});
+
+test('project limits report a failure instead of partial success', () => {
+  const first=qualityInput('limit-first.po','Save','保存');
+  const second=qualityInput('limit-second.po','Save','存储');
+  const config=input('limit-quality.json',JSON.stringify({quality:{consistency:{enabled:true,max_entries:1}}}));
+  const result=run([first,second,'--config',config,'--json']);
+  assert.equal(result.status,1);
+  assert.equal(data(result).project_findings[0].diagnostic.code,'X009');
+  assert.equal(data(result).project_findings[0].diagnostic.entry,null);
+});
+
+test('inverse consistency is an explicit review operation', () => {
+  const first=qualityInput('inverse-first.po','Cancel','取消');
+  const second=qualityInput('inverse-second.po','Delete','取消');
+  assert.deepEqual(data(run([first,second,'--consistency','--json'])).project_findings,[]);
+  assert.equal(data(run([first,second,'--inverse-consistency','--json'])).project_findings[0].diagnostic.code,'X005');
+});
+
+test('duplicate input paths are rejected before double counting', () => {
+  const path=qualityInput('duplicate-project.po','Save','保存');
+  assert.equal(run([path,path,'--consistency','--json']).status,2);
+});
+
 test('Chinese PO and POT pass strict template comparison', () => {
   const result = run(['check', 'examples/zh_CN.po', '--template', 'examples/messages.pot', '--strict', '--json']);
   assert.equal(result.status, 0, result.stdout + result.stderr);
@@ -155,7 +253,7 @@ test('rules help and version work without catalog inputs', () => {
   assert.ok(rules.some(r => r.code === 'P011'));
   assert.ok(rules.some(r => r.code === 'F008'));
   assert.equal(run(['--help']).status, 0);
-  assert.equal(run(['--version']).stdout.trim(), 'szs 0.1.2');
+  assert.equal(run(['--version']).stdout.trim(), 'szs 0.2.0');
 });
 
 test('duplicate stdin and excessive input are bounded IO failures', () => {
