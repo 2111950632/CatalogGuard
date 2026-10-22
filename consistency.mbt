@@ -32,43 +32,65 @@ priv struct ConsistencyReference {
 }
 
 ///|
-priv struct ConsistencySource {
+priv struct ConsistencyWitness {
   reference : ConsistencyReference
-  plural : String?
-  translation : String
-  flags : String
+  value : String
 }
 
 ///|
-priv struct ConsistencyTargets {
-  first : ConsistencyReference
-  outside_first_file : Array[ConsistencyReference]
-  outside_first_source : Array[ConsistencyReference]
+priv struct ConsistencyWitnesses {
+  first : ConsistencyWitness
+  outside_first_file : Array[ConsistencyWitness]
+  outside_first_value : Array[ConsistencyWitness]
 }
 
 ///|
-fn consistency_remember_target(
-  group : ConsistencyTargets,
+fn consistency_witness(
+  groups : Map[String, ConsistencyWitnesses],
+  key : String,
   current : ConsistencyReference,
-  catalogs : Array[Catalog],
-) -> Unit {
-  let first = group.first
-  let source = catalogs[current.file_index].entries[current.entry_index].id
-  let first_source = catalogs[first.file_index].entries[first.entry_index].id
-  // For a query in the first file, two distinct sources outside it suffice.
-  if current.file_index != first.file_index &&
-    group.outside_first_file.length() < 2 &&
-    !group.outside_first_file.any(p => {
-      catalogs[p.file_index].entries[p.entry_index].id == source
-    }) {
-    group.outside_first_file.push(current)
-  }
-  // For a query with the first source, two distinct other files suffice.
-  // All remaining queries can use first itself: at most five witnesses total.
-  if source != first_source &&
-    group.outside_first_source.length() < 2 &&
-    !group.outside_first_source.any(p => p.file_index == current.file_index) {
-    group.outside_first_source.push(current)
+  value : String,
+) -> ConsistencyReference? {
+  let witness = { reference: current, value, }
+  if groups.get(key) is Some(group) {
+    let witnesses = [group.first]
+    for previous in group.outside_first_file {
+      witnesses.push(previous)
+    }
+    for previous in group.outside_first_value {
+      witnesses.push(previous)
+    }
+    let mut result : ConsistencyReference? = None
+    for previous in witnesses {
+      if previous.reference.file_index != current.file_index &&
+        previous.value != value {
+        result = Some(previous.reference)
+        break
+      }
+    }
+    // When the query shares first's file, two distinct outside values suffice.
+    // When it shares first's value, two distinct other files suffice.
+    // All other queries can use first: at most five retained witnesses per key.
+    if current.file_index != group.first.reference.file_index &&
+      group.outside_first_file.length() < 2 &&
+      !group.outside_first_file.any(previous => previous.value == value) {
+      group.outside_first_file.push(witness)
+    }
+    if value != group.first.value &&
+      group.outside_first_value.length() < 2 &&
+      !group.outside_first_value.any(previous => {
+        previous.reference.file_index == current.file_index
+      }) {
+      group.outside_first_value.push(witness)
+    }
+    result
+  } else {
+    groups.set(key, {
+      first: witness,
+      outside_first_file: [],
+      outside_first_value: [],
+    })
+    None
   }
 }
 
@@ -221,8 +243,10 @@ pub fn check_consistency(
       ]
     }
   }
-  let sources : Map[String, ConsistencySource] = Map([])
-  let targets : Map[String, ConsistencyTargets] = Map([])
+  let plurals : Map[String, ConsistencyWitnesses] = Map([])
+  let translations : Map[String, ConsistencyWitnesses] = Map([])
+  let flags_index : Map[String, ConsistencyWitnesses] = Map([])
+  let targets : Map[String, ConsistencyWitnesses] = Map([])
   for file_index, catalog in catalogs {
     // Damaged catalogs already fail parsing; never infer conflicts from partial data.
     if catalog.entries.is_empty() ||
@@ -259,93 +283,72 @@ pub fn check_consistency(
       let current = { file_index, entry_index, }
       let translation = consistency_translation(entry)
       let flags = consistency_flags(entry)
-      if sources.get(key) is Some(previous) {
-        if previous.reference.file_index != file_index {
-          if previous.plural != entry.plural {
-            result.push(
-              project_finding(
-                catalogs,
-                file_index,
-                entry_index,
-                "X003",
-                Error,
-                "Same locale/context/source key has a different plural source across files",
-                Some(previous.reference),
-              ),
-            )
-          } else if previous.translation != translation {
-            result.push(
-              project_finding(
-                catalogs,
-                file_index,
-                entry_index,
-                "X002",
-                Warning,
-                "Same locale/context/source has conflicting translations across files",
-                Some(previous.reference),
-              ),
-            )
-          }
-          if previous.flags != flags {
-            result.push(
-              project_finding(
-                catalogs,
-                file_index,
-                entry_index,
-                "X004",
-                Warning,
-                "Format flags differ for the same source key across files",
-                Some(previous.reference),
-              ),
-            )
-          }
-        }
-      } else {
-        sources.set(key, {
-          reference: current,
-          plural: entry.plural,
+      let plural = match entry.plural {
+        None => "0"
+        Some(value) => "1" + markup_part(value)
+      }
+      if consistency_witness(plurals, key, current, plural) is Some(previous) {
+        result.push(
+          project_finding(
+            catalogs,
+            file_index,
+            entry_index,
+            "X003",
+            Error,
+            "Same locale/context/source key has a different plural source across files",
+            Some(previous),
+          ),
+        )
+      }
+      // Translation differences only compare entries with the same plural source.
+      // A separate plural witness must not hide a valid translation witness.
+      if consistency_witness(
+          translations,
+          key + markup_part(plural),
+          current,
           translation,
-          flags,
-        })
+        )
+        is Some(previous) {
+        result.push(
+          project_finding(
+            catalogs,
+            file_index,
+            entry_index,
+            "X002",
+            Warning,
+            "Same locale/context/source has conflicting translations across files",
+            Some(previous),
+          ),
+        )
+      }
+      if consistency_witness(flags_index, key, current, flags) is Some(previous) {
+        result.push(
+          project_finding(
+            catalogs,
+            file_index,
+            entry_index,
+            "X004",
+            Warning,
+            "Format flags differ for the same source key across files",
+            Some(previous),
+          ),
+        )
       }
       if options.inverse {
         let target_key = prefix + markup_part(translation)
-        if targets.get(target_key) is Some(group) {
-          let witnesses = [group.first]
-          for p in group.outside_first_file {
-            witnesses.push(p)
-          }
-          for p in group.outside_first_source {
-            witnesses.push(p)
-          }
-          let mut previous : ConsistencyReference? = None
-          for p in witnesses {
-            if p.file_index != file_index &&
-              catalogs[p.file_index].entries[p.entry_index].id != entry.id {
-              previous = Some(p)
-              break
-            }
-          }
-          if previous is Some(previous) {
-            result.push(
-              project_finding(
-                catalogs,
-                file_index,
-                entry_index,
-                "X005",
-                Warning,
-                "Different sources share one translation across files (inverse review)",
-                Some(previous),
-              ),
-            )
-          }
-          consistency_remember_target(group, current, catalogs)
-        } else {
-          targets.set(target_key, {
-            first: current,
-            outside_first_file: [],
-            outside_first_source: [],
-          })
+        if consistency_witness(targets, target_key, current, entry.id)
+          is Some(previous) {
+          result.push(
+            project_finding(
+              catalogs,
+              file_index,
+              entry_index,
+              "X005",
+              Warning,
+              "Different sources share one translation across files (inverse review)",
+              Some(previous),
+            ),
+          )
         }
       }
     }

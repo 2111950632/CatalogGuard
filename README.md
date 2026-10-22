@@ -2,7 +2,7 @@
 
 MoonBit 编写的 PO/POT 翻译目录检查库与命令行工具。项目由 `2111950632` 维护，面向 MoonBit 文档、应用本地化和 GitHub CI 中的翻译检查。
 
-当前版本 0.2.1。终审自查修复 HTML/XML 属性中的 CRLF/CR 规范化、非法 Language 分组与逆向冲突漏报；新增回归及 729 个小项目的朴素参考对照。功能边界保持显式，旧版发布与验收记录按版本分别保留。
+当前版本 0.2.2。继续修复终审复查发现的忽略上下文漏报及 HTML 数字字符引用误报/漏报。跨文件索引为每项比较保留至多五个见证，独立比较复数源文、同复数源文的译文及格式 flags。两个朴素参考分别穷举 768 个正向和 729 个逆向小项目；另有 960 个生成标记输入及 350 个多文件项目检查随标准验证和 CI 运行。功能边界保持显式，旧版成果按版本保留。
 
 0.2.0 针对第二轮初审新增 **HTML/XML 标记结构和跨文件一致性检查**，与原有三类格式合同组成可嵌入 MoonBit 的翻译质量检查核心。新增功能、与固定版本 Translate Toolkit 的实际对照、合法与错误案例见 [项目质量检查边界](docs/PROJECT_QUALITY.md)。PO/POT、目录校验、复数和模板处理与 [moongettext](https://github.com/YanFangNie/moongettext) 存在重叠，不申报为独有能力；格式标准和兼容终点仍见 [格式合同说明](docs/FORMAT_CONTRACTS.md)。
 
@@ -101,7 +101,7 @@ node --test tests/integration.mjs
 node scripts/count-source.mjs
 ```
 
-开发时工具链为 `moon 0.1.20261012`、`moonc v0.10.15+943464bfa`，Node.js 24.19.0。CI 记录实际工具链版本，使用官方当前工具链；工具链更新可能需要显式升级 API，失败不会被跳过。
+完整标准验证分别在 `moon 0.1.20261012 / moonc 0.10.15` 和当日官方 `moon 0.1.20261021 / moonc 0.10.17` 下通过，Node.js 24.19.0。CI 记录实际工具链版本，使用官方当前工具链；工具链更新可能需要显式升级 API，失败不会被跳过。
 
 安装 Python 3.9 或更新版本后，`npm run verify` 按顺序完成核心检查、两种后端测试、CLI 测试、打包和独立 consumer 验证。它从 `moon package` 的真实压缩包提取源码，在单独项目中调用 API；需要 Python 标准库，不需要 polib。`SZS_MOON`、`SZS_PYTHON` 可指定本机工具路径。
 

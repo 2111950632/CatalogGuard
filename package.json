@@ -1,6 +1,6 @@
 {
   "name": "szs-catalogguard",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "MoonBit PO/POT translation catalog checking",
   "type": "module",
   "private": true,

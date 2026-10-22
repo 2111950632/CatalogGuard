@@ -33,6 +33,42 @@ function qualityInput(name, source, target, context) {
   return input(name, qualityHeader+(context === undefined ? '' : 'msgctxt '+JSON.stringify(context)+'\n')+'msgid '+JSON.stringify(source)+'\nmsgstr '+JSON.stringify(target)+'\n');
 }
 
+for (const [kind, field, expected] of [
+  ['translation', value => 'msgstr '+JSON.stringify(value)+'\n', 'X002'],
+  ['plural', value => 'msgid_plural '+JSON.stringify(value)+'\nmsgstr[0] "Same"\n', 'X003'],
+  ['flags', () => 'msgstr "Same"\n', 'X004'],
+]) {
+  test('ignore-context retains hidden '+kind+' conflicts and strict exit status', () => {
+    const entry=(context,value)=>
+      (kind==='flags'?'#, '+(value==='Same'?'c-format':'python-format')+'\n':'')+
+      'msgctxt '+JSON.stringify(context)+'\nmsgid "Save"\n'+field(value)+'\n';
+    const first=input('merged-'+kind+'-first.po',qualityHeader+entry('menu','Same')+entry('dialog','Different'));
+    const second=input('merged-'+kind+'-second.po',qualityHeader+entry('menu','Same'));
+    assert.equal(run([first,second,'--consistency','--strict','--json']).status,0);
+    const result=run([first,second,'--ignore-context','--strict','--json']);
+    assert.equal(result.status,1,result.stdout+result.stderr);
+    const findings=data(result).project_findings;
+    assert.equal(findings.length,1);
+    assert.equal(findings[0].diagnostic.code,expected);
+    assert.equal(findings[0].related.file,first);
+    assert.equal(findings[0].related.entry,2);
+  });
+}
+
+test('HTML numeric C1 references match their mapped Unicode value', () => {
+  const path=qualityInput('html-c1-equal.po','<a data-k="&#128;">x</a>','<a data-k="€">中</a>');
+  const result=run([path,'--markup','html','--strict','--json']);
+  assert.equal(result.status,0,result.stdout+result.stderr);
+  assert.deepEqual(data(result).files[0].diagnostics,[]);
+});
+
+test('HTML numeric C1 references cannot hide a different protected value', () => {
+  const path=qualityInput('html-c1-different.po','<a data-k="&#128;">x</a>','<a data-k="\u0080">中</a>');
+  const result=run([path,'--markup','html','--strict','--json']);
+  assert.equal(result.status,1,result.stdout+result.stderr);
+  assert.deepEqual(data(result).files[0].diagnostics.map(d=>d.code),['M003']);
+});
+
 test('XML CRLF normalizes while retaining the separate carriage-return review', () => {
   const path=qualityInput('xml-crlf.po',"<a href='one two'/>","<a href='one\r\ntwo'/>");
   const result=run([path,'--markup','xml','--json']);
@@ -283,7 +319,7 @@ test('rules help and version work without catalog inputs', () => {
   assert.ok(rules.some(r => r.code === 'P011'));
   assert.ok(rules.some(r => r.code === 'F008'));
   assert.equal(run(['--help']).status, 0);
-  assert.equal(run(['--version']).stdout.trim(), 'szs 0.2.1');
+  assert.equal(run(['--version']).stdout.trim(), 'szs 0.2.2');
 });
 
 test('duplicate stdin and excessive input are bounded IO failures', () => {

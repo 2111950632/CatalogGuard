@@ -1000,3 +1000,168 @@ test "CGM-1 H40 HTML carriage return reference retains identity" {
   codes.sort()
   assert_eq(codes, ["M003"])
 }
+
+///|
+test "CGM-1 H41 decimal C1 mapping" {
+  let catalog = parse_catalog(
+    test_header() +
+    "msgid \"<a data-k=\\\"&#128;\\\">Text</a>\"\nmsgstr \"<a data-k=\\\"€\\\">Text</a>\"\n",
+  )
+  let result = check_markup_catalog(catalog, options={
+    ..default_markup_options(),
+    mode: "html",
+  })
+  let codes = result.map(d => d.code)
+  codes.sort()
+  assert_eq(codes, [])
+}
+
+///|
+test "CGM-1 H42 hexadecimal C1 mapping" {
+  let catalog = parse_catalog(
+    test_header() +
+    "msgid \"<a data-k=\\\"&#x80;\\\">Text</a>\"\nmsgstr \"<a data-k=\\\"€\\\">Text</a>\"\n",
+  )
+  let result = check_markup_catalog(catalog, options={
+    ..default_markup_options(),
+    mode: "html",
+  })
+  let codes = result.map(d => d.code)
+  codes.sort()
+  assert_eq(codes, [])
+}
+
+///|
+test "CGM-1 H43 C1 mapping protects distinct literal value" {
+  let catalog = parse_catalog(
+    test_header() +
+    "msgid \"<a data-k=\\\"&#128;\\\">Text</a>\"\nmsgstr \"<a data-k=\\\"\\\">Text</a>\"\n",
+  )
+  let result = check_markup_catalog(catalog, options={
+    ..default_markup_options(),
+    mode: "html",
+  })
+  let codes = result.map(d => d.code)
+  codes.sort()
+  assert_eq(codes, ["M003"])
+}
+
+///|
+test "CGM-1 H44 C1 quotation mapping" {
+  let catalog = parse_catalog(
+    test_header() +
+    "msgid \"<a data-k=\\\"&#x91;\\\">Text</a>\"\nmsgstr \"<a data-k=\\\"‘\\\">Text</a>\"\n",
+  )
+  let result = check_markup_catalog(catalog, options={
+    ..default_markup_options(),
+    mode: "html",
+  })
+  let codes = result.map(d => d.code)
+  codes.sort()
+  assert_eq(codes, [])
+}
+
+///|
+test "CGM-1 H45 unmapped C1 code point is retained" {
+  let catalog = parse_catalog(
+    test_header() +
+    "msgid \"<a data-k=\\\"&#129;\\\">Text</a>\"\nmsgstr \"<a data-k=\\\"\\\">Text</a>\"\n",
+  )
+  let result = check_markup_catalog(catalog, options={
+    ..default_markup_options(),
+    mode: "html",
+  })
+  let codes = result.map(d => d.code)
+  codes.sort()
+  assert_eq(codes, [])
+}
+
+///|
+test "CGM-1 H46 all 27 C1 mappings" {
+  let catalog = parse_catalog(
+    test_header() +
+    "msgid \"<a data-k=\\\"&#128;&#130;&#131;&#132;&#133;&#134;&#135;&#136;&#137;&#138;&#139;&#140;&#142;&#145;&#146;&#147;&#148;&#149;&#150;&#151;&#152;&#153;&#154;&#155;&#156;&#158;&#159;\\\">Text</a>\"\nmsgstr \"<a data-k=\\\"€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ\\\">Text</a>\"\n",
+  )
+  let result = check_markup_catalog(catalog, options={
+    ..default_markup_options(),
+    mode: "html",
+  })
+  let codes = result.map(d => d.code)
+  codes.sort()
+  assert_eq(codes, [])
+}
+
+///|
+test "CGM-1 H47 NUL numeric reference remains outside profile" {
+  let catalog = parse_catalog(
+    test_header() +
+    "msgid \"<a data-k=\\\"safe\\\">Text</a>\"\nmsgstr \"<a data-k=\\\"&#0;\\\">Text</a>\"\n",
+  )
+  let result = check_markup_catalog(catalog, options={
+    ..default_markup_options(),
+    mode: "html",
+  })
+  let codes = result.map(d => d.code)
+  codes.sort()
+  assert_eq(codes, ["M002"])
+}
+
+///|
+test "CGM-1 H48 uppercase hexadecimal C1 mapping" {
+  let catalog = parse_catalog(
+    test_header() +
+    "msgid \"<a data-k=\\\"&#X9F;\\\">Text</a>\"\nmsgstr \"<a data-k=\\\"Ÿ\\\">Text</a>\"\n",
+  )
+  let result = check_markup_catalog(catalog, options={
+    ..default_markup_options(),
+    mode: "html",
+  })
+  let codes = result.map(d => d.code)
+  codes.sort()
+  assert_eq(codes, [])
+}
+
+///|
+test "CGM-1 X30 XML retains decimal C1 identity" {
+  let catalog = parse_catalog(
+    test_header() +
+    "msgid \"<a data-k=\\\"&#128;\\\">Text</a>\"\nmsgstr \"<a data-k=\\\"\\\">Text</a>\"\n",
+  )
+  let result = check_markup_catalog(catalog, options={
+    ..default_markup_options(),
+    mode: "xml",
+  })
+  let codes = result.map(d => d.code)
+  codes.sort()
+  assert_eq(codes, [])
+}
+
+///|
+test "CGM-1 X31 XML does not apply HTML C1 mapping" {
+  let catalog = parse_catalog(
+    test_header() +
+    "msgid \"<a data-k=\\\"&#128;\\\">Text</a>\"\nmsgstr \"<a data-k=\\\"€\\\">Text</a>\"\n",
+  )
+  let result = check_markup_catalog(catalog, options={
+    ..default_markup_options(),
+    mode: "xml",
+  })
+  let codes = result.map(d => d.code)
+  codes.sort()
+  assert_eq(codes, ["M003"])
+}
+
+///|
+test "CGM-1 X32 XML retains hexadecimal C1 identity" {
+  let catalog = parse_catalog(
+    test_header() +
+    "msgid \"<a data-k=\\\"&#x80;\\\">Text</a>\"\nmsgstr \"<a data-k=\\\"\\\">Text</a>\"\n",
+  )
+  let result = check_markup_catalog(catalog, options={
+    ..default_markup_options(),
+    mode: "xml",
+  })
+  let codes = result.map(d => d.code)
+  codes.sort()
+  assert_eq(codes, [])
+}

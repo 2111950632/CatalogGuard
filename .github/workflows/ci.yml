@@ -35,6 +35,7 @@ jobs:
           moon test --target wasm-gc --deny-warn
           moon build --target js --release --deny-warn
           node --test tests/integration.mjs
+          node scripts/check-generated-quality.mjs generated-quality.json
       - name: Compare with independent parsers and GNU gettext
         run: |
           set -o pipefail
@@ -81,6 +82,7 @@ jobs:
             quality-conformance.json
             project-demo.json
             project-performance.json
+            generated-quality.json
             demo-report.json
             dist/
             _build/publish/*.zip

@@ -18,6 +18,7 @@ const steps = [
   [process.execPath, ['scripts/check-interfaces.mjs']],
   [moon, ['build', '--target', 'js', '--release', '--deny-warn']],
   [process.execPath, ['--test', 'tests/integration.mjs']],
+  [process.execPath, ['scripts/check-generated-quality.mjs']],
   [moon, ['package']],
   [python, ['scripts/check-consumer.py', '--moon', moon]],
 ];

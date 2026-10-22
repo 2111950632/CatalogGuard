@@ -1,6 +1,6 @@
 name = "2111950632/szs"
 
-version = "0.2.1"
+version = "0.2.2"
 
 readme = "README.md"
 

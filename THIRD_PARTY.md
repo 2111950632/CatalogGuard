@@ -1,5 +1,7 @@
 # 来源与许可证
 
+0.2.2 的 HTML C1 数字引用映射来自 [HTML numeric character reference end state](https://html.spec.whatwg.org/multipage/parsing.html#numeric-character-reference-end-state) 的格式事实表；Python 标准库 HTMLParser 仅作属性解码的独立测试参考，未复制其实现或增加生产依赖。生成式多文件检查使用逐对参考与生产有界索引交叉验证，不复制第三方冲突算法。
+
 本项目 MoonBit 实现为新编写的代码，未复制下列同类工具实现。使用 AI 协助设计与开发；提交者负责验证及维护。
 
 0.2.0 标记与项目检查参考 [XML 1.0 第五版](https://www.w3.org/TR/xml/)、[HTML 语法](https://html.spec.whatwg.org/multipage/syntax.html) 和 Translate Toolkit 的功能说明，以独立编写的片段解析、树合同和索引实现。HTML void 元素和 XML 名称字符范围是格式事实，不复制第三方解析器实现。完整边界见 docs/PROJECT_QUALITY.md。

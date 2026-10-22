@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "client_date": "2026-10-22",
+  "version": "0.2.2",
+  "seed": "0x22102026",
+  "markup": [
+    {
+      "mode": "html",
+      "inputs": 480,
+      "passed": true
+    },
+    {
+      "mode": "xml",
+      "inputs": 480,
+      "passed": true
+    }
+  ],
+  "cross_file_projects": 350,
+  "cross_file_inputs": 1133,
+  "failed_projects": 0,
+  "failures": [],
+  "passed": true,
+  "note": "960 generated markup inputs and 350 multi-file projects, with per-entry/rule all-prior-files reference and witness checks. Separate from core test counts; finite checks do not establish full standards compatibility."
+}

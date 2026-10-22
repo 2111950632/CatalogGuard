@@ -10,6 +10,7 @@ import subprocess
 import sys
 import tempfile
 import xml.etree.ElementTree as ET
+from html.parser import HTMLParser
 import polib
 from translate.filters import checks
 
@@ -30,6 +31,16 @@ def cli(args):
     result=subprocess.run(['node',str(ROOT/'cli.mjs'),*map(str,args),'--json'],capture_output=True,text=True,encoding='utf8',timeout=30,cwd=ROOT)
     assert result.returncode in (0,1),(result.returncode,result.stdout,result.stderr)
     return json.loads(result.stdout)
+
+class AttributeProbe(HTMLParser):
+    def __init__(self,text):
+        super().__init__(convert_charrefs=True)
+        self.elements=[]
+        self.feed(text)
+        self.close()
+
+    def handle_starttag(self,tag,attrs):
+        self.elements.append((tag,sorted(attrs)))
 
 def main():
     parser=argparse.ArgumentParser()
@@ -61,6 +72,11 @@ def main():
                 assert equal==case['xml_attribute_equal'],(case['id'],'Independent XML attribute normalization',equal)
                 row['xml_attribute_equal']=equal
                 row['xml_attribute_probe_pass']=True
+            if 'html_attribute_equal' in case:
+                equal=AttributeProbe(case['source']).elements==AttributeProbe(case['target']).elements
+                assert equal==case['html_attribute_equal'],(case['id'],'Independent HTML attribute normalization',equal)
+                row['html_attribute_equal']=equal
+                row['html_attribute_probe_pass']=True
             try: row['toolkit_xmltags_accepts']=bool(checker.xmltags(case['source'],case['target']))
             except checks.FilterFailure as error:
                 row['toolkit_xmltags_accepts']=False
@@ -103,6 +119,7 @@ def main():
                   fixture_sha256=hashlib.sha256(fixture.read_bytes()).hexdigest(),
                   markup_cases=len(results),xml_probes=sum('xml_probe_pass'in r for r in results),
                   xml_attribute_probes=sum('xml_attribute_probe_pass'in r for r in results),
+                  html_attribute_probes=sum('html_attribute_probe_pass'in r for r in results),
                   toolkit_markup_observations=len(results),project_scenarios=len(project_results),
                   toolkit_markup_assertions=sum('toolkit_probe_pass' in r for r in results),
                   toolkit_project_assertions=len(project_results),failed=[],markup_results=results,project_results=project_results)

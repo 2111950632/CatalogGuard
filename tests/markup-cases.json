@@ -646,34 +646,181 @@
       "xml_target_valid": false
     },
     {
-      "id": "X26", "mode": "xml", "category": "XML literal CRLF normalizes once",
-      "source": "<a href='one two'/>", "target": "<a href='one\r\ntwo'/>",
-      "expected_codes": [], "xml_target_valid": true, "xml_attribute_equal": true
+      "id": "X26",
+      "mode": "xml",
+      "category": "XML literal CRLF normalizes once",
+      "source": "<a href='one two'/>",
+      "target": "<a href='one\r\ntwo'/>",
+      "expected_codes": [],
+      "xml_target_valid": true,
+      "xml_attribute_equal": true
     },
     {
-      "id": "X27", "mode": "xml", "category": "XML literal CR normalizes to space",
-      "source": "<a href='one two'/>", "target": "<a href='one\rtwo'/>",
-      "expected_codes": [], "xml_target_valid": true, "xml_attribute_equal": true
+      "id": "X27",
+      "mode": "xml",
+      "category": "XML literal CR normalizes to space",
+      "source": "<a href='one two'/>",
+      "target": "<a href='one\rtwo'/>",
+      "expected_codes": [],
+      "xml_target_valid": true,
+      "xml_attribute_equal": true
     },
     {
-      "id": "X28", "mode": "xml", "category": "XML carriage return reference retains identity",
-      "source": "<a href='one two'/>", "target": "<a href='one&#13;two'/>",
-      "expected_codes": ["M003"], "xml_target_valid": true, "xml_attribute_equal": false
+      "id": "X28",
+      "mode": "xml",
+      "category": "XML carriage return reference retains identity",
+      "source": "<a href='one two'/>",
+      "target": "<a href='one&#13;two'/>",
+      "expected_codes": [
+        "M003"
+      ],
+      "xml_target_valid": true,
+      "xml_attribute_equal": false
     },
     {
-      "id": "X29", "mode": "xml", "category": "Two XML CRLF sequences remain two spaces",
-      "source": "<a href='one  two'/>", "target": "<a href='one\r\n\r\ntwo'/>",
-      "expected_codes": [], "xml_target_valid": true, "xml_attribute_equal": true
+      "id": "X29",
+      "mode": "xml",
+      "category": "Two XML CRLF sequences remain two spaces",
+      "source": "<a href='one  two'/>",
+      "target": "<a href='one\r\n\r\ntwo'/>",
+      "expected_codes": [],
+      "xml_target_valid": true,
+      "xml_attribute_equal": true
     },
     {
-      "id": "H39", "mode": "html", "category": "HTML literal CRLF normalizes to LF",
-      "source": "<a href='one\ntwo'>x</a>", "target": "<a href='one\r\ntwo'>y</a>",
-      "expected_codes": [], "xml_target_valid": null
+      "id": "H39",
+      "mode": "html",
+      "category": "HTML literal CRLF normalizes to LF",
+      "source": "<a href='one\ntwo'>x</a>",
+      "target": "<a href='one\r\ntwo'>y</a>",
+      "expected_codes": [],
+      "xml_target_valid": null
     },
     {
-      "id": "H40", "mode": "html", "category": "HTML carriage return reference retains identity",
-      "source": "<a href='one\ntwo'>x</a>", "target": "<a href='one&#13;two'>y</a>",
-      "expected_codes": ["M003"], "xml_target_valid": null
+      "id": "H40",
+      "mode": "html",
+      "category": "HTML carriage return reference retains identity",
+      "source": "<a href='one\ntwo'>x</a>",
+      "target": "<a href='one&#13;two'>y</a>",
+      "expected_codes": [
+        "M003"
+      ],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H41",
+      "mode": "html",
+      "category": "decimal C1 mapping",
+      "source": "<a data-k=\"&#128;\">Text</a>",
+      "target": "<a data-k=\"€\">Text</a>",
+      "expected_codes": [],
+      "xml_target_valid": null,
+      "html_attribute_equal": true
+    },
+    {
+      "id": "H42",
+      "mode": "html",
+      "category": "hexadecimal C1 mapping",
+      "source": "<a data-k=\"&#x80;\">Text</a>",
+      "target": "<a data-k=\"€\">Text</a>",
+      "expected_codes": [],
+      "xml_target_valid": null,
+      "html_attribute_equal": true
+    },
+    {
+      "id": "H43",
+      "mode": "html",
+      "category": "C1 mapping protects distinct literal value",
+      "source": "<a data-k=\"&#128;\">Text</a>",
+      "target": "<a data-k=\"\">Text</a>",
+      "expected_codes": [
+        "M003"
+      ],
+      "xml_target_valid": null,
+      "html_attribute_equal": false
+    },
+    {
+      "id": "H44",
+      "mode": "html",
+      "category": "C1 quotation mapping",
+      "source": "<a data-k=\"&#x91;\">Text</a>",
+      "target": "<a data-k=\"‘\">Text</a>",
+      "expected_codes": [],
+      "xml_target_valid": null,
+      "html_attribute_equal": true
+    },
+    {
+      "id": "H45",
+      "mode": "html",
+      "category": "unmapped C1 code point is retained",
+      "source": "<a data-k=\"&#129;\">Text</a>",
+      "target": "<a data-k=\"\">Text</a>",
+      "expected_codes": [],
+      "xml_target_valid": null,
+      "html_attribute_equal": true
+    },
+    {
+      "id": "H46",
+      "mode": "html",
+      "category": "all 27 C1 mappings",
+      "source": "<a data-k=\"&#128;&#130;&#131;&#132;&#133;&#134;&#135;&#136;&#137;&#138;&#139;&#140;&#142;&#145;&#146;&#147;&#148;&#149;&#150;&#151;&#152;&#153;&#154;&#155;&#156;&#158;&#159;\">Text</a>",
+      "target": "<a data-k=\"€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ\">Text</a>",
+      "expected_codes": [],
+      "xml_target_valid": null,
+      "html_attribute_equal": true
+    },
+    {
+      "id": "H47",
+      "mode": "html",
+      "category": "NUL numeric reference remains outside profile",
+      "source": "<a data-k=\"safe\">Text</a>",
+      "target": "<a data-k=\"&#0;\">Text</a>",
+      "expected_codes": [
+        "M002"
+      ],
+      "xml_target_valid": null
+    },
+    {
+      "id": "H48",
+      "mode": "html",
+      "category": "uppercase hexadecimal C1 mapping",
+      "source": "<a data-k=\"&#X9F;\">Text</a>",
+      "target": "<a data-k=\"Ÿ\">Text</a>",
+      "expected_codes": [],
+      "xml_target_valid": null,
+      "html_attribute_equal": true
+    },
+    {
+      "id": "X30",
+      "mode": "xml",
+      "category": "XML retains decimal C1 identity",
+      "source": "<a data-k=\"&#128;\">Text</a>",
+      "target": "<a data-k=\"\">Text</a>",
+      "expected_codes": [],
+      "xml_target_valid": true,
+      "xml_attribute_equal": true
+    },
+    {
+      "id": "X31",
+      "mode": "xml",
+      "category": "XML does not apply HTML C1 mapping",
+      "source": "<a data-k=\"&#128;\">Text</a>",
+      "target": "<a data-k=\"€\">Text</a>",
+      "expected_codes": [
+        "M003"
+      ],
+      "xml_target_valid": true,
+      "xml_attribute_equal": false
+    },
+    {
+      "id": "X32",
+      "mode": "xml",
+      "category": "XML retains hexadecimal C1 identity",
+      "source": "<a data-k=\"&#x80;\">Text</a>",
+      "target": "<a data-k=\"\">Text</a>",
+      "expected_codes": [],
+      "xml_target_valid": true,
+      "xml_attribute_equal": true
     }
   ]
 }
