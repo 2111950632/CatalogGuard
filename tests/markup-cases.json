@@ -644,6 +644,36 @@
         "M002"
       ],
       "xml_target_valid": false
+    },
+    {
+      "id": "X26", "mode": "xml", "category": "XML literal CRLF normalizes once",
+      "source": "<a href='one two'/>", "target": "<a href='one\r\ntwo'/>",
+      "expected_codes": [], "xml_target_valid": true, "xml_attribute_equal": true
+    },
+    {
+      "id": "X27", "mode": "xml", "category": "XML literal CR normalizes to space",
+      "source": "<a href='one two'/>", "target": "<a href='one\rtwo'/>",
+      "expected_codes": [], "xml_target_valid": true, "xml_attribute_equal": true
+    },
+    {
+      "id": "X28", "mode": "xml", "category": "XML carriage return reference retains identity",
+      "source": "<a href='one two'/>", "target": "<a href='one&#13;two'/>",
+      "expected_codes": ["M003"], "xml_target_valid": true, "xml_attribute_equal": false
+    },
+    {
+      "id": "X29", "mode": "xml", "category": "Two XML CRLF sequences remain two spaces",
+      "source": "<a href='one  two'/>", "target": "<a href='one\r\n\r\ntwo'/>",
+      "expected_codes": [], "xml_target_valid": true, "xml_attribute_equal": true
+    },
+    {
+      "id": "H39", "mode": "html", "category": "HTML literal CRLF normalizes to LF",
+      "source": "<a href='one\ntwo'>x</a>", "target": "<a href='one\r\ntwo'>y</a>",
+      "expected_codes": [], "xml_target_valid": null
+    },
+    {
+      "id": "H40", "mode": "html", "category": "HTML carriage return reference retains identity",
+      "source": "<a href='one\ntwo'>x</a>", "target": "<a href='one&#13;two'>y</a>",
+      "expected_codes": ["M003"], "xml_target_valid": null
     }
   ]
 }

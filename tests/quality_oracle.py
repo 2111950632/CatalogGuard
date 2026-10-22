@@ -56,6 +56,11 @@ def main():
                 assert valid==case['xml_target_valid'],(case['id'],'XML independent parser',valid)
                 row['xml_target_valid']=valid
                 row['xml_probe_pass']=True
+            if 'xml_attribute_equal' in case:
+                equal=ET.fromstring(case['source']).attrib==ET.fromstring(case['target']).attrib
+                assert equal==case['xml_attribute_equal'],(case['id'],'Independent XML attribute normalization',equal)
+                row['xml_attribute_equal']=equal
+                row['xml_attribute_probe_pass']=True
             try: row['toolkit_xmltags_accepts']=bool(checker.xmltags(case['source'],case['target']))
             except checks.FilterFailure as error:
                 row['toolkit_xmltags_accepts']=False
@@ -93,10 +98,11 @@ def main():
             project_results.append(dict(id=name,catalogguard_codes=codes,catalogguard_pass=True,
                                         toolkit_conflict=bool(emitted),toolkit_expected=toolkit_conflict,toolkit_pass=True,
                                         difference='CatalogGuard separates Language groups; poconflicts input must be locale-scoped by its caller.' if name=='different-locales' else None))
-    evidence=dict(schema_version=1,client_date='2026-10-19',profile='CGM-1 / CGP-1',
+    evidence=dict(schema_version=1,client_date=os.environ.get('SZS_VALIDATION_DATE'),profile='CGM-1 / CGP-1',
                   python=platform.python_version(),toolkit=version('translate-toolkit'),lxml=version('lxml'),
                   fixture_sha256=hashlib.sha256(fixture.read_bytes()).hexdigest(),
                   markup_cases=len(results),xml_probes=sum('xml_probe_pass'in r for r in results),
+                  xml_attribute_probes=sum('xml_attribute_probe_pass'in r for r in results),
                   toolkit_markup_observations=len(results),project_scenarios=len(project_results),
                   toolkit_markup_assertions=sum('toolkit_probe_pass' in r for r in results),
                   toolkit_project_assertions=len(project_results),failed=[],markup_results=results,project_results=project_results)

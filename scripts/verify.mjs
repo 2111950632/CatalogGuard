@@ -26,6 +26,7 @@ if (independent) {
   steps.push([python, ['tests/oracle.py', 'tests/external/moonbit-docs-0.po', 'tests/external/moonbit-docs-1.po', '--gnu']]);
   steps.push([python, ['tests/format_conformance.py']]);
   steps.push([python, ['tests/quality_oracle.py']]);
+  steps.push([process.execPath, ['scripts/benchmark-project.mjs']]);
 }
 const results = [];
 for (const [program, args] of steps) {

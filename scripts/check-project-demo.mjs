@@ -23,5 +23,5 @@ for(const [name,args,expected,codes]of cases){
 }
 const output=resolve(root,process.argv[2]||'evidence/local/project-demo.json');
 mkdirSync(dirname(output),{recursive:true});
-writeFileSync(output,JSON.stringify({schema_version:1,client_date:'2026-10-19',cases:results.length,passed:results.length,results},null,2)+'\n');
+writeFileSync(output,JSON.stringify({schema_version:1,client_date:process.env.SZS_VALIDATION_DATE||null,cases:results.length,passed:results.length,results},null,2)+'\n');
 console.log('Project quality demo: 5/5 command runs passed; four primary examples exit 0,1,0,1.');

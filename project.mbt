@@ -156,6 +156,10 @@ fn project_reports(
     }
   })
   let found = check_consistency(catalogs, options=project.consistency)
+  let by_file : Array[Array[Diagnostic]] = Array::makei(raw.length(), _ => [])
+  for finding in found {
+    by_file[finding.file_index].push(finding.diagnostic)
+  }
   let reports : Array[Report] = []
   let mut exit_code = 0
   for index, report in raw {
@@ -164,10 +168,8 @@ fn project_reports(
       diagnostic in check_markup_catalog(report.catalog, options=project.markup) {
       diagnostics.push(diagnostic)
     }
-    for finding in found {
-      if finding.file_index == index {
-        diagnostics.push(finding.diagnostic)
-      }
+    for diagnostic in by_file[index] {
+      diagnostics.push(diagnostic)
     }
     let checked = apply_policy(
       report_with(

@@ -1,6 +1,6 @@
 name = "2111950632/szs"
 
-version = "0.2.0"
+version = "0.2.1"
 
 readme = "README.md"
 
@@ -12,4 +12,4 @@ keywords = [ "gettext", "po", "pot", "localization", "validation" ]
 
 preferred_target = "js"
 
-description = "Source-aware PO/POT catalog checking for MoonBit, with format contracts and bounded plural analysis."
+description = "PO/POT catalog checking for MoonBit, with format and HTML/XML contracts, cross-file consistency, and bounded plural analysis."

@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "version": "0.2.1",
+  "files": 31,
+  "entries_per_file": 250,
+  "plural_slots": 4,
+  "original_chars_per_slot": 4096,
+  "input_bytes": 4963619,
+  "findings": 7500,
+  "expected_findings": 7500,
+  "correctness_passed": true,
+  "milliseconds": 2747,
+  "rss_after_response_bytes": 315981824,
+  "note": "One deterministic workload, not a general performance guarantee or a peak-memory measurement."
+}

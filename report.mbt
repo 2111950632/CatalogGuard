@@ -88,7 +88,7 @@ pub fn report_json(report : Report) -> Json {
   {
     "schema_version": Json(1),
     "tool": Json("szs"),
-    "version": Json("0.2.0"),
+    "version": Json("0.2.1"),
     "file": Json(report.catalog.file),
     "exit_code": Json(report.exit_code),
     "statistics": statistics_json(report.stats),

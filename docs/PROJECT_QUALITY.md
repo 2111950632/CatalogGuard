@@ -1,6 +1,6 @@
 # CGM-1 标记结构与 CGP-1 跨文件检查
 
-版本 0.2.0，2026-10-19。本次针对第二轮初审意见新增 MoonBit 实现，扩展此前的三类格式合同检查。Node.js 只遍历目录、读取 UTF-8 文件和输出结果。新功能参考 Translate Toolkit 的功能划分，由本项目重新实现，不将已有工具的能力描述为全球首创。
+版本 0.2.1，2026-10-22。0.2.0 针对第二轮初审意见新增 MoonBit 实现，扩展此前的三类格式合同检查；0.2.1 经终审自查修复行尾规范化、非法语言分组和逆向检查遗漏。Node.js 只遍历目录、读取 UTF-8 文件和输出结果。新功能参考 Translate Toolkit 的功能划分，由本项目重新实现，不将已有工具的能力描述为全球首创。
 
 ## 两分钟运行
 
@@ -22,7 +22,7 @@ node cli.mjs examples/project-quality/xml-broken.po --markup xml --strict --json
 - 检查开闭配对、交叉闭合、缺失闭合、标签树祖先关系、标签数目及属性重复/缺失。通过长度前缀编码及同级子树排序比较合同，允许同级子树重排，仍保留属性与所属子树的绑定关系；仅比较标签计数不足以覆盖这些情况。
 - 文本可翻译，属性顺序可改变。默认仅 alt、title、aria-label、placeholder、lang、xml:lang 的值可翻译，其属性存在性仍须保留；其他属性的值受保护，包括 href、src、id、class 及命名空间声明。可在配置中替换可翻译属性列表。
 - HTML 使用 ASCII 大小写不敏感的名称、13 个当前标准 void 元素、引号/非引号属性及空值布尔属性。要求非 void 标签显式成对，不实现可省略闭合、错误修复、内容模型、raw-text、template、SVG/MathML 解析。布尔属性的非空值仍按字面合同比较。
-- XML 名称区分大小写；支持 Unicode 名称、显式成对/自闭合等价、注释、CDATA、五种预定义实体和有效的十/十六进制字符引用；属性的字面换行/制表符按空格规范化。限定名按字面保存，**不做命名空间 URI 等价或 schema/DTD 验证**。
+- XML 名称区分大小写；支持 Unicode 名称、显式成对/自闭合等价、注释、CDATA、五种预定义实体和有效的十/十六进制字符引用；属性的字面 CRLF 先视为一次换行，字面 CR/LF/制表符按空格规范化。HTML 引号属性的字面 CRLF/CR 规范化为 LF，不将普通空格与 LF 合并；两种模式均保留字符引用产生的 CR。对应 XML 1.0 §2.11/§3.3.3 和 HTML 输入流预处理；不把比较合同当作 URL 解析或浏览器安全净化。限定名按字面保存，**不做命名空间 URI 等价或 schema/DTD 验证**。
 - DTD、外部实体、声明和处理指令明确报“范围外”；不会请求网络或展开实体。HTML 中五种预定义实体、nbsp 与数字引用参与属性值规范化，其他命名实体按原样保留，不宣称完整 HTML 实体表验证。
 - 单复数源文须具有同一标记合同，不能根据 msgstr[0] 猜测任意语言的单数语义。源合同不同报 M004，不静默选择其中一个。空译文沿用原有空译文规则，obsolete 跳过；fuzzy 译文仍检查标记安全性。
 
@@ -35,13 +35,15 @@ node cli.mjs examples/project-quality/xml-broken.po --markup xml --strict --json
 
 默认每个字符串最多 262144 个 UTF-16 单元、4096 个元素、64 层；可配置的绝对上限为 1048576、16384、128。到达限制会明确失败，不以截断后的结果充作通过。MarkupError.offset 为解码后 Unicode 字符偏移；PO 诊断范围定位到包含它的源/译文字段，不伪造转义和续行后的精确原始字符位置。
 
+行尾规范化仅用于标记合同比较；PO 内容检查的 C013（包含 CR 的人工审阅提示）仍独立生效，严格模式可能因此退出 1。合同相等不表示其他目录或内容规则均已通过。
+
 ## CGP-1：跨文件一致性
 
 采用 [poconflicts](https://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/poconflicts.html) 的冲突审阅概念，默认保持文本和大小写精确匹配，另加显式语言与上下文隔离：
 
-1. 按 Language、msgctxt、msgid 建索引。Language 仅规范化大小写和 `_`/`-`，不合并 zh-CN/zh-TW 或 fr/de；缺失或非法语言产生 X001，文件不加入猜测的语言组。
+1. 按 Language、msgctxt、msgid 建索引。Language 首段要求非空 ASCII 字母，其余为非空 ASCII 字母/数字段，段间用 `_`/`-`；这只是分组语法，不验证 ISO/BCP-47 注册表或支持 gettext 的 `@modifier`。仅规范化大小写和 `_`/`-`，不合并 zh-CN/zh-TW 或 fr/de；缺失、空段、数字首段等非法语言产生 X001，文件不加入猜测的语言组。zh_Hans_CN、es_419 等显式子段可用。
 2. 比较所有 msgstr 索引和值：同键不同译文为 X002；不同 msgid_plural 为 X003；format flags 差异为 X004。不同文件之间比较，单文件重复仍由原有 C001 负责。
-3. `--ignore-context` 显式合并上下文；`--inverse-consistency` 另检查同一译文对应不同源文（X005）。这两项会扩大人工审阅范围，默认不开启。
+3. `--ignore-context` 显式合并上下文；`--inverse-consistency` 另检查同一译文对应不同源文（X005），双方文件和源文均须不同。每个译文组用至多五个代表保留有效见证，避免第一个条目的源文遮蔽后续冲突；每个当前条目最多报告一个逆向见证，不枚举全部冲突配对。这两项会扩大人工审阅范围，默认不开启。
 4. fuzzy、obsolete、空译文、损坏的解析结果及 POT 不作为译文冲突证据。空目录、非法配置和重复输入路径以调用错误处理。
 5. X002/X004/X005 是可配置 warning，因为用词差异可能有意；严格模式使 warning 导致退出 1，也可将 X002 提升为 error。X003 和资源错误不能关闭。检查不自动选“正确译法”。
 
@@ -81,6 +83,6 @@ node cli.mjs examples/project-quality/xml-broken.po --markup xml --strict --json
 
 以上是固定版本、固定案例的实际行为，不泛化为全部 Toolkit 工具的能力评价。CGM-1 接受合法的同级/属性重排，拒绝受限片段中的结构错误；不能将 xmltags 返回值当作完整 XML 合法性证明。poconflicts 的输入目录由调用者负责同语言分组，本项目将分组作为核心合同并给出双方位置。
 
-完整证据：63 个标记案例（38 HTML、25 XML）；23 项 ElementTree 目标解析探针；63 项 Toolkit 标签观测，其中 16 项固定预期作断言，其余 47 项只观察；5 个跨文件场景均对 CatalogGuard 和 poconflicts 的预期作断言。另有 26 个项目、配置、资源及关联位置的核心用例。JS/Wasm GC 各运行同一组 222 个核心用例，不将两次运行算作 444 个不同案例。
+当前标记矩阵为 69 个案例（40 HTML、29 XML），含 27 项 ElementTree 目标解析及其中 4 项属性规范化对照；69 项 Toolkit 标签观测中 16 项固定预期作断言，其余 53 项只观察；5 个跨文件场景均对 CatalogGuard 和 poconflicts 的预期作断言。另有 37 个项目、配置、资源及边界用例，其中一个用朴素比较器穷举 729 个小项目校验逆向索引，不把 729 个输入排列算成 729 个核心测试。完整核心共 239 个，两个后端各运行同一组；CLI 共 32 项。实际运行记录见版本对应验收证据，历史 0.2.0 的 222/29 项保留不改写。
 
 复现：`python -m pip install -r tests/quality-requirements.txt` 后执行 `python tests/quality_oracle.py`。独立参考只用于测试，生产核心没有这些依赖。规范的 JSON 夹具、生成测试、手写项目用例和可运行 PO 示例都在仓库；证据见 evidence/quality-conformance-0.2.0.json。有限案例不构成对整个 XML/HTML 或 Translate Toolkit 的完整兼容证明。

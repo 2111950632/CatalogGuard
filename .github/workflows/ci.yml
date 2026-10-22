@@ -56,6 +56,7 @@ jobs:
           .ci-venv/bin/python -m pip install -r tests/quality-requirements.txt
           .ci-venv/bin/python tests/quality_oracle.py --output quality-conformance.json
           node scripts/check-project-demo.mjs project-demo.json
+          node scripts/benchmark-project.mjs project-performance.json
       - name: Test independently extracted Mooncakes package
         run: |
           moon package
@@ -79,6 +80,7 @@ jobs:
             moongettext-baseline.json
             quality-conformance.json
             project-demo.json
+            project-performance.json
             demo-report.json
             dist/
             _build/publish/*.zip

@@ -33,6 +33,36 @@ function qualityInput(name, source, target, context) {
   return input(name, qualityHeader+(context === undefined ? '' : 'msgctxt '+JSON.stringify(context)+'\n')+'msgid '+JSON.stringify(source)+'\nmsgstr '+JSON.stringify(target)+'\n');
 }
 
+test('XML CRLF normalizes while retaining the separate carriage-return review', () => {
+  const path=qualityInput('xml-crlf.po',"<a href='one two'/>","<a href='one\r\ntwo'/>");
+  const result=run([path,'--markup','xml','--json']);
+  assert.equal(result.status,0,result.stdout+result.stderr);
+  assert.deepEqual(data(result).files[0].diagnostics.map(d=>d.code),['C013']);
+  assert.equal(run([path,'--markup','xml','--strict','--json']).status,1);
+});
+
+test('malformed locale metadata is skipped rather than falsely grouped', () => {
+  const first=qualityInput('malformed-locale-first.po','Save','保存');
+  const second=qualityInput('malformed-locale-second.po','Save','存储');
+  for(const path of [first,second])writeFileSync(path,readFileSync(path,'utf8').replace('zh_CN','zh--CN'));
+  const result=run([first,second,'--consistency','--strict','--json']);
+  assert.equal(result.status,1,result.stdout+result.stderr);
+  assert.deepEqual(data(result).project_findings.map(f=>f.diagnostic.code),['X001','X001']);
+});
+
+test('inverse review retains a different source hidden behind the first key', () => {
+  const first=qualityInput('inverse-multiple-first.po','Cancel','取消');
+  writeFileSync(first,readFileSync(first,'utf8')+'\nmsgid "Delete"\nmsgstr "取消"\n');
+  const second=qualityInput('inverse-multiple-second.po','Cancel','取消');
+  const result=run([first,second,'--inverse-consistency','--strict','--json']);
+  assert.equal(result.status,1,result.stdout+result.stderr);
+  const findings=data(result).project_findings;
+  assert.equal(findings.length,1);
+  assert.equal(findings[0].diagnostic.code,'X005');
+  assert.equal(findings[0].related.file,first);
+  assert.equal(findings[0].related.entry,2);
+});
+
 test('markup is opt-in and HTML/XML void semantics differ', () => {
   const path=qualityInput('markup-void.po','<br>','<br/>');
   assert.equal(run([path,'--markup','html','--json']).status,0);
@@ -253,7 +283,7 @@ test('rules help and version work without catalog inputs', () => {
   assert.ok(rules.some(r => r.code === 'P011'));
   assert.ok(rules.some(r => r.code === 'F008'));
   assert.equal(run(['--help']).status, 0);
-  assert.equal(run(['--version']).stdout.trim(), 'szs 0.2.0');
+  assert.equal(run(['--version']).stdout.trim(), 'szs 0.2.1');
 });
 
 test('duplicate stdin and excessive input are bounded IO failures', () => {

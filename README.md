@@ -2,6 +2,8 @@
 
 MoonBit 编写的 PO/POT 翻译目录检查库与命令行工具。项目由 `2111950632` 维护，面向 MoonBit 文档、应用本地化和 GitHub CI 中的翻译检查。
 
+当前版本 0.2.1。终审自查修复 HTML/XML 属性中的 CRLF/CR 规范化、非法 Language 分组与逆向冲突漏报；新增回归及 729 个小项目的朴素参考对照。功能边界保持显式，旧版发布与验收记录按版本分别保留。
+
 0.2.0 针对第二轮初审新增 **HTML/XML 标记结构和跨文件一致性检查**，与原有三类格式合同组成可嵌入 MoonBit 的翻译质量检查核心。新增功能、与固定版本 Translate Toolkit 的实际对照、合法与错误案例见 [项目质量检查边界](docs/PROJECT_QUALITY.md)。PO/POT、目录校验、复数和模板处理与 [moongettext](https://github.com/YanFangNie/moongettext) 存在重叠，不申报为独有能力；格式标准和兼容终点仍见 [格式合同说明](docs/FORMAT_CONTRACTS.md)。
 
 解析、格式与标记合同、跨文件分组比较、复数求值、模板对比、配置校验、报告生成均在 MoonBit 中实现；Node.js 入口负责参数传递、目录遍历、UTF-8 文件读取和输出。核心不执行宿主语言 `eval`，不需要第三方运行时包。

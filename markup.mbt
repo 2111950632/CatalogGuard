@@ -270,13 +270,26 @@ fn markup_attribute(state : MarkupState) -> Result[String, MarkupError] {
       }
     } else {
       output.write_char(
-        if !html && (c == '\t' || c == '\r' || c == '\n') {
+        if c == '\r' {
+          if html {
+            '\n'
+          } else {
+            ' '
+          }
+        } else if !html && (c == '\t' || c == '\n') {
           ' '
         } else {
           c
         },
       )
       state.cursor += 1
+      // A literal CRLF is one line break before attribute normalization.
+      // Character references took the other branch and retain their value.
+      if c == '\r' &&
+        state.cursor < state.chars.length() &&
+        state.chars[state.cursor] == '\n' {
+        state.cursor += 1
+      }
     }
   }
   if quote is Some(_) {

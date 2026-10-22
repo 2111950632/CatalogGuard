@@ -32,6 +32,47 @@ priv struct ConsistencyReference {
 }
 
 ///|
+priv struct ConsistencySource {
+  reference : ConsistencyReference
+  plural : String?
+  translation : String
+  flags : String
+}
+
+///|
+priv struct ConsistencyTargets {
+  first : ConsistencyReference
+  outside_first_file : Array[ConsistencyReference]
+  outside_first_source : Array[ConsistencyReference]
+}
+
+///|
+fn consistency_remember_target(
+  group : ConsistencyTargets,
+  current : ConsistencyReference,
+  catalogs : Array[Catalog],
+) -> Unit {
+  let first = group.first
+  let source = catalogs[current.file_index].entries[current.entry_index].id
+  let first_source = catalogs[first.file_index].entries[first.entry_index].id
+  // For a query in the first file, two distinct sources outside it suffice.
+  if current.file_index != first.file_index &&
+    group.outside_first_file.length() < 2 &&
+    !group.outside_first_file.any(p => {
+      catalogs[p.file_index].entries[p.entry_index].id == source
+    }) {
+    group.outside_first_file.push(current)
+  }
+  // For a query with the first source, two distinct other files suffice.
+  // All remaining queries can use first itself: at most five witnesses total.
+  if source != first_source &&
+    group.outside_first_source.length() < 2 &&
+    !group.outside_first_source.any(p => p.file_index == current.file_index) {
+    group.outside_first_source.push(current)
+  }
+}
+
+///|
 fn consistency_locale(catalog : Catalog) -> String? {
   let value = match read_header(catalog).get("Language") {
     None => return None
@@ -49,12 +90,19 @@ fn consistency_locale(catalog : Catalog) -> String? {
     }) {
     return None
   }
-  Some(
-    join_strings(
-      value.to_lower().split("_").map(s => s.to_owned()).to_array(),
-      "-",
-    ),
-  )
+  let normalized = value
+    .to_lower()
+    .split("_")
+    .map(s => s.to_owned())
+    .to_array()
+    .join("-")
+  let parts = normalized.split("-").map(s => s.to_owned()).to_array()
+  if parts.any(part => part == "") ||
+    parts[0].to_array().any(c => !(c >= 'a' && c <= 'z')) {
+    return None
+  }
+  // This is a grouping syntax check, not an ISO/BCP-47 registry validator.
+  Some(normalized)
 }
 
 ///|
@@ -173,8 +221,8 @@ pub fn check_consistency(
       ]
     }
   }
-  let sources : Map[String, ConsistencyReference] = Map([])
-  let targets : Map[String, ConsistencyReference] = Map([])
+  let sources : Map[String, ConsistencySource] = Map([])
+  let targets : Map[String, ConsistencyTargets] = Map([])
   for file_index, catalog in catalogs {
     // Damaged catalogs already fail parsing; never infer conflicts from partial data.
     if catalog.entries.is_empty() ||
@@ -209,10 +257,11 @@ pub fn check_consistency(
         markup_part(consistency_context(entry, options))
       let key = prefix + markup_part(entry.id)
       let current = { file_index, entry_index, }
+      let translation = consistency_translation(entry)
+      let flags = consistency_flags(entry)
       if sources.get(key) is Some(previous) {
-        if previous.file_index != file_index {
-          let original = catalogs[previous.file_index].entries[previous.entry_index]
-          if original.plural != entry.plural {
+        if previous.reference.file_index != file_index {
+          if previous.plural != entry.plural {
             result.push(
               project_finding(
                 catalogs,
@@ -221,11 +270,10 @@ pub fn check_consistency(
                 "X003",
                 Error,
                 "Same locale/context/source key has a different plural source across files",
-                Some(previous),
+                Some(previous.reference),
               ),
             )
-          } else if consistency_translation(original) !=
-            consistency_translation(entry) {
+          } else if previous.translation != translation {
             result.push(
               project_finding(
                 catalogs,
@@ -234,11 +282,11 @@ pub fn check_consistency(
                 "X002",
                 Warning,
                 "Same locale/context/source has conflicting translations across files",
-                Some(previous),
+                Some(previous.reference),
               ),
             )
           }
-          if consistency_flags(original) != consistency_flags(entry) {
+          if previous.flags != flags {
             result.push(
               project_finding(
                 catalogs,
@@ -247,19 +295,38 @@ pub fn check_consistency(
                 "X004",
                 Warning,
                 "Format flags differ for the same source key across files",
-                Some(previous),
+                Some(previous.reference),
               ),
             )
           }
         }
       } else {
-        sources.set(key, current)
+        sources.set(key, {
+          reference: current,
+          plural: entry.plural,
+          translation,
+          flags,
+        })
       }
       if options.inverse {
-        let target_key = prefix + markup_part(consistency_translation(entry))
-        if targets.get(target_key) is Some(previous) {
-          let original = catalogs[previous.file_index].entries[previous.entry_index]
-          if previous.file_index != file_index && original.id != entry.id {
+        let target_key = prefix + markup_part(translation)
+        if targets.get(target_key) is Some(group) {
+          let witnesses = [group.first]
+          for p in group.outside_first_file {
+            witnesses.push(p)
+          }
+          for p in group.outside_first_source {
+            witnesses.push(p)
+          }
+          let mut previous : ConsistencyReference? = None
+          for p in witnesses {
+            if p.file_index != file_index &&
+              catalogs[p.file_index].entries[p.entry_index].id != entry.id {
+              previous = Some(p)
+              break
+            }
+          }
+          if previous is Some(previous) {
             result.push(
               project_finding(
                 catalogs,
@@ -272,8 +339,13 @@ pub fn check_consistency(
               ),
             )
           }
+          consistency_remember_target(group, current, catalogs)
         } else {
-          targets.set(target_key, current)
+          targets.set(target_key, {
+            first: current,
+            outside_first_file: [],
+            outside_first_source: [],
+          })
         }
       }
     }

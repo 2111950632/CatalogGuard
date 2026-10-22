@@ -910,3 +910,93 @@ test "CGM-1 X25 XML uppercase hexadecimal prefix is invalid" {
   codes.sort()
   assert_eq(codes, ["M002"])
 }
+
+///|
+test "CGM-1 X26 XML literal CRLF normalizes once" {
+  let catalog = parse_catalog(
+    test_header() +
+    "msgid \"<a href='one two'/>\"\nmsgstr \"<a href='one\\r\\ntwo'/>\"\n",
+  )
+  let result = check_markup_catalog(catalog, options={
+    ..default_markup_options(),
+    mode: "xml",
+  })
+  let codes = result.map(d => d.code)
+  codes.sort()
+  assert_eq(codes, [])
+}
+
+///|
+test "CGM-1 X27 XML literal CR normalizes to space" {
+  let catalog = parse_catalog(
+    test_header() +
+    "msgid \"<a href='one two'/>\"\nmsgstr \"<a href='one\\rtwo'/>\"\n",
+  )
+  let result = check_markup_catalog(catalog, options={
+    ..default_markup_options(),
+    mode: "xml",
+  })
+  let codes = result.map(d => d.code)
+  codes.sort()
+  assert_eq(codes, [])
+}
+
+///|
+test "CGM-1 X28 XML carriage return reference retains identity" {
+  let catalog = parse_catalog(
+    test_header() +
+    "msgid \"<a href='one two'/>\"\nmsgstr \"<a href='one&#13;two'/>\"\n",
+  )
+  let result = check_markup_catalog(catalog, options={
+    ..default_markup_options(),
+    mode: "xml",
+  })
+  let codes = result.map(d => d.code)
+  codes.sort()
+  assert_eq(codes, ["M003"])
+}
+
+///|
+test "CGM-1 X29 Two XML CRLF sequences remain two spaces" {
+  let catalog = parse_catalog(
+    test_header() +
+    "msgid \"<a href='one  two'/>\"\nmsgstr \"<a href='one\\r\\n\\r\\ntwo'/>\"\n",
+  )
+  let result = check_markup_catalog(catalog, options={
+    ..default_markup_options(),
+    mode: "xml",
+  })
+  let codes = result.map(d => d.code)
+  codes.sort()
+  assert_eq(codes, [])
+}
+
+///|
+test "CGM-1 H39 HTML literal CRLF normalizes to LF" {
+  let catalog = parse_catalog(
+    test_header() +
+    "msgid \"<a href='one\\ntwo'>x</a>\"\nmsgstr \"<a href='one\\r\\ntwo'>y</a>\"\n",
+  )
+  let result = check_markup_catalog(catalog, options={
+    ..default_markup_options(),
+    mode: "html",
+  })
+  let codes = result.map(d => d.code)
+  codes.sort()
+  assert_eq(codes, [])
+}
+
+///|
+test "CGM-1 H40 HTML carriage return reference retains identity" {
+  let catalog = parse_catalog(
+    test_header() +
+    "msgid \"<a href='one\\ntwo'>x</a>\"\nmsgstr \"<a href='one&#13;two'>y</a>\"\n",
+  )
+  let result = check_markup_catalog(catalog, options={
+    ..default_markup_options(),
+    mode: "html",
+  })
+  let codes = result.map(d => d.code)
+  codes.sort()
+  assert_eq(codes, ["M003"])
+}
