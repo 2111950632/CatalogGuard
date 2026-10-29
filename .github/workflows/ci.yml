@@ -24,6 +24,8 @@ jobs:
           exec > >(tee core-verification.txt) 2>&1
           moon version --all | tee toolchain-version.txt
           node --version >> toolchain-version.txt
+          node --test tests/toolchain.mjs
+          node scripts/check-toolchain.mjs
           moon check --target all --deny-warn
           moon fmt --check
           moon info

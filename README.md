@@ -8,11 +8,26 @@ MoonBit 编写的 PO/POT 翻译目录检查库与命令行工具。项目由 `21
 
 解析、格式与标记合同、跨文件分组比较、复数求值、模板对比、配置校验、报告生成均在 MoonBit 中实现；Node.js 入口负责参数传递、目录遍历、UTF-8 文件读取和输出。核心不执行宿主语言 `eval`，不需要第三方运行时包。
 
+## 源码结构
+
+| 位置 | 职责 |
+|---|---|
+| `parser.mbt`、`bytes.mbt`、`model.mbt` | PO/POT 解析、UTF-8 输入、数据模型与源位置 |
+| `checker.mbt`、`header.mbt`、`plural.mbt`、`template.mbt` | 目录、头字段、复数与模板检查 |
+| `format.mbt`、`brace.mbt`、`python_percent.mbt` | 三类格式参数合同 |
+| `markup.mbt`、`consistency.mbt`、`project.mbt` | HTML/XML 合同、跨文件一致性与项目策略 |
+| `report.mbt`、`protocol.mbt`、`cmd/main/` | MoonBit 报告与宿主通信入口 |
+| `cli.mjs`、`scripts/` | 文件操作、工程验证与打包 |
+| `*_test.mbt`、`*_wbtest.mbt`、`tests/`、`examples/` | 核心测试、独立参考与可运行案例 |
+
 ## 快速运行
 
-安装 [MoonBit 工具链](https://docs.moonbitlang.com/en/latest/cli/moon/index.html) 和 [Node.js 20 或更新版本](https://nodejs.org/en/download)，在项目目录运行：
+安装 [MoonBit 工具链](https://docs.moonbitlang.com/en/latest/cli/moon/index.html)（**moonc 不低于 0.10.16**）和 [Node.js 20 或更新版本](https://nodejs.org/en/download)。从公开仓库运行正常示例：
 
 ```sh
+git clone https://github.com/2111950632/CatalogGuard.git
+cd CatalogGuard
+node scripts/check-toolchain.mjs
 moon build --target js --release
 node cli.mjs check examples/zh_CN.po --template examples/messages.pot --strict
 node cli.mjs examples/project-quality/valid --recursive --markup html --consistency --strict --json
@@ -101,7 +116,9 @@ node --test tests/integration.mjs
 node scripts/count-source.mjs
 ```
 
-完整标准验证分别在 `moon 0.1.20261012 / moonc 0.10.15` 和当日官方 `moon 0.1.20261021 / moonc 0.10.17` 下通过，Node.js 24.19.0。CI 记录实际工具链版本，使用官方当前工具链；工具链更新可能需要显式升级 API，失败不会被跳过。
+验收要求为 **moonc >= 0.10.16**，以 `moon version --all` 中的 **moonc** 行为准；`moon` 的日期版本不能代替编译器版本。本项目已在官方 `moon 0.1.20261021 / moonc 0.10.17`、Node.js 24.19.0 下通过完整标准验证。较早的 0.10.15 运行只作为历史兼容记录，不作为本次验收依据。
+
+`node scripts/check-toolchain.mjs` 会拒绝低于最低版本或无法识别的编译器。标准验证和 CI 均执行此检查；CI 安装官方当前工具链并保存实际版本，工具链更新导致的失败不会被跳过。
 
 安装 Python 3.9 或更新版本后，`npm run verify` 按顺序完成核心检查、两种后端测试、CLI 测试、打包和独立 consumer 验证。它从 `moon package` 的真实压缩包提取源码，在单独项目中调用 API；需要 Python 标准库，不需要 polib。`SZS_MOON`、`SZS_PYTHON` 可指定本机工具路径。
 
@@ -124,6 +141,6 @@ python tests/oracle.py tests/external/moonbit-docs-0.po tests/external/moonbit-d
 
 MoonBit 实现为本项目新编写，未复制 GNU gettext、polib 或 Translate Toolkit 的实现代码。使用 AI 辅助开发，由仓库作者负责审核、验证和提交。参考与外部测试来源见 [来源说明](THIRD_PARTY.md)。代码按 Apache-2.0 授权。
 
-比赛资格、申报截止与发布要求，以 [比赛官网](https://moonbitlang.github.io/Hackathon2026/) 和主办方最新章程为准。仓库中有 [申报书](docs/PROPOSAL.md)；填写报名表和 Mooncakes 账号认证需由参赛者完成。
+比赛资格、申报截止与发布要求，以 [比赛官网](https://moonbitlang.github.io/Hackathon2026/) 和主办方最新通知为准。按选手提供的验收指南，**审核通过后，验收前不需要再提交表格，保持开发并上传 GitHub 即可**。已有 [申报书](docs/PROPOSAL.md) 保留；逐项工程核验见 [终审自查](docs/FINAL_REVIEW.md)。
 
 版本修复见 [更新记录](CHANGELOG.md)，本次初审补充见 [复审说明](docs/REVIEW_RESPONSE.md)。

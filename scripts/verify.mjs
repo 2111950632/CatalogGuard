@@ -2,13 +2,15 @@ import { spawnSync } from 'node:child_process';
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { moonExecutable } from './check-toolchain.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const moon = process.env.SZS_MOON || (process.env.MOON_HOME
-  ? join(process.env.MOON_HOME, 'bin', process.platform === 'win32' ? 'moon.exe' : 'moon') : 'moon');
+const moon = moonExecutable();
 const python = process.env.SZS_PYTHON || (process.platform === 'win32' ? 'python' : 'python3');
 const independent = process.argv.includes('--independent');
 const steps = [
+  [process.execPath, ['--test', 'tests/toolchain.mjs']],
+  [process.execPath, ['scripts/check-toolchain.mjs']],
   [moon, ['check', '--target', 'all', '--deny-warn']],
   [moon, ['test', '--target', 'js', '--deny-warn']],
   [moon, ['test', '--target', 'wasm-gc', '--deny-warn']],
